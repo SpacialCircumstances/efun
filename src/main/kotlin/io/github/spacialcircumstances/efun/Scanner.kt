@@ -3,7 +3,7 @@ package io.github.spacialcircumstances.efun
 fun tokenize(code: String): List<Token> {
     var state = ScannerState(listOf(), code, 0, 0, 1)
     while(!isAtEnd(state)){
-
+        state = scanToken(state)
     }
     return state.tokens
 }
@@ -12,34 +12,41 @@ private fun isAtEnd(state: ScannerState): Boolean {
     return state.current >= state.source.length
 }
 
-private fun scanToken(state: ScannerState): Pair<ScannerState, Token?> {
+private fun scanToken(state: ScannerState): ScannerState {
     val (newState, c) = advance(state)
     return when(c) {
-        '(' -> Pair(newState, token(newState, TokenType.LEFT_PAREN))
-        ')' -> Pair(newState, token(newState, TokenType.RIGHT_PAREN))
-        '{' -> Pair(newState, token(newState, TokenType.LEFT_BRACE))
-        '}' -> Pair(newState, token(newState, TokenType.RIGHT_BRACE))
-        '*' -> Pair(newState, token(newState, TokenType.STAR))
-        '/' -> Pair(newState, token(newState, TokenType.SLASH))
-        '+' -> Pair(newState, token(newState, TokenType.PLUS))
-        '-' -> Pair(newState, token(newState, TokenType.MINUS))
-        ',' -> Pair(newState, token(newState, TokenType.COMMA))
-        '.' -> Pair(newState, token(newState, TokenType.DOT))
-        ':' -> Pair(newState, token(newState, TokenType.COLON))
+        '(' -> withToken(newState, token(newState, TokenType.LEFT_PAREN))
+        ')' -> withToken(newState, token(newState, TokenType.RIGHT_PAREN))
+        '{' -> withToken(newState, token(newState, TokenType.LEFT_BRACE))
+        '}' -> withToken(newState, token(newState, TokenType.RIGHT_BRACE))
+        '*' -> withToken(newState, token(newState, TokenType.STAR))
+        '/' -> withToken(newState, token(newState, TokenType.SLASH))
+        '+' -> withToken(newState, token(newState, TokenType.PLUS))
+        '-' -> withToken(newState, token(newState, TokenType.MINUS))
+        ',' -> withToken(newState, token(newState, TokenType.COMMA))
+        '.' -> withToken(newState, token(newState, TokenType.DOT))
+        ':' -> withToken(newState, token(newState, TokenType.COLON))
         '!' -> lookahead(newState, '=', TokenType.BANG_EQUAL, TokenType.BANG)
         '=' -> lookahead(newState, '=', TokenType.EQUAL_EQUAL, TokenType.EQUAL)
         '>' -> lookahead(newState, '=', TokenType.GREATER_EQUAL, TokenType.GREATER)
         '<' -> lookahead(newState, '=', TokenType.LESS_EQUAL, TokenType.LESS)
-        '#' -> Pair(comment(newState), null)
-        '\n' -> Pair(newState.copy(line = newState.line + 1), null)
+        '#' -> withToken(comment(newState), null)
+        '\n' -> withToken(newState.copy(line = newState.line + 1), null)
         '"' -> string(newState)
         else -> {
-            if (c.isWhitespace()) Pair(newState, null) else throw IllegalStateException()
+            if (c.isWhitespace()) withToken(newState, null) else throw IllegalStateException()
         }
     }
 }
 
-private fun string(state: ScannerState): Pair<ScannerState, Token> {
+private fun withToken(state: ScannerState, token: Token?): ScannerState {
+    token?.let {
+        return state.copy(tokens = (state.tokens + it))
+    }
+    return state
+}
+
+private fun string(state: ScannerState): ScannerState {
     var currentState = state
     while (peek(currentState) != '"' && !isAtEnd(currentState)) {
         if (peek(currentState) == '\n') currentState = currentState.copy(line = currentState.line + 1)
@@ -50,7 +57,7 @@ private fun string(state: ScannerState): Pair<ScannerState, Token> {
 
     currentState = advance(currentState).first
     val str = currentState.source.substring(currentState.start + 1, currentState.current - 1)
-    return Pair(currentState, Token(TokenType.STRING, "\"$str\"", currentState.line, str))
+    return withToken(currentState, Token(TokenType.STRING, "\"$str\"", currentState.line, str))
 }
 
 private fun comment(state: ScannerState): ScannerState {
@@ -63,12 +70,12 @@ private fun peek(state: ScannerState): Char {
     }
 }
 
-private fun lookahead(state: ScannerState, char: Char, matchType: TokenType, nonMatchType: TokenType): Pair<ScannerState, Token> {
-    if (match(state, char)) {
+private fun lookahead(state: ScannerState, char: Char, matchType: TokenType, nonMatchType: TokenType): ScannerState {
+    return if (match(state, char)) {
         val (adv, _) = advance(state)
-        Pair(adv, token(adv, matchType))
+        withToken(adv, token(adv, matchType))
     } else {
-        Pair(state, token(state, nonMatchType))
+        withToken(state, token(state, nonMatchType))
     }
 }
 
