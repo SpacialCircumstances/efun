@@ -1,7 +1,10 @@
 package io.github.spacialcircumstances.efun
 
 fun tokenize(code: String): List<Token> {
-    val state = ScannerState(listOf(), code, 0, 0, 1)
+    var state = ScannerState(listOf(), code, 0, 0, 1)
+    while(!isAtEnd(state)){
+
+    }
     return state.tokens
 }
 
@@ -9,7 +12,7 @@ private fun isAtEnd(state: ScannerState): Boolean {
     return state.current >= state.source.length
 }
 
-private fun scanToken(state: ScannerState): Pair<ScannerState, Token> {
+private fun scanToken(state: ScannerState): Pair<ScannerState, Token?> {
     val (newState, c) = advance(state)
     return when(c) {
         '(' -> Pair(newState, token(newState, TokenType.LEFT_PAREN))
@@ -27,8 +30,27 @@ private fun scanToken(state: ScannerState): Pair<ScannerState, Token> {
         '=' -> lookahead(newState, '=', TokenType.EQUAL_EQUAL, TokenType.EQUAL)
         '>' -> lookahead(newState, '=', TokenType.GREATER_EQUAL, TokenType.GREATER)
         '<' -> lookahead(newState, '=', TokenType.LESS_EQUAL, TokenType.LESS)
-        '#' -> Pair(comment(newState), token(newState, TokenType.COMMENT))
+        '#' -> Pair(comment(newState), null)
+        '\n' -> Pair(newState.copy(line = newState.line + 1), null)
+        '"' -> string(newState)
+        else -> {
+            if (c.isWhitespace()) Pair(newState, null) else throw IllegalStateException()
+        }
     }
+}
+
+private fun string(state: ScannerState): Pair<ScannerState, Token> {
+    var currentState = state
+    while (peek(currentState) != '"' && !isAtEnd(currentState)) {
+        if (peek(currentState) == '\n') currentState = currentState.copy(line = currentState.line + 1)
+        currentState = advance(currentState).first
+    }
+
+    if (isAtEnd(currentState)) throw IllegalStateException()
+
+    currentState = advance(currentState).first
+    val str = currentState.source.substring(currentState.start + 1, currentState.current - 1)
+    return Pair(currentState, Token(TokenType.STRING, "\"$str\"", currentState.line, str))
 }
 
 private fun comment(state: ScannerState): ScannerState {

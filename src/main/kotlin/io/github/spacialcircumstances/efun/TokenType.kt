@@ -34,6 +34,5 @@ enum class TokenType {
     TRUE,
     FALSE,
     PRINT,
-    COMMENT,
     EOF
 }
