@@ -62,7 +62,7 @@ private fun string(state: ScannerState): ScannerState {
 }
 
 private fun comment(state: ScannerState): ScannerState {
-    return if (peek(state) != '\n') comment(advance(state).first) else state
+    return if (peek(state) != '\n' && peek(state) != 0.toChar()) comment(advance(state).first) else state
 }
 
 private fun peek(state: ScannerState): Char {
