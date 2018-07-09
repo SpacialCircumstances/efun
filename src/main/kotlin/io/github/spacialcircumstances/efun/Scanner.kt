@@ -2,7 +2,8 @@ package io.github.spacialcircumstances.efun
 
 fun tokenize(code: String): List<Token> {
     var state = ScannerState(listOf(), code, 0, 0, 1)
-    while(!isAtEnd(state)){
+    while (!isAtEnd(state)) {
+        state = state.copy(start = state.current)
         state = scanToken(state)
     }
     return state.tokens
@@ -72,7 +73,7 @@ private fun peek(state: ScannerState): Char {
 
 private fun lookahead(state: ScannerState, char: Char, matchType: TokenType, nonMatchType: TokenType): ScannerState {
     return if (match(state, char)) {
-        val (adv, _) = advance(state)
+        val adv = advance(state).first
         withToken(adv, token(adv, matchType))
     } else {
         withToken(state, token(state, nonMatchType))
@@ -81,7 +82,7 @@ private fun lookahead(state: ScannerState, char: Char, matchType: TokenType, non
 
 private fun match(state: ScannerState, char: Char): Boolean {
     if (isAtEnd(state)) return false
-    return state.source[state.current] != char
+    return state.source[state.current] == char
 }
 
 private fun token(state: ScannerState, type: TokenType): Token {

@@ -5,5 +5,6 @@ class Interpreter {
 
     fun interpret(code: String) {
         val tokens = tokenize(code)
+        print(tokens.map { it.type.toString() }.joinToString())
     }
 }
