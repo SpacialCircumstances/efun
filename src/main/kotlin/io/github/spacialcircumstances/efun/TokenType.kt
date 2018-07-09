@@ -11,6 +11,7 @@ enum class TokenType {
     STAR,
     PLUS,
     MINUS,
+    COLON,
     BANG,
     BANG_EQUAL,
     EQUAL,
@@ -33,5 +34,6 @@ enum class TokenType {
     TRUE,
     FALSE,
     PRINT,
+    COMMENT,
     EOF
 }
