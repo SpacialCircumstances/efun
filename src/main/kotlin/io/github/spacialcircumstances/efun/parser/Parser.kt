@@ -54,3 +54,7 @@ fun<T, R> optional(function: (List<T>) -> Pair<List<R>?, List<T>>): (List<T>)-> 
         }
     }
 }
+
+fun<T, R> or(vararg functions: (List<T>) -> Pair<List<R>?, List<T>>): (List<T>)-> Pair<List<R>?, List<T>>  {
+    return functions.reduce(::orElse)
+}
