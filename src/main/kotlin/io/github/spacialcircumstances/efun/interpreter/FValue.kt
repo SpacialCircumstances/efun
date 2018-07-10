@@ -1,4 +1,4 @@
 package io.github.spacialcircumstances.efun.interpreter
 
-class FValue(type: FValueType, value: Any) {
+class FValue(val type: FValueType, val value: Any?) {
 }
