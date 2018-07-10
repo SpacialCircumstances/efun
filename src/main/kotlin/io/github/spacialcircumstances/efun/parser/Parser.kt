@@ -1,17 +1,28 @@
 package io.github.spacialcircumstances.efun.parser
 
-fun<T, R> parser(tokens: List<T>, function:  (List<T>) -> Pair<R?, List<T>>): List<R> {
-    val result = function(tokens)
-    if (result.second.isEmpty()) {
-        result.first?.let {
-            return listOf(it)
-        } ?: return emptyList()
-    } else {
-        val first = result.first
-        if (first == null) {
-            TODO("call next parser function")
+fun<T, R> orElse(first: (List<T>) -> Pair<List<R>?, List<T>>, second: (List<T>) -> Pair<List<R>?, List<T>>): (List<T>) -> Pair<List<R>?, List<T>> {
+    return {
+        val firstResult = first(it)
+        if (firstResult.first == null) {
+            second(firstResult.second)
         } else {
-            return listOf(first) + parser(result.second, function)
+            firstResult
+        }
+    }
+}
+
+fun<T, R> andThen(first: (List<T>) -> Pair<List<R>?, List<T>>, second: (List<T>) -> Pair<List<R>?, List<T>>): (List<T>)-> Pair<List<R>?, List<T>> {
+    return {
+        val (firstResult, firstRemaining) = first(it)
+        if (firstResult == null) {
+             Pair(firstResult, firstRemaining)
+        } else {
+            val (secondResult, secondRemaining) = second(firstRemaining)
+            if (secondResult == null) {
+                Pair(null, secondRemaining)
+            } else {
+                Pair(firstResult + secondResult, secondRemaining)
+            }
         }
     }
 }
