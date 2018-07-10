@@ -1,5 +1,18 @@
 package io.github.spacialcircumstances.efun
 
+val identifierReplacements = mapOf(
+        "let" to TokenType.LET,
+        "const" to TokenType.CONST,
+        "fun" to TokenType.FUN,
+        "if" to TokenType.IF,
+        "else" to TokenType.ELSE,
+        "foreach" to TokenType.FOREACH,
+        "in" to TokenType.IN,
+        "true" to TokenType.TRUE,
+        "false" to TokenType.FALSE,
+        "debug" to TokenType.PRINT
+)
+
 fun tokenize(code: String): List<Token> {
     var state = ScannerState(listOf(), code, 0, 0, 1)
     while (!isAtEnd(state)) {
@@ -50,7 +63,8 @@ private fun identifier(state: ScannerState): ScannerState {
     while (isIdentifierPart(peek(currentState)))
         currentState = advance(currentState).first
 
-    return withToken(currentState, token(currentState, TokenType.IDENTIFIER))
+    val identifier = currentState.source.substring(currentState.start, currentState.current)
+    return withToken(currentState, token(currentState, identifierReplacements[identifier] ?: TokenType.IDENTIFIER))
 }
 
 private fun isIdentifierPart(c: Char): Boolean {

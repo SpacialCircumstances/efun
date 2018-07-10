@@ -24,16 +24,15 @@ enum class TokenType {
     STRING,
     INTEGER,
     FLOAT,
-    VAR,
-    LET,
-    CONST,
-    FUN,
-    IF,
-    ELSE,
-    FOREACH,
-    IN,
-    TRUE,
-    FALSE,
-    PRINT,
+    LET, //let
+    CONST, //const
+    FUN, //fun
+    IF, //if
+    ELSE, //else
+    FOREACH, //for
+    IN, //in
+    TRUE, //true
+    FALSE, //false
+    PRINT, //print
     EOF
 }
