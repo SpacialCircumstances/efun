@@ -5,6 +5,7 @@ import io.github.spacialcircumstances.efun.interpreter.FValue
 import io.github.spacialcircumstances.efun.interpreter.FValueType
 
 fun parseLiteral(tokens: List<Token>): Pair<List<LiteralExpression>?, List<Token>> {
+    if (tokens.isEmpty()) return Pair(null, tokens)
     val first = tokens.first()
     val rest = if (tokens.size > 1) tokens.subList(1, tokens.size) else emptyList()
     return when (first.type) {
