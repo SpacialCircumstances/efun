@@ -35,11 +35,30 @@ private fun scanToken(state: ScannerState): ScannerState {
         '\n' -> withToken(newState.copy(line = newState.line + 1), null)
         '"' -> string(newState)
         else -> {
-            if (c.isWhitespace()) withToken(newState, null)
-            else if (isDigit(c)) number(newState)
-            else throw IllegalStateException()
+            when {
+                c.isWhitespace() -> withToken(newState, null)
+                isDigit(c) -> number(newState)
+                isIdentifierStart(c) -> identifier(newState)
+                else -> throw IllegalStateException()
+            }
         }
     }
+}
+
+private fun identifier(state: ScannerState): ScannerState {
+    var currentState = state
+    while (isIdentifierPart(peek(currentState)))
+        currentState = advance(currentState).first
+
+    return withToken(currentState, token(currentState, TokenType.IDENTIFIER))
+}
+
+private fun isIdentifierPart(c: Char): Boolean {
+    return isIdentifierStart(c) || isDigit(c)
+}
+
+private fun isIdentifierStart(c: Char): Boolean {
+    return c in 'a'..'z' || c in 'A'..'Z' || c == '_'
 }
 
 private fun number(state: ScannerState): ScannerState {
