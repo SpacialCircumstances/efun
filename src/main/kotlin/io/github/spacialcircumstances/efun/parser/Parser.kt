@@ -27,13 +27,13 @@ fun<T, R> andThen(first: (List<T>) -> Pair<List<R>?, List<T>>, second: (List<T>)
     }
 }
 
-fun<T, R> untilNull(function: (List<T>) -> Pair<List<R>?, List<T>>): (List<T>)-> Pair<List<R>?, List<T>> {
+fun<T, R> many(function: (List<T>) -> Pair<List<R>?, List<T>>): (List<T>)-> Pair<List<R>?, List<T>> {
     return {
         val (result, rem) = function(it)
         if (result == null) {
             Pair(null, rem)
         } else {
-            val next = untilNull(function)
+            val next = many(function)
             val (nextResult, nextRem) = next(rem)
             if (nextResult == null) {
                 Pair(result, rem)
