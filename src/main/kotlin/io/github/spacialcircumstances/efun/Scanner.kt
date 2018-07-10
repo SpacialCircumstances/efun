@@ -36,7 +36,7 @@ private fun scanToken(state: ScannerState): ScannerState {
         '*' -> withToken(newState, token(newState, TokenType.STAR))
         '/' -> withToken(newState, token(newState, TokenType.SLASH))
         '+' -> withToken(newState, token(newState, TokenType.PLUS))
-        '-' -> withToken(newState, token(newState, TokenType.MINUS))
+        '-' -> lookahead(newState, '>', TokenType.ARROW, TokenType.MINUS)
         ',' -> withToken(newState, token(newState, TokenType.COMMA))
         '.' -> withToken(newState, token(newState, TokenType.DOT))
         ':' -> withToken(newState, token(newState, TokenType.COLON))

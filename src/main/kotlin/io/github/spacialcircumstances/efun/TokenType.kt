@@ -20,6 +20,7 @@ enum class TokenType {
     GREATER_EQUAL,
     LESS,
     LESS_EQUAL,
+    ARROW,
     IDENTIFIER,
     STRING,
     INTEGER,
