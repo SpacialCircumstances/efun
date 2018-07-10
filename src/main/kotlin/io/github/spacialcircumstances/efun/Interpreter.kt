@@ -1,10 +1,12 @@
 package io.github.spacialcircumstances.efun
 
-class Interpreter {
-    val parser = Parser()
+import io.github.spacialcircumstances.efun.parser.parser
 
+class Interpreter {
     fun interpret(code: String) {
         val tokens = tokenize(code)
-        print(tokens.map { it.type.toString() }.joinToString())
+        println(tokens.joinToString { it.type.toString() })
+        val parsed = parser(tokens, ::parseLiteral)
+        parsed.forEach { println(it.toString()) }
     }
 }
