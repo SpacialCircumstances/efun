@@ -35,9 +35,42 @@ private fun scanToken(state: ScannerState): ScannerState {
         '\n' -> withToken(newState.copy(line = newState.line + 1), null)
         '"' -> string(newState)
         else -> {
-            if (c.isWhitespace()) withToken(newState, null) else throw IllegalStateException()
+            if (c.isWhitespace()) withToken(newState, null)
+            else if (isDigit(c)) number(newState)
+            else throw IllegalStateException()
         }
     }
+}
+
+private fun number(state: ScannerState): ScannerState {
+    var currentState = state
+    while (isDigit(peek(currentState))) {
+        currentState = advance(currentState).first
+    }
+
+    if (peek(currentState) == '.' && isDigit(peekNext(currentState))) {
+        currentState = advance(currentState).first
+        while (isDigit(peek(currentState))) {
+            currentState = advance(currentState).first
+        }
+    }
+
+    val value = currentState.source.substring(currentState.start, currentState.current)
+    return if (value.contains('.')) {
+        withToken(currentState, Token(TokenType.FLOAT, value, currentState.line, value.toDouble()))
+    } else {
+        withToken(currentState, Token(TokenType.INTEGER, value, currentState.line, value.toLong()))
+    }
+}
+
+private fun peekNext(state: ScannerState): Char {
+    return if(isAtEnd(state) || isAtEnd(advance(state).first)) 0.toChar() else {
+        state.source[state.current + 1]
+    }
+}
+
+private fun isDigit(c: Char): Boolean {
+    return c in '0'..'9'
 }
 
 private fun withToken(state: ScannerState, token: Token?): ScannerState {
