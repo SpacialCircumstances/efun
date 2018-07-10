@@ -43,3 +43,14 @@ fun<T, R> untilNull(function: (List<T>) -> Pair<List<R>?, List<T>>): (List<T>)->
         }
     }
 }
+
+fun<T, R> optional(function: (List<T>) -> Pair<List<R>?, List<T>>): (List<T>)-> Pair<List<R>?, List<T>> {
+    return {
+        val (result, rem) = function(it)
+        if (result == null) {
+            Pair(emptyList(), rem)
+        } else {
+            Pair(result, rem)
+        }
+    }
+}
