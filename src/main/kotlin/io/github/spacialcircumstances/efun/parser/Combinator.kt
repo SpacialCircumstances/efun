@@ -38,6 +38,29 @@ fun<T, R> Parser<T, R>.andThen(second: Parser<T, R>): Parser<T, R> {
     }
 }
 
+fun<T, R> Parser<T, R>.many1(): Parser<T, R> {
+    return Parser {
+        val results = mutableListOf<R>()
+        var count = 0
+        var lastRem = it
+        while(true) {
+            val (result, rem) = this.run(lastRem)
+            if (result == null) {
+                break
+            } else {
+                results.addAll(result)
+                lastRem = rem
+                count++
+            }
+        }
+        if (count == 0) {
+            Pair(null, lastRem)
+        } else {
+            Pair(results, lastRem)
+        }
+    }
+}
+
 fun<T, R> Parser<T, R>.many(): Parser<T, R> {
     return Parser {
         val results = mutableListOf<R>()
