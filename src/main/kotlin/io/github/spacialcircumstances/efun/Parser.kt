@@ -4,6 +4,8 @@ import io.github.spacialcircumstances.efun.expressions.AbstractExpression
 import io.github.spacialcircumstances.efun.expressions.LiteralExpression
 import io.github.spacialcircumstances.efun.interpreter.FValue
 import io.github.spacialcircumstances.efun.interpreter.FValueType
+import io.github.spacialcircumstances.efun.parser.one
+import io.github.spacialcircumstances.efun.parser.orElse
 
 fun parseLiteral(tokens: List<Token>): Pair<List<LiteralExpression>?, List<Token>> {
     if (tokens.isEmpty()) return Pair(null, tokens)
@@ -16,3 +18,17 @@ fun parseLiteral(tokens: List<Token>): Pair<List<LiteralExpression>?, List<Token
         else -> Pair(null, tokens)
     }
 }
+
+val stringLiteralParser = one<Token, AbstractExpression>({ it.type == TokenType.STRING }) {
+    LiteralExpression(FValue(FValueType.String, it.literal))
+}
+
+val intLiteralParser = one<Token, AbstractExpression>({ it.type == TokenType.INTEGER }) {
+    LiteralExpression(FValue(FValueType.Int, it.literal))
+}
+
+val floatLiteralParser = one<Token, AbstractExpression>({ it.type == TokenType.FLOAT }) {
+    LiteralExpression(FValue(FValueType.Float, it.literal))
+}
+
+val literalParser = stringLiteralParser.orElse(intLiteralParser).orElse(floatLiteralParser)
