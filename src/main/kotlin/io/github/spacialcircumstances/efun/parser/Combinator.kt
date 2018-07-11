@@ -22,13 +22,13 @@ fun<T, R> orElse(parser: Parser<T, R>, other: Parser<T, R>): Parser<T, R> {
     }
 }
 
-fun<T, R> andThen(first: (List<T>) -> Pair<List<R>?, List<T>>, second: (List<T>) -> Pair<List<R>?, List<T>>): (List<T>)-> Pair<List<R>?, List<T>> {
-    return {
-        val (firstResult, firstRemaining) = first(it)
+fun<T, R> andThen(first: Parser<T, R>, second: Parser<T, R>): Parser<T, R> {
+    return Parser {
+        val (firstResult, firstRemaining) = first.run(it)
         if (firstResult == null) {
-            Pair(firstResult, firstRemaining)
+            Pair(null, firstRemaining)
         } else {
-            val (secondResult, secondRemaining) = second(firstRemaining)
+            val (secondResult, secondRemaining) = second.run(firstRemaining)
             if (secondResult == null) {
                 Pair(null, secondRemaining)
             } else {
