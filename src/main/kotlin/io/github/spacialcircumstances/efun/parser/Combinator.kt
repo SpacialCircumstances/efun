@@ -1,8 +1,8 @@
 package io.github.spacialcircumstances.efun.parser
 
-fun<T, R> optional(parser: Parser<T, R>): Parser<T, R> {
+fun<T, R> Parser<T, R>.optional(): Parser<T, R> {
     return Parser {
-        val (result, rem) = parser.run(it)
+        val (result, rem) = this.run(it)
         if (result == null) {
             Pair(emptyList(), rem)
         } else {
@@ -11,9 +11,9 @@ fun<T, R> optional(parser: Parser<T, R>): Parser<T, R> {
     }
 }
 
-fun<T, R> orElse(parser: Parser<T, R>, other: Parser<T, R>): Parser<T, R> {
+fun<T, R> Parser<T, R>.orElse(other: Parser<T, R>): Parser<T, R> {
     return Parser {
-        val (firstResult, rem1) = parser.run(it)
+        val (firstResult, rem1) = this.run(it)
         if (firstResult == null) {
             other.run(rem1)
         } else {
@@ -22,9 +22,9 @@ fun<T, R> orElse(parser: Parser<T, R>, other: Parser<T, R>): Parser<T, R> {
     }
 }
 
-fun<T, R> andThen(first: Parser<T, R>, second: Parser<T, R>): Parser<T, R> {
+fun<T, R> Parser<T, R>.andThen(second: Parser<T, R>): Parser<T, R> {
     return Parser {
-        val (firstResult, firstRemaining) = first.run(it)
+        val (firstResult, firstRemaining) = this.run(it)
         if (firstResult == null) {
             Pair(null, firstRemaining)
         } else {
