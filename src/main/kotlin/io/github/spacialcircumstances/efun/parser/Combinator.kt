@@ -93,3 +93,26 @@ fun<T, R> Parser<T, R>.many(): Parser<T, R> {
         Pair(results, lastRem)
     }
 }
+
+fun<T, R> sequence(vararg parsers: Parser<T, R>): Parser<T, R> {
+    return Parser {
+        val results = mutableListOf<R>()
+        var lastRem = it
+        var error = false
+        for (parser in parsers) {
+            val (result, rem) = parser.run(lastRem)
+            if (result != null) {
+                results.addAll(result)
+                lastRem = rem
+            } else {
+                error = true
+                break
+            }
+        }
+        if (error) {
+            Pair(null, it)
+        } else {
+            Pair(results, lastRem)
+        }
+    }
+}
