@@ -13,7 +13,7 @@ fun<T, R> one(match: (T) -> Boolean, convert: (T) -> R): Parser<T, R> {
                 val result = convert(first)
                 Pair(listOf(result), rest)
             } else {
-                Pair(null, rest)
+                Pair(null, input)
             }
         }
     })
