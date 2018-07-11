@@ -11,13 +11,13 @@ fun<T, R> optional(parser: Parser<T, R>): Parser<T, R> {
     }
 }
 
-fun<T, R> orElse(first: (List<T>) -> Pair<List<R>?, List<T>>, second: (List<T>) -> Pair<List<R>?, List<T>>): (List<T>) -> Pair<List<R>?, List<T>> {
-    return {
-        val firstResult = first(it)
-        if (firstResult.first == null) {
-            second(firstResult.second)
+fun<T, R> orElse(parser: Parser<T, R>, other: Parser<T, R>): Parser<T, R> {
+    return Parser {
+        val (firstResult, rem1) = parser.run(it)
+        if (firstResult == null) {
+            other.run(rem1)
         } else {
-            firstResult
+            Pair(firstResult, rem1)
         }
     }
 }
@@ -53,8 +53,4 @@ fun<T, R> many(function: (List<T>) -> Pair<List<R>?, List<T>>): (List<T>)-> Pair
             }
         }
     }
-}
-
-fun<T, R> or(vararg functions: (List<T>) -> Pair<List<R>?, List<T>>): (List<T>)-> Pair<List<R>?, List<T>>  {
-    return functions.reduce(::orElse)
 }
