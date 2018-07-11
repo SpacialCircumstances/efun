@@ -1,5 +1,6 @@
 package io.github.spacialcircumstances.efun
 
+import io.github.spacialcircumstances.efun.expressions.AbstractExpression
 import io.github.spacialcircumstances.efun.expressions.LiteralExpression
 import io.github.spacialcircumstances.efun.interpreter.FValue
 import io.github.spacialcircumstances.efun.interpreter.FValueType
