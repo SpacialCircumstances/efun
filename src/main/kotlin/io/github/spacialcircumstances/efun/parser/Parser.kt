@@ -18,3 +18,14 @@ fun<T, R> one(match: (T) -> Boolean, convert: (T) -> R): Parser<T, R> {
         }
     })
 }
+
+fun<T, R1, R2> Parser<T, R1>.map(transform: (R1) -> R2): Parser<T, R2> {
+    return Parser {
+        val (result, rem) = this.run(it)
+        if (result == null) {
+            Pair(null, rem)
+        } else {
+            Pair(result.map(transform), rem)
+        }
+    }
+}
