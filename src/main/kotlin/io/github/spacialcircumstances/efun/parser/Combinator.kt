@@ -1,5 +1,16 @@
 package io.github.spacialcircumstances.efun.parser
 
+fun<T, R> optional(parser: Parser<T, R>): Parser<T, R> {
+    return Parser {
+        val (result, rem) = parser.run(it)
+        if (result == null) {
+            Pair(emptyList(), rem)
+        } else {
+            Pair(result, rem)
+        }
+    }
+}
+
 fun<T, R> orElse(first: (List<T>) -> Pair<List<R>?, List<T>>, second: (List<T>) -> Pair<List<R>?, List<T>>): (List<T>) -> Pair<List<R>?, List<T>> {
     return {
         val firstResult = first(it)
@@ -40,17 +51,6 @@ fun<T, R> many(function: (List<T>) -> Pair<List<R>?, List<T>>): (List<T>)-> Pair
             } else {
                 Pair(result + nextResult, nextRem)
             }
-        }
-    }
-}
-
-fun<T, R> optional(function: (List<T>) -> Pair<List<R>?, List<T>>): (List<T>)-> Pair<List<R>?, List<T>> {
-    return {
-        val (result, rem) = function(it)
-        if (result == null) {
-            Pair(emptyList(), rem)
-        } else {
-            Pair(result, rem)
         }
     }
 }
