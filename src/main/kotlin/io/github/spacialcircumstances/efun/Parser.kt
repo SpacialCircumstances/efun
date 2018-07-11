@@ -4,6 +4,7 @@ import io.github.spacialcircumstances.efun.expressions.AbstractExpression
 import io.github.spacialcircumstances.efun.expressions.LiteralExpression
 import io.github.spacialcircumstances.efun.interpreter.FValue
 import io.github.spacialcircumstances.efun.interpreter.FValueType
+import io.github.spacialcircumstances.efun.parser.choice
 import io.github.spacialcircumstances.efun.parser.one
 import io.github.spacialcircumstances.efun.parser.orElse
 
@@ -31,4 +32,4 @@ val floatLiteralParser = one<Token, AbstractExpression>({ it.type == TokenType.F
     LiteralExpression(FValue(FValueType.Float, it.literal))
 }
 
-val literalParser = stringLiteralParser.orElse(intLiteralParser).orElse(floatLiteralParser)
+val literalParser = choice(stringLiteralParser, intLiteralParser, floatLiteralParser)

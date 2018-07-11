@@ -22,6 +22,22 @@ fun<T, R> Parser<T, R>.orElse(other: Parser<T, R>): Parser<T, R> {
     }
 }
 
+fun<T, R> choice(vararg others: Parser<T, R>): Parser<T, R> {
+    return Parser {
+        var remaining = it
+        var res: List<R>? = null
+        for (parser in others) {
+            val (result, rem) = parser.run(it)
+            if (result != null) {
+                res = result
+                remaining = rem
+                break
+            }
+        }
+        Pair(res, remaining)
+    }
+}
+
 fun<T, R> Parser<T, R>.andThen(second: Parser<T, R>): Parser<T, R> {
     return Parser {
         val (firstResult, firstRemaining) = this.run(it)
