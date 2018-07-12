@@ -4,6 +4,12 @@ class Parser<out R, T>(private val parse: (List<T>) -> Pair<R?, List<T>>) {
     fun run(input: List<T>): Pair<R?, List<T>> = parse(input)
 }
 
+fun<R, T> ret(value: R): Parser<R, T> {
+    return Parser {
+        Pair(value, it)
+    }
+}
+
 fun<T> one(match: (T) -> Boolean): Parser<T, T> {
     return Parser { input ->
         if (input.isEmpty()) Pair(null, input) else {
