@@ -41,3 +41,10 @@ fun<R1, R2, T> Parser<R1, T>.map(transform: (R1) -> R2): Parser<R2, T> {
         ret<R2, T>(transform(it))
     }
 }
+
+fun<R1, R2, T> apply(parser1: Parser<(R1) -> R2, T>, parser2: Parser<R1, T>): Parser<R2, T> =
+    parser1.bind {
+        parser2.bind { it2 ->
+            ret<R2, T>(it(it2))
+        }
+    }
