@@ -44,3 +44,9 @@ fun<R1, R2, T> apply(parser1: Parser<(R1) -> R2, T>, parser2: Parser<R1, T>): Pa
             ret<R2, T>(it(it2))
         }
     }
+
+fun<R1, R2, R3, T> lift2(f: (R1) -> (R2) -> R3, p1: Parser<R1, T>, p2: Parser<R2, T>): Parser<R3, T> {
+    val rf = ret<(R1) -> (R2) -> R3, T>(f)
+    val i1 = apply(rf, p1)
+    return apply(i1, p2)
+}
