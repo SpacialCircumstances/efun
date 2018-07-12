@@ -1,31 +1,30 @@
 package io.github.spacialcircumstances.efun.parser
 
-class Parser<T, out R>(private val parseFunction: (List<T>) -> Pair<List<R>?, List<T>>) {
-    fun run(input: List<T>): Pair<List<R>?, List<T>> = parseFunction(input)
+class Parser<out R, T>(private val parse: (List<T>) -> Pair<R?, List<T>>) {
+    fun run(input: List<T>): Pair<R?, List<T>> = parse(input)
 }
 
-fun<T, R> one(match: (T) -> Boolean, convert: (T) -> R): Parser<T, R> {
-    return Parser({ input ->
+fun<T> one(match: (T) -> Boolean): Parser<T, T> {
+    return Parser { input ->
         if (input.isEmpty()) Pair(null, input) else {
             val first = input.first()
             val rest = if (input.size > 1) input.subList(1, input.size) else emptyList()
             if (match(first)) {
-                val result = convert(first)
-                Pair(listOf(result), rest)
+                Pair(first, rest)
             } else {
                 Pair(null, input)
             }
         }
-    })
+    }
 }
 
-fun<T, R1, R2> Parser<T, R1>.map(transform: (R1) -> R2): Parser<T, R2> {
+fun<T, R1, R2> Parser<R1, T>.map(transform: (R1) -> R2): Parser<R2, T> {
     return Parser {
         val (result, rem) = this.run(it)
         if (result == null) {
             Pair(null, rem)
         } else {
-            Pair(result.map(transform), rem)
+            Pair(transform(result), rem)
         }
     }
 }
