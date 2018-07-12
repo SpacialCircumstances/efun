@@ -24,13 +24,20 @@ fun<T> one(match: (T) -> Boolean): Parser<T, T> {
     }
 }
 
-fun<T, R1, R2> Parser<R1, T>.map(transform: (R1) -> R2): Parser<R2, T> {
-    return Parser {
-        val (result, rem) = this.run(it)
+fun<R1, R2, T> Parser<R1, T>.bind(function: (R1) -> Parser<R2, T>): Parser<R2, T> {
+    return Parser { input: List<T> ->
+        val (result, rem) = this.run(input)
         if (result == null) {
-            Pair(null, rem)
+            Pair(null, input)
         } else {
-            Pair(transform(result), rem)
+            val np = function(result)
+            np.run(rem)
         }
+    }
+}
+
+fun<R1, R2, T> Parser<R1, T>.map(transform: (R1) -> R2): Parser<R2, T> {
+    return bind {
+        ret<R2, T>(transform(it))
     }
 }
