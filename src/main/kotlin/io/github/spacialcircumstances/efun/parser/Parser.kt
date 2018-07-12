@@ -4,14 +4,13 @@ class Parser<out R, T>(private val parse: (List<T>) -> Pair<R?, List<T>>) {
     fun run(input: List<T>): Pair<R?, List<T>> = parse(input)
 }
 
-fun<R, T> ret(value: R): Parser<R, T> {
-    return Parser {
+fun<R, T> ret(value: R): Parser<R, T> =
+    Parser {
         Pair(value, it)
     }
-}
 
-fun<T> one(match: (T) -> Boolean): Parser<T, T> {
-    return Parser { input ->
+fun<T> one(match: (T) -> Boolean): Parser<T, T> =
+    Parser { input ->
         if (input.isEmpty()) Pair(null, input) else {
             val first = input.first()
             val rest = if (input.size > 1) input.subList(1, input.size) else emptyList()
@@ -22,10 +21,9 @@ fun<T> one(match: (T) -> Boolean): Parser<T, T> {
             }
         }
     }
-}
 
-fun<R1, R2, T> Parser<R1, T>.bind(function: (R1) -> Parser<R2, T>): Parser<R2, T> {
-    return Parser { input: List<T> ->
+fun<R1, R2, T> Parser<R1, T>.bind(function: (R1) -> Parser<R2, T>): Parser<R2, T> =
+    Parser { input: List<T> ->
         val (result, rem) = this.run(input)
         if (result == null) {
             Pair(null, input)
@@ -34,13 +32,11 @@ fun<R1, R2, T> Parser<R1, T>.bind(function: (R1) -> Parser<R2, T>): Parser<R2, T
             np.run(rem)
         }
     }
-}
 
-fun<R1, R2, T> Parser<R1, T>.map(transform: (R1) -> R2): Parser<R2, T> {
-    return bind {
+fun<R1, R2, T> Parser<R1, T>.map(transform: (R1) -> R2): Parser<R2, T> =
+    bind {
         ret<R2, T>(transform(it))
     }
-}
 
 fun<R1, R2, T> apply(parser1: Parser<(R1) -> R2, T>, parser2: Parser<R1, T>): Parser<R2, T> =
     parser1.bind {
