@@ -92,6 +92,9 @@ fun<R, T> Parser<R, T>.moreThan1(): Parser<List<R>, T> {
     }
 }
 
+fun<R1, R2, R3, T> takeMiddle(i1: Parser<R1, T>, take: Parser<R2, T>, i2: Parser<R3, T>): Parser<R2, T> =
+    takeRight(i1, take).andIgnoreResult(i2)
+
 fun<R1, R2, T> takeLeft(take: Parser<R1, T>, ignore: Parser<R2, T>): Parser<R1, T> =
     take.andThen(ignore).map { it.first }
 
