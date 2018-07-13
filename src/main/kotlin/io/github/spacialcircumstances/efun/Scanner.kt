@@ -64,7 +64,7 @@ private fun identifier(state: ScannerState): ScannerState {
         currentState = advance(currentState).first
 
     val identifier = currentState.source.substring(currentState.start, currentState.current)
-    return withToken(currentState, Token(TokenType.IDENTIFIER, identifier, currentState.line, identifier))
+    return withToken(currentState, Token(identifierReplacements[identifier] ?: TokenType.IDENTIFIER, identifier, currentState.line, identifier))
 }
 
 private fun isIdentifierPart(c: Char): Boolean {
