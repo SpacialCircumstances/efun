@@ -48,8 +48,6 @@ val unaryOperatorParser: Parser<String, Token> = choice<Token, Token>(
         one { it.type == TokenType.BANG }
 ).map { it.lexeme }
 
-val unaryExpressionParser = unaryOperatorParser.andThen(expressionParser).map { UnaryExpression(it.second, it.first) }
-
 val binaryOperatorParser: Parser<Token, Token> = choice(
         one { it.type == TokenType.MINUS },
         one { it.type == TokenType.PLUS },
@@ -75,11 +73,12 @@ val binaryExpressionParser = binaryCompatibleExpresssionsParser.andThen(binaryOp
     BinaryExpression(it.first.first, it.first.second, it.second)
 }
 
+val unaryExpressionParser = unaryOperatorParser.andThen(binaryCompatibleExpresssionsParser).map { UnaryExpression(it.second, it.first) }
+
 val debugExpressionParser = takeRight(one { it.type == TokenType.PRINT }, expressionParser).map { DebugExpression(it) }
 
 fun createExpressionParser(): Parser<AbstractExpression, Token> {
-    return binaryExpressionParser.orElse(literalParser)
-    //return choice(binaryExpressionParser, literalParser, letExpressionParser, groupingExpressionParser, debugExpressionParser, unaryExpressionParser)
+    return choice(binaryExpressionParser, unaryExpressionParser, literalParser)
 }
 
 val programParser = expressionParser.many()
