@@ -53,3 +53,41 @@ fun<R, T> sequence(vararg parsers: Parser<R, T>): Parser<List<R>, T> {
         if (success) Pair(results, current) else Pair(null, it)
     }
 }
+
+fun<R, T> Parser<R, T>.many(): Parser<List<R>, T> {
+    return Parser {
+        var remains = it
+        val results = mutableListOf<R>()
+        while (true) {
+            val (r, rem) = this.run(remains)
+            if (r == null) {
+                break
+            } else {
+                results.add(r)
+                remains = rem
+            }
+        }
+        Pair(results, remains)
+    }
+}
+
+fun<R, T> Parser<R, T>.moreThan1(): Parser<List<R>, T> {
+    return Parser {
+        var remains = it
+        val results = mutableListOf<R>()
+        while (true) {
+            val (r, rem) = this.run(remains)
+            if (r == null) {
+                break
+            } else {
+                results.add(r)
+                remains = rem
+            }
+        }
+        if (results.isEmpty()) {
+            Pair(null, it)
+        } else {
+            Pair(results, remains)
+        }
+    }
+}
