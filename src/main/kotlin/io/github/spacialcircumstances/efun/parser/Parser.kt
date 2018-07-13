@@ -9,6 +9,20 @@ fun<R, T> ret(value: R): Parser<R, T> =
         Pair(value, it)
     }
 
+fun<R, T> oneWith(match: (T) -> Boolean, convert: (T) -> R): Parser<R, T> =
+    Parser { input ->
+        if (input.isEmpty()) Pair(null, input) else {
+            val first = input.first()
+            val rest = if (input.size > 1) input.subList(1, input.size) else emptyList()
+            if (match(first)) {
+                val result = convert(first)
+                Pair(result, rest)
+            } else {
+                Pair(null, input)
+            }
+        }
+    }
+
 fun<T> one(match: (T) -> Boolean): Parser<T, T> =
     Parser { input ->
         if (input.isEmpty()) Pair(null, input) else {
