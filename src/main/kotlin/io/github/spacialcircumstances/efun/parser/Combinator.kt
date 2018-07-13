@@ -27,8 +27,18 @@ fun<R, T> Parser<R, T>.orElse(other: Parser<R, T>): Parser<R, T> =
     }
 
 fun<R, T> choice(vararg parsers: Parser<R, T>): Parser<R, T> {
-    return parsers.reduce { p1, p2 ->
-        p1.orElse(p2)
+    return Parser {
+        var result: R? = null
+        var rem: List<T> = emptyList()
+        for (parser in parsers) {
+            val (r, rems) = parser.run(it)
+            if (r != null) {
+                result = r
+                rem = rems
+                break
+            }
+        }
+        Pair(result, rem)
     }
 }
 
