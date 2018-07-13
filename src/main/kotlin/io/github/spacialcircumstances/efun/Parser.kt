@@ -1,6 +1,8 @@
 package io.github.spacialcircumstances.efun
 
 import io.github.spacialcircumstances.efun.expressions.AbstractExpression
+import io.github.spacialcircumstances.efun.expressions.DebugExpression
+import io.github.spacialcircumstances.efun.expressions.LetExpression
 import io.github.spacialcircumstances.efun.expressions.LiteralExpression
 import io.github.spacialcircumstances.efun.interpreter.FValue
 import io.github.spacialcircumstances.efun.interpreter.FValueType
@@ -26,7 +28,7 @@ val falseLiteralParser = oneWith<LiteralExpression, Token>({ it.type == TokenTyp
     LiteralExpression(FValue(FValueType.Bool, false))
 }
 
-val expressionParser = lazy { createExpressionParser() }
+val expressionParser = lazy(::createExpressionParser)
 
 val literalParser = choice(stringLiteralParser, intLiteralParser, floatLiteralParser, trueLiteralParser, falseLiteralParser)
 
@@ -40,6 +42,18 @@ val letNameParser = takeMiddle(one { it.type == TokenType.LET },
                                 nameParser,
                                 one { it.type == TokenType.EQUAL })
 
+val letExpressionParser = letNameParser.andThen(expressionParser).map {
+    LetExpression(it.second, it.first)
+}
+
+val openParensParser = one<Token> { it.type == TokenType.LEFT_PAREN }
+
+val closeParensParser = one<Token> { it.type == TokenType.RIGHT_PAREN }
+
+val groupingExpressionParser = takeMiddle(openParensParser, expressionParser, closeParensParser)
+
+val debugExpressionParser = takeRight(one<Token> { it.type == TokenType.PRINT }, expressionParser).map { DebugExpression(it) }
+
 fun createExpressionParser(): Parser<AbstractExpression, Token> {
-    return choice(literalParser)
+    return choice(literalParser, letExpressionParser, groupingExpressionParser, debugExpressionParser)
 }

@@ -9,6 +9,13 @@ fun<R, T> ret(value: R): Parser<R, T> =
         Pair(value, it)
     }
 
+fun<R, T> lazy(c: () -> Parser<R, T>): Parser<R, T> {
+    return Parser {
+        val parser = c()
+        parser.run(it)
+    }
+}
+
 fun<R, T> oneWith(match: (T) -> Boolean, convert: (T) -> R): Parser<R, T> =
     Parser { input ->
         if (input.isEmpty()) Pair(null, input) else {
