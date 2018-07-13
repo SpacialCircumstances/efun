@@ -1,9 +1,6 @@
 package io.github.spacialcircumstances.efun
 
-import io.github.spacialcircumstances.efun.expressions.AbstractExpression
-import io.github.spacialcircumstances.efun.expressions.DebugExpression
-import io.github.spacialcircumstances.efun.expressions.LetExpression
-import io.github.spacialcircumstances.efun.expressions.LiteralExpression
+import io.github.spacialcircumstances.efun.expressions.*
 import io.github.spacialcircumstances.efun.interpreter.FValue
 import io.github.spacialcircumstances.efun.interpreter.FValueType
 import io.github.spacialcircumstances.efun.parser.*
@@ -46,14 +43,43 @@ val letExpressionParser = letNameParser.andThen(expressionParser).map {
     LetExpression(it.second, it.first)
 }
 
+val unaryOperatorParser: Parser<String, Token> = choice<Token, Token>(
+        one { it.type == TokenType.MINUS },
+        one { it.type == TokenType.BANG }
+).map { it.lexeme }
+
+val unaryExpressionParser = unaryOperatorParser.andThen(expressionParser).map { UnaryExpression(it.second, it.first) }
+
+val binaryOperatorParser: Parser<Token, Token> = choice(
+        one { it.type == TokenType.MINUS },
+        one { it.type == TokenType.PLUS },
+        one { it.type == TokenType.STAR },
+        one { it.type == TokenType.SLASH },
+        one { it.type == TokenType.LESS },
+        one { it.type == TokenType.LESS_EQUAL },
+        one { it.type == TokenType.GREATER },
+        one { it.type == TokenType.GREATER_EQUAL },
+        one { it.type == TokenType.BANG_EQUAL },
+        one { it.type == TokenType.EQUAL_EQUAL }
+)
+
 val openParensParser = one<Token> { it.type == TokenType.LEFT_PAREN }
 
 val closeParensParser = one<Token> { it.type == TokenType.RIGHT_PAREN }
 
 val groupingExpressionParser = takeMiddle(openParensParser, expressionParser, closeParensParser)
 
-val debugExpressionParser = takeRight(one<Token> { it.type == TokenType.PRINT }, expressionParser).map { DebugExpression(it) }
+val binaryCompatibleExpresssionsParser = literalParser.orElse(groupingExpressionParser)
+
+val binaryExpressionParser = binaryCompatibleExpresssionsParser.andThen(binaryOperatorParser).andThen(binaryCompatibleExpresssionsParser).map {
+    BinaryExpression(it.first.first, it.first.second, it.second)
+}
+
+val debugExpressionParser = takeRight(one { it.type == TokenType.PRINT }, expressionParser).map { DebugExpression(it) }
 
 fun createExpressionParser(): Parser<AbstractExpression, Token> {
-    return choice(literalParser, letExpressionParser, groupingExpressionParser, debugExpressionParser)
+    return binaryExpressionParser.orElse(literalParser)
+    //return choice(binaryExpressionParser, literalParser, letExpressionParser, groupingExpressionParser, debugExpressionParser, unaryExpressionParser)
 }
+
+val programParser = expressionParser.many()
