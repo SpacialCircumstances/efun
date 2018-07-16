@@ -85,7 +85,9 @@ val argumentsParser = takeMiddle(openParensParser, valueProducingExpressionParse
 
 val variableExpressionParser = oneWith<VariableExpression, Token>({ it.type == TokenType.IDENTIFIER }) { VariableExpression(it.lexeme) }
 
-val functionCallParser = variableExpressionParser.andThen(argumentsParser).map {
+val callableExpressionParser = choice(groupingExpressionParser, literalParser, variableExpressionParser)
+
+val functionCallParser = callableExpressionParser.andThen(argumentsParser).map {
     FunctionCallExpression(it.first, it.second)
 }
 
