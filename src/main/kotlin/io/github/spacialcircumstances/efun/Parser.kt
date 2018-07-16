@@ -67,7 +67,9 @@ val openParensParser = one<Token> { it.type == TokenType.LEFT_PAREN }
 
 val closeParensParser = one<Token> { it.type == TokenType.RIGHT_PAREN }
 
-val groupingExpressionParser = takeMiddle(openParensParser, valueProducingExpressionParser, closeParensParser)
+val groupingExpressionParser = takeMiddle(openParensParser, valueProducingExpressionParser, closeParensParser).map {
+    GroupingExpression(it)
+}
 
 val operatorExpressionParser = literalParser.orElse(groupingExpressionParser)
 
