@@ -27,6 +27,8 @@ val falseLiteralParser = oneWith<LiteralExpression, Token>({ it.type == TokenTyp
 
 val expressionParser = lazy(::createExpressionParser)
 
+val valueProducingExpressionParser = lazy(::createValueProducingExpressionParser)
+
 val literalParser = choice(stringLiteralParser, intLiteralParser, floatLiteralParser, trueLiteralParser, falseLiteralParser)
 
 val arrowParser = one<Token> { it.type == TokenType.ARROW }
@@ -39,7 +41,7 @@ val letNameParser = takeMiddle(one { it.type == TokenType.LET },
                                 nameParser,
                                 one { it.type == TokenType.EQUAL })
 
-val letExpressionParser = letNameParser.andThen(expressionParser).map {
+val letExpressionParser = letNameParser.andThen(valueProducingExpressionParser).map {
     LetExpression(it.second, it.first)
 }
 
@@ -65,20 +67,32 @@ val openParensParser = one<Token> { it.type == TokenType.LEFT_PAREN }
 
 val closeParensParser = one<Token> { it.type == TokenType.RIGHT_PAREN }
 
-val groupingExpressionParser = takeMiddle(openParensParser, expressionParser, closeParensParser)
+val groupingExpressionParser = takeMiddle(openParensParser, valueProducingExpressionParser, closeParensParser)
 
-val binaryCompatibleExpresssionsParser = literalParser.orElse(groupingExpressionParser)
+val operatorExpressionParser = literalParser.orElse(groupingExpressionParser)
 
-val binaryExpressionParser = binaryCompatibleExpresssionsParser.andThen(binaryOperatorParser).andThen(binaryCompatibleExpresssionsParser).map {
+val commaParser = one<Token> { it.type == TokenType.COMMA }
+
+val binaryExpressionParser = operatorExpressionParser.andThen(binaryOperatorParser).andThen(operatorExpressionParser).map {
     BinaryExpression(it.first.first, it.first.second, it.second)
 }
 
-val unaryExpressionParser = unaryOperatorParser.andThen(binaryCompatibleExpresssionsParser).map { UnaryExpression(it.second, it.first) }
+val unaryExpressionParser = unaryOperatorParser.andThen(operatorExpressionParser).map { UnaryExpression(it.second, it.first) }
 
 val debugExpressionParser = takeRight(one { it.type == TokenType.PRINT }, expressionParser).map { DebugExpression(it) }
 
+val argumentsParser = takeMiddle(openParensParser, valueProducingExpressionParser.separator(commaParser), closeParensParser)
+
+val functionCallParser = oneWith<String, Token>({ it.type == TokenType.IDENTIFIER }) { it.lexeme }.andThen(argumentsParser).map {
+    FunctionCallExpression(it.first, it.second)
+}
+
+fun createValueProducingExpressionParser(): Parser<AbstractExpression, Token> {
+    return choice(binaryExpressionParser, unaryExpressionParser, literalParser, groupingExpressionParser, functionCallParser)
+}
+
 fun createExpressionParser(): Parser<AbstractExpression, Token> {
-    return choice(binaryExpressionParser, unaryExpressionParser, literalParser)
+    return choice(binaryExpressionParser, unaryExpressionParser, literalParser, debugExpressionParser, groupingExpressionParser, letExpressionParser)
 }
 
 val programParser = expressionParser.many()
