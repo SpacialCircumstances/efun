@@ -5,6 +5,6 @@ import io.github.spacialcircumstances.efun.interpreter.InterpreterContext
 
 class VariableExpression(private val name: String): AbstractExpression() {
     override fun evaluate(context: InterpreterContext): FValue {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return context[name] ?: throw IllegalStateException("Value $name does not exist in this scope")
     }
 }
