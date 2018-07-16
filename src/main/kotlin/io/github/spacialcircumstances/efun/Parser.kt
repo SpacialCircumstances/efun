@@ -83,16 +83,14 @@ val debugExpressionParser = takeRight(one { it.type == TokenType.PRINT }, expres
 
 val argumentsParser = takeMiddle(openParensParser, valueProducingExpressionParser.separator(commaParser), closeParensParser)
 
-val functionCallParser = oneWith<String, Token>({ it.type == TokenType.IDENTIFIER }) { it.lexeme }.andThen(argumentsParser).map {
-    FunctionCallExpression(it.first, it.second)
-}
+val variableExpressionParser = oneWith<VariableExpression, Token>({ it.type == TokenType.IDENTIFIER }) { VariableExpression(it.lexeme) }
 
 fun createValueProducingExpressionParser(): Parser<AbstractExpression, Token> {
-    return choice(binaryExpressionParser, unaryExpressionParser, literalParser, groupingExpressionParser, functionCallParser)
+    return choice(binaryExpressionParser, unaryExpressionParser, literalParser, groupingExpressionParser, variableExpressionParser)
 }
 
 fun createExpressionParser(): Parser<AbstractExpression, Token> {
-    return choice(binaryExpressionParser, unaryExpressionParser, literalParser, debugExpressionParser, groupingExpressionParser, letExpressionParser)
+    return choice(binaryExpressionParser, unaryExpressionParser, literalParser, debugExpressionParser, groupingExpressionParser, letExpressionParser, variableExpressionParser)
 }
 
 val programParser = expressionParser.many()
