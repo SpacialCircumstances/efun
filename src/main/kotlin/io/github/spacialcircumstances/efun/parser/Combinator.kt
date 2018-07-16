@@ -81,6 +81,17 @@ fun<R, T> Parser<R, T>.many(): Parser<List<R>, T> {
     }
 }
 
+fun<R, T> Parser<R, T>.optional(): Parser<List<R>, T> {
+    return Parser {
+        val (result, rem) = this.run(it)
+        if (result == null) {
+            Pair(emptyList(), it)
+        } else {
+            Pair(listOf(result), rem)
+        }
+    }
+}
+
 fun<R, T> Parser<R, T>.moreThan1(): Parser<List<R>, T> {
     return Parser {
         var remains = it
@@ -105,7 +116,8 @@ fun<R, T> Parser<R, T>.moreThan1(): Parser<List<R>, T> {
 fun<R1, R2, T> Parser<R1, T>.separator(sep: Parser<R2, T>): Parser<List<R1>, T> {
     val withSep = takeLeft(this, sep)
     val seps = withSep.many()
-    return seps.andThen(this).map { it.first + it.second }
+    val all = seps.andThen(this.optional()).map { it.first + it.second }
+    return all
 }
 
 fun<R1, R2, R3, T> takeMiddle(i1: Parser<R1, T>, take: Parser<R2, T>, i2: Parser<R3, T>): Parser<R2, T> =
