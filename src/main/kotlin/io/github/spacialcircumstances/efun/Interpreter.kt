@@ -11,7 +11,7 @@ class Interpreter {
         val parseResult = programParser.run(tokens)
         val ast = parseResult.first
         ast?.forEach {
-            it.evaluate(context)
+            println(it.evaluate(context))
         }
     }
 }

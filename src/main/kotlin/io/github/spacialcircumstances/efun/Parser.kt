@@ -106,11 +106,12 @@ val typeNameParser = oneWith<FValueType, Token>({ it.type == TokenType.IDENTIFIE
 val blockStartParser = one<Token> { it.type == TokenType.LEFT_BRACE }
 val blockEndParser = one<Token> { it.type == TokenType.RIGHT_BRACE }
 val blockArgumentParser = oneWith<String, Token>({ it.type == TokenType.IDENTIFIER }) { it.lexeme }
-val blockArgumentsParser = (blockArgumentParser.andIgnoreResult(one {it.type == TokenType.COLON}).andThen(typeNameParser)).separator(commaParser).map { types ->
+val singleArgParser = blockArgumentParser.andIgnoreResult(one { it.type == TokenType.COLON }).andThen(typeNameParser).andIgnoreResult(arrowParser)
+val blockArgumentsParser = singleArgParser.many().map { types ->
     types.associate { it }
 }
 
-val blockBodyParser = expressionParser.moreThan1()
+val blockBodyParser = expressionParser.many()
 val blockParser = takeMiddle(blockStartParser, blockArgumentsParser.andThen(blockBodyParser), blockEndParser).map {
     BlockExpression(it.first, it.second)
 }
