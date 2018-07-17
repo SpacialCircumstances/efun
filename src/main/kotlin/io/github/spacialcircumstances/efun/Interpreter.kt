@@ -11,10 +11,11 @@ class Interpreter {
         val ast = parseResult.first
         if (parseResult.second.isNotEmpty()) {
             val firstUnparsedToken = parseResult.second.first()
-            println("Parser error in line: ${firstUnparsedToken.line}")
-        }
-        ast?.forEach {
-            println(it.evaluate(context).value)
+            println("Parser error in line: ${firstUnparsedToken.line} with Token: ${firstUnparsedToken.type}")
+        } else {
+            ast?.forEach {
+                println(it.evaluate(context).value)
+            }
         }
     }
 }
