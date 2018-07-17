@@ -7,6 +7,6 @@ import io.github.spacialcircumstances.efun.interpreter.InterpreterContext
 
 class BlockExpression(val parameters: Map<String, FValueType>, val body: List<AbstractExpression>): AbstractExpression() {
     override fun evaluate(context: InterpreterContext): FValue {
-        return FValue(FValueType.Function, FFunction(parameters, body))
+        return FValue(FValueType.Function, FFunction(parameters, body, context))
     }
 }

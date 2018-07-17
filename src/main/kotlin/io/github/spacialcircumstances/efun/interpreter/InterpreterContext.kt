@@ -13,4 +13,10 @@ class InterpreterContext(val parent: InterpreterContext?) {
             variables[key] = variable
         }
     }
+
+    fun copy(): InterpreterContext {
+        val newCtx = InterpreterContext(parent)
+        newCtx.variables.putAll(variables)
+        return newCtx
+    }
 }
