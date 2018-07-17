@@ -71,15 +71,7 @@ val groupingExpressionParser = takeMiddle(openParensParser, valueProducingExpres
     GroupingExpression(it)
 }
 
-val operatorExpressionParser = literalParser.orElse(groupingExpressionParser)
-
 val commaParser = one<Token> { it.type == TokenType.COMMA }
-
-val binaryExpressionParser = operatorExpressionParser.andThen(binaryOperatorParser).andThen(operatorExpressionParser).map {
-    BinaryExpression(it.first.first, it.first.second, it.second)
-}
-
-val unaryExpressionParser = unaryOperatorParser.andThen(operatorExpressionParser).map { UnaryExpression(it.second, it.first) }
 
 val debugExpressionParser = takeRight(one { it.type == TokenType.PRINT }, expressionParser).map { DebugExpression(it) }
 
@@ -92,6 +84,14 @@ val callableExpressionParser = choice(groupingExpressionParser, literalParser, v
 val functionCallParser = callableExpressionParser.andThen(argumentsParser).map {
     FunctionCallExpression(it.first, it.second)
 }
+
+val operatorExpressionParser = choice(functionCallParser, variableExpressionParser, literalParser, groupingExpressionParser)
+
+val binaryExpressionParser = operatorExpressionParser.andThen(binaryOperatorParser).andThen(operatorExpressionParser).map {
+    BinaryExpression(it.first.first, it.first.second, it.second)
+}
+
+val unaryExpressionParser = unaryOperatorParser.andThen(operatorExpressionParser).map { UnaryExpression(it.second, it.first) }
 
 val typeNameParser = oneWith<FValueType, Token>({ it.type == TokenType.IDENTIFIER }) {
     when(it.lexeme) {
