@@ -6,7 +6,7 @@ import io.github.spacialcircumstances.efun.interpreter.InterpreterContext
 
 class DebugExpression(private val expression: AbstractExpression): AbstractExpression() {
     override fun evaluate(context: InterpreterContext): FValue {
-        println(expression.evaluate(context))
+        println(expression.evaluate(context).value)
         return FValue(FValueType.Void, null)
     }
 }
