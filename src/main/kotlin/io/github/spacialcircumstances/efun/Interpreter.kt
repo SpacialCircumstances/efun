@@ -10,8 +10,12 @@ class Interpreter {
         println(tokens.joinToString { it.type.toString() })
         val parseResult = programParser.run(tokens)
         val ast = parseResult.first
+        if (parseResult.second.isNotEmpty()) {
+            val firstUnparsedToken = parseResult.second.first()
+            println("Parser error in line: ${firstUnparsedToken.line}")
+        }
         ast?.forEach {
-            println(it.evaluate(context))
+            println(it.evaluate(context).value)
         }
     }
 }
