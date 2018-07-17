@@ -8,9 +8,7 @@ const val QUIT_COMMAND = ":q"
 fun main(args: Array<String>) {
     val interpreter = Interpreter()
     if (args.size == 1) {
-        Files.newBufferedReader(Paths.get(args[0])).forEachLine {
-            interpreter.interpret(it)
-        }
+        interpreter.interpret(String(Files.readAllBytes(Paths.get(args[0]))))
     } else if (args.isEmpty()) {
         var running = true
         while (running) {
