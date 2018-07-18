@@ -16,11 +16,63 @@ fun computeBinary(operator: Token, l: FValue, r: FValue) : FValue {
     return when (operator.type) {
         TokenType.EQUAL_EQUAL -> equal(l, r)
         TokenType.BANG_EQUAL -> notEqual(l, r)
+        TokenType.LESS_EQUAL -> lesserEqual(l, r)
+        TokenType.LESS -> lesser(l, r)
+        TokenType.GREATER -> greater(l, r)
+        TokenType.GREATER_EQUAL -> greaterEqual(l, r)
         TokenType.MINUS -> minus(l, r)
         TokenType.PLUS -> plus(l, r)
         TokenType.STAR -> mul(l, r)
         TokenType.SLASH -> div(l, r)
         else -> throw IllegalStateException("Invalid operator: ${operator.lexeme}")
+    }
+}
+
+fun greater(l: FValue, r: FValue): FValue {
+    if (! checkNumeric(l.type) || ! checkNumeric(r.type)) {
+        throw IllegalStateException("Operator > does not work on types ${l.type} and ${r.type}")
+    } else {
+        return when {
+            l.type == TFloat -> FValue(TBool, TFloat.castValue(l) > TFloat.castValue(r))
+            l.type == TInt -> FValue(TBool, TInt.castValue(l) > TInt.castValue(r))
+            else -> throw IllegalStateException()
+        }
+    }
+}
+
+fun lesser(l: FValue, r: FValue): FValue {
+    if (! checkNumeric(l.type) || ! checkNumeric(r.type)) {
+        throw IllegalStateException("Operator > does not work on types ${l.type} and ${r.type}")
+    } else {
+        return when {
+            l.type == TFloat -> FValue(TBool, TFloat.castValue(l) < TFloat.castValue(r))
+            l.type == TInt -> FValue(TBool, TInt.castValue(l) < TInt.castValue(r))
+            else -> throw IllegalStateException()
+        }
+    }
+}
+
+fun greaterEqual(l: FValue, r: FValue): FValue {
+    if (! checkNumeric(l.type) || ! checkNumeric(r.type)) {
+        throw IllegalStateException("Operator > does not work on types ${l.type} and ${r.type}")
+    } else {
+        return when {
+            l.type == TFloat -> FValue(TBool, TFloat.castValue(l) >= TFloat.castValue(r))
+            l.type == TInt -> FValue(TBool, TInt.castValue(l) >= TInt.castValue(r))
+            else -> throw IllegalStateException()
+        }
+    }
+}
+
+fun lesserEqual(l: FValue, r: FValue): FValue {
+    if (! checkNumeric(l.type) || ! checkNumeric(r.type)) {
+        throw IllegalStateException("Operator > does not work on types ${l.type} and ${r.type}")
+    } else {
+        return when {
+            l.type == TFloat -> FValue(TBool, TFloat.castValue(l) <= TFloat.castValue(r))
+            l.type == TInt -> FValue(TBool, TInt.castValue(l) <= TInt.castValue(r))
+            else -> throw IllegalStateException()
+        }
     }
 }
 
