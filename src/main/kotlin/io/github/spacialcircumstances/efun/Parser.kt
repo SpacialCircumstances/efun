@@ -113,12 +113,18 @@ val blockParser = takeMiddle(blockStartParser, blockArgumentsParser.andThen(bloc
     BlockExpression(it.first, it.second)
 }
 
+val noArgBlockParser = takeMiddle(blockStartParser, blockBodyParser, blockEndParser)
+
+val ifExpressionParser = takeRight(one { it.type == TokenType.IF }, valueProducingExpressionParser.andThen(noArgBlockParser)).map {
+    IfExpression(it.first, BlockExpression(emptyList(), it.second))
+}
+
 fun createValueProducingExpressionParser(): Parser<AbstractExpression, Token> {
-    return choice(binaryExpressionParser, unaryExpressionParser, literalParser, groupingExpressionParser, functionCallParser, variableExpressionParser, blockParser)
+    return choice(binaryExpressionParser, unaryExpressionParser, literalParser, groupingExpressionParser, functionCallParser, variableExpressionParser, blockParser, ifExpressionParser)
 }
 
 fun createExpressionParser(): Parser<AbstractExpression, Token> {
-    return choice(binaryExpressionParser, unaryExpressionParser, literalParser, debugExpressionParser, groupingExpressionParser, letExpressionParser, functionCallParser, variableExpressionParser, blockParser)
+    return choice(binaryExpressionParser, unaryExpressionParser, literalParser, debugExpressionParser, groupingExpressionParser, letExpressionParser, functionCallParser, variableExpressionParser, ifExpressionParser)
 }
 
 val programParser = expressionParser.many()
