@@ -14,11 +14,29 @@ class BinaryExpression(private val left: AbstractExpression, private val operato
 
 fun computeBinary(operator: Token, l: FValue, r: FValue) : FValue {
     return when (operator.type) {
+        TokenType.EQUAL_EQUAL -> equal(l, r)
+        TokenType.BANG_EQUAL -> notEqual(l, r)
         TokenType.MINUS -> minus(l, r)
         TokenType.PLUS -> plus(l, r)
         TokenType.STAR -> mul(l, r)
         TokenType.SLASH -> div(l, r)
         else -> throw IllegalStateException("Invalid operator: ${operator.lexeme}")
+    }
+}
+
+fun equal(l: FValue, r: FValue): FValue {
+    if (l.type != r.type) {
+        throw IllegalStateException("Cannot use operator == on types: ${l.type} and ${r.type}")
+    } else {
+        return FValue(TBool, l.type.castValue(l) == r.type.castValue(r))
+    }
+}
+
+fun notEqual(l: FValue, r: FValue): FValue {
+    if (l.type != r.type) {
+        throw IllegalStateException("Cannot use operator != on types: ${l.type} and ${r.type}")
+    } else {
+        return FValue(TBool, l.type.castValue(l) != r.type.castValue(r))
     }
 }
 
