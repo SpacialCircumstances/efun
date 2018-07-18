@@ -9,7 +9,7 @@ val identifierReplacements = mapOf(
         "in" to TokenType.IN,
         "true" to TokenType.TRUE,
         "false" to TokenType.FALSE,
-        "debug" to TokenType.PRINT
+        "debug" to TokenType.DEBUG
 )
 
 fun tokenize(code: String): List<Token> {

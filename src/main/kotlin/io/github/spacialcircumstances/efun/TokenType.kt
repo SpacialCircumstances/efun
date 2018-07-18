@@ -33,6 +33,6 @@ enum class TokenType {
     IN, //in
     TRUE, //true
     FALSE, //false
-    PRINT, //print
+    DEBUG, //debug
     EOF
 }

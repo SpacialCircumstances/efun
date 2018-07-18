@@ -72,7 +72,7 @@ val groupingExpressionParser = takeMiddle(openParensParser, valueProducingExpres
 
 val commaParser = one<Token> { it.type == TokenType.COMMA }
 
-val debugExpressionParser = takeRight(one { it.type == TokenType.PRINT }, expressionParser).map { DebugExpression(it) }
+val debugExpressionParser = takeRight(one { it.type == TokenType.DEBUG }, expressionParser).map { DebugExpression(it) }
 
 val argumentsParser = takeMiddle(openParensParser, valueProducingExpressionParser.separator(commaParser), closeParensParser)
 
