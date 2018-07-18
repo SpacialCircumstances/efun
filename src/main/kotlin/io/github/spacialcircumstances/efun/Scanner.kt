@@ -2,7 +2,6 @@ package io.github.spacialcircumstances.efun
 
 val identifierReplacements = mapOf(
         "let" to TokenType.LET,
-        "const" to TokenType.CONST,
         "fun" to TokenType.FUN,
         "if" to TokenType.IF,
         "else" to TokenType.ELSE,

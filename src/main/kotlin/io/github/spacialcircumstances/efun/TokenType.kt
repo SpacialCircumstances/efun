@@ -26,7 +26,6 @@ enum class TokenType {
     INTEGER,
     FLOAT,
     LET, //let
-    CONST, //const
     FUN, //fun
     IF, //if
     ELSE, //else
