@@ -115,8 +115,11 @@ val blockParser = takeMiddle(blockStartParser, blockArgumentsParser.andThen(bloc
 
 val noArgBlockParser = takeMiddle(blockStartParser, blockBodyParser, blockEndParser)
 
-val ifExpressionParser = takeRight(one { it.type == TokenType.IF }, valueProducingExpressionParser.andThen(noArgBlockParser)).map {
-    IfExpression(it.first, BlockExpression(emptyList(), it.second))
+val elseParser = takeRight(one { it.type == TokenType.ELSE }, noArgBlockParser)
+
+val ifExpressionParser = takeRight(one { it.type == TokenType.IF }, valueProducingExpressionParser.andThen(noArgBlockParser).andThen(elseParser.optional())).map {
+    val elseExpressions = it.second.singleOrNull()
+    IfExpression(it.first.first, BlockExpression(emptyList(), it.first.second), if (elseExpressions == null) null else BlockExpression(emptyList(), elseExpressions))
 }
 
 fun createValueProducingExpressionParser(): Parser<AbstractExpression, Token> {
