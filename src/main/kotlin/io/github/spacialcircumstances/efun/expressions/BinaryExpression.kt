@@ -2,10 +2,7 @@ package io.github.spacialcircumstances.efun.expressions
 
 import io.github.spacialcircumstances.efun.Token
 import io.github.spacialcircumstances.efun.TokenType
-import io.github.spacialcircumstances.efun.interpreter.FValue
-import io.github.spacialcircumstances.efun.interpreter.FValueType
-import io.github.spacialcircumstances.efun.interpreter.InterpreterContext
-import io.github.spacialcircumstances.efun.interpreter.checkNumeric
+import io.github.spacialcircumstances.efun.interpreter.*
 
 class BinaryExpression(private val left: AbstractExpression, private val operator: Token, private val right: AbstractExpression) : AbstractExpression() {
     override fun evaluate(context: InterpreterContext): FValue {
@@ -30,8 +27,8 @@ fun div(l: FValue, r: FValue): FValue {
         throw IllegalStateException("Division does not work on type: ${l.type}")
     } else {
         return when {
-            l.type == FValueType.Float -> FValue(FValueType.Float, l.value as Double / r.value as Double)
-            l.type == FValueType.Int -> FValue(FValueType.Int, l.value as Long / r.value as Long)
+            l.type == TFloat -> FValue(TFloat, TFloat.castValue(l) / TFloat.castValue(r))
+            l.type == TInt -> FValue(TInt, TInt.castValue(l) / TInt.castValue(r))
             else -> throw IllegalStateException()
         }
     }
@@ -42,8 +39,8 @@ fun mul(l: FValue, r: FValue): FValue {
         throw IllegalStateException("Multiplication does not work on type: ${l.type}")
     } else {
         return when {
-            l.type == FValueType.Float -> FValue(FValueType.Float, l.value as Double * r.value as Double)
-            l.type == FValueType.Int -> FValue(FValueType.Int, l.value as Long * r.value as Long)
+            l.type == TFloat -> FValue(TFloat, TFloat.castValue(l) * TFloat.castValue(r))
+            l.type == TInt -> FValue(TInt, TInt.castValue(l) * TInt.castValue(r))
             else -> throw IllegalStateException()
         }
     }
@@ -54,8 +51,8 @@ fun plus(l: FValue, r: FValue): FValue {
         throw IllegalStateException("Addition does not work on type: ${l.type}")
     } else {
         return when {
-            l.type == FValueType.Float -> FValue(FValueType.Float, l.value as Double + r.value as Double)
-            l.type == FValueType.Int -> FValue(FValueType.Int, l.value as Long + r.value as Long)
+            l.type == TFloat -> FValue(TFloat, TFloat.castValue(l) + TFloat.castValue(r))
+            l.type == TInt -> FValue(TInt, TInt.castValue(l) + TInt.castValue(r))
             else -> throw IllegalStateException()
         }
     }
@@ -66,8 +63,8 @@ fun minus(l: FValue, r: FValue): FValue {
         throw IllegalStateException("Subtraction does not work on type: ${l.type}")
     } else {
         return when {
-            l.type == FValueType.Float -> FValue(FValueType.Float, l.value as Double - r.value as Double)
-            l.type == FValueType.Int -> FValue(FValueType.Int, l.value as Long - r.value as Long)
+            l.type == TFloat -> FValue(TFloat, TFloat.castValue(l) - TFloat.castValue(r))
+            l.type == TInt -> FValue(TInt, TInt.castValue(l) - TInt.castValue(r))
             else -> throw IllegalStateException()
         }
     }

@@ -1,28 +1,27 @@
 package io.github.spacialcircumstances.efun
 
 import io.github.spacialcircumstances.efun.expressions.*
-import io.github.spacialcircumstances.efun.interpreter.FValue
-import io.github.spacialcircumstances.efun.interpreter.FValueType
+import io.github.spacialcircumstances.efun.interpreter.*
 import io.github.spacialcircumstances.efun.parser.*
 
 val stringLiteralParser = oneWith<LiteralExpression, Token>({ it.type == TokenType.STRING }) {
-    LiteralExpression(FValue(FValueType.String, it.literal))
+    LiteralExpression(FValue(TString, it.literal))
 }
 
 val intLiteralParser = oneWith<LiteralExpression, Token>({ it.type == TokenType.INTEGER }) {
-    LiteralExpression(FValue(FValueType.Int, it.literal))
+    LiteralExpression(FValue(TInt, it.literal))
 }
 
 val floatLiteralParser = oneWith<LiteralExpression, Token>({ it.type == TokenType.FLOAT }) {
-    LiteralExpression(FValue(FValueType.Float, it.literal))
+    LiteralExpression(FValue(TFloat, it.literal))
 }
 
 val trueLiteralParser = oneWith<LiteralExpression, Token>({ it.type == TokenType.TRUE }) {
-    LiteralExpression(FValue(FValueType.Bool, true))
+    LiteralExpression(FValue(TBool, true))
 }
 
 val falseLiteralParser = oneWith<LiteralExpression, Token>({ it.type == TokenType.FALSE }) {
-    LiteralExpression(FValue(FValueType.Bool, false))
+    LiteralExpression(FValue(TBool, false))
 }
 
 val expressionParser = lazy(::createExpressionParser)
@@ -93,13 +92,13 @@ val binaryExpressionParser = operatorExpressionParser.andThen(binaryOperatorPars
 
 val unaryExpressionParser = unaryOperatorParser.andThen(operatorExpressionParser).map { UnaryExpression(it.second, it.first) }
 
-val typeNameParser = oneWith<FValueType, Token>({ it.type == TokenType.IDENTIFIER }) {
+val typeNameParser = oneWith<FType<*>, Token>({ it.type == TokenType.IDENTIFIER }) {
     when(it.lexeme) {
-        "Bool" -> FValueType.Bool
-        "String" -> FValueType.String
-        "Int" -> FValueType.Int
-        "Float" -> FValueType.Float
-        else -> FValueType.Void
+        "Bool" -> TBool
+        "String" -> TString
+        "Int" -> TInt
+        "Float" -> TFloat
+        else -> TVoid
     }
 }
 

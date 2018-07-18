@@ -1,12 +1,9 @@
 package io.github.spacialcircumstances.efun.expressions
 
-import io.github.spacialcircumstances.efun.interpreter.FFunction
-import io.github.spacialcircumstances.efun.interpreter.FValue
-import io.github.spacialcircumstances.efun.interpreter.FValueType
-import io.github.spacialcircumstances.efun.interpreter.InterpreterContext
+import io.github.spacialcircumstances.efun.interpreter.*
 
-class BlockExpression(val parameters: List<Pair<String, FValueType>>, val body: List<AbstractExpression>): AbstractExpression() {
+class BlockExpression(val parameters: List<Pair<String, FType<*>>>, val body: List<AbstractExpression>): AbstractExpression() {
     override fun evaluate(context: InterpreterContext): FValue {
-        return FValue(FValueType.Function, FFunction(parameters, body, context))
+        return FValue(TFunction, FFunction(parameters, body, context))
     }
 }
