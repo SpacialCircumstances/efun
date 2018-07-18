@@ -18,7 +18,7 @@ fun main(args: Array<String>) {
                 if (it == QUIT_COMMAND) {
                     running = false
                 } else {
-                    interpreter.interpret(it)
+                    interpreter.interpret(it, { res -> println(res) })
                 }
             }
         }
