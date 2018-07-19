@@ -122,12 +122,16 @@ val ifExpressionParser = takeRight(one { it.type == TokenType.IF }, valueProduci
     IfExpression(it.first.first, BlockExpression(emptyList(), it.first.second), if (elseExpressions == null) null else BlockExpression(emptyList(), elseExpressions))
 }
 
+val assertStatementParser = takeRight(one { it.type == TokenType.ASSERT }, valueProducingExpressionParser).map {
+    AssertExpression(it)
+}
+
 fun createValueProducingExpressionParser(): Parser<AbstractExpression, Token> {
     return choice(binaryExpressionParser, unaryExpressionParser, literalParser, groupingExpressionParser, functionCallParser, variableExpressionParser, blockParser, ifExpressionParser)
 }
 
 fun createExpressionParser(): Parser<AbstractExpression, Token> {
-    return choice(binaryExpressionParser, unaryExpressionParser, literalParser, debugExpressionParser, groupingExpressionParser, letExpressionParser, functionCallParser, variableExpressionParser, ifExpressionParser)
+    return choice(binaryExpressionParser, unaryExpressionParser, literalParser, debugExpressionParser, groupingExpressionParser, letExpressionParser, functionCallParser, variableExpressionParser, ifExpressionParser, assertStatementParser)
 }
 
 val programParser = expressionParser.many()
