@@ -20,6 +20,7 @@ repositories {
 
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    testCompile 'org.junit.jupiter:junit-jupiter-engine:5.3.0-M1'
 }
 
 compileKotlin {
