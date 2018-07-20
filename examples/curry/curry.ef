@@ -1,0 +1,6 @@
+let multiplication = { a: Int -> b: Int ->
+  a * b
+}
+
+let xf = multiplication(2)
+debug xf(2)
