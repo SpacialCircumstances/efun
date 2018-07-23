@@ -34,5 +34,8 @@ enum class TokenType {
     FALSE, //false
     DEBUG, //debug
     ASSERT,
+    AND,
+    OR,
+    XOR,
     EOF
 }

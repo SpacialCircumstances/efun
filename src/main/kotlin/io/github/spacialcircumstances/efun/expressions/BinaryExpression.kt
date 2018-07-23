@@ -24,8 +24,26 @@ fun computeBinary(operator: Token, l: FValue, r: FValue) : FValue {
         TokenType.PLUS -> plus(l, r)
         TokenType.STAR -> mul(l, r)
         TokenType.SLASH -> div(l, r)
+        TokenType.AND -> and(l, r)
+        TokenType.OR -> or(l, r)
+        TokenType.XOR -> xor(l, r)
         else -> throw IllegalStateException("Invalid operator: ${operator.lexeme}")
     }
+}
+
+fun and(l: FValue, r: FValue): FValue {
+    if (l.type != TBool || r.type != TBool) throw IllegalStateException("Operator and does not work on types ${l.type} and ${r.type}")
+    return FValue(TBool, TBool.castValue(l) && TBool.castValue(r))
+}
+
+fun or(l: FValue, r: FValue): FValue {
+    if (l.type != TBool || r.type != TBool) throw IllegalStateException("Operator or does not work on types ${l.type} and ${r.type}")
+    return FValue(TBool, TBool.castValue(l) || TBool.castValue(r))
+}
+
+fun xor(l: FValue, r: FValue): FValue {
+    if (l.type != TBool || r.type != TBool) throw IllegalStateException("Operator xor does not work on types ${l.type} and ${r.type}")
+    return FValue(TBool, TBool.castValue(l) xor TBool.castValue(r))
 }
 
 fun greater(l: FValue, r: FValue): FValue {
