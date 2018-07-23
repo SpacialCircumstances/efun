@@ -84,7 +84,7 @@ val functionCallParser = callableExpressionParser.andThen(argumentsParser).map {
     FunctionCallExpression(it.first, it.second)
 }
 
-val operatorExpressionParser = choice(functionCallParser, variableExpressionParser, literalParser, groupingExpressionParser)
+val operatorExpressionParser = lazy(::createOperatorExpressionParser)
 
 val binaryExpressionParser = operatorExpressionParser.andThen(binaryOperatorParser).andThen(operatorExpressionParser).map {
     BinaryExpression(it.first.first, it.first.second, it.second)
@@ -124,6 +124,10 @@ val ifExpressionParser = takeRight(one { it.type == TokenType.IF }, valueProduci
 
 val assertStatementParser = takeRight(one { it.type == TokenType.ASSERT }, valueProducingExpressionParser).map {
     AssertExpression(it)
+}
+
+fun createOperatorExpressionParser(): Parser<AbstractExpression, Token> {
+    return choice(functionCallParser, variableExpressionParser, literalParser, groupingExpressionParser, unaryExpressionParser)
 }
 
 fun createValueProducingExpressionParser(): Parser<AbstractExpression, Token> {
