@@ -8,12 +8,12 @@ class IfExpression(val condition: AbstractExpression, val block: BlockExpression
         if (conditionResult.type != TBool) throw IllegalStateException("If expression takes a expression evaluating to Bool as condition")
         val isTrue = TBool.castValue(conditionResult)
         return if (isTrue) {
-            val f = block.evaluate(context).value as FFunction
-            f.run(emptyList())
+            val f = block.evaluate(context).value as FunctionPointer
+            f.run(FValue(TVoid, null))
         } else {
             if (elseBlock != null) {
-                val f = elseBlock.evaluate(context).value as FFunction
-                f.run(emptyList())
+                val f = elseBlock.evaluate(context).value as FunctionPointer
+                f.run(FValue(TVoid, null))
             } else FValue(TVoid, null)
         }
     }

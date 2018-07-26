@@ -1,5 +1,8 @@
 package io.github.spacialcircumstances.efun.parser
 
+import io.github.spacialcircumstances.efun.car
+import io.github.spacialcircumstances.efun.cdr
+
 class Parser<out R, T>(private val parse: (List<T>) -> Pair<R?, List<T>>) {
     fun run(input: List<T>): Pair<R?, List<T>> = parse(input)
 }
@@ -19,8 +22,8 @@ fun<R, T> lazy(c: () -> Parser<R, T>): Parser<R, T> {
 fun<R, T> oneWith(match: (T) -> Boolean, convert: (T) -> R): Parser<R, T> =
     Parser { input ->
         if (input.isEmpty()) Pair(null, input) else {
-            val first = input.first()
-            val rest = if (input.size > 1) input.subList(1, input.size) else emptyList()
+            val first = input.car()
+            val rest = input.cdr()
             if (match(first)) {
                 val result = convert(first)
                 Pair(result, rest)
