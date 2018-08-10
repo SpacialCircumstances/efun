@@ -1,0 +1,9 @@
+let square = { n: Int ->
+    n * n
+}
+
+let doWith = {  n: Int -> f: Function ->
+    f(n)
+}
+
+debug doWith(5, square)

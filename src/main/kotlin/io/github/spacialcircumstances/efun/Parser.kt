@@ -101,6 +101,7 @@ val typeNameParser = oneWith<FType<*>, Token>({ it.type == TokenType.IDENTIFIER 
         "String" -> TString
         "Int" -> TInt
         "Float" -> TFloat
+        "Function" -> TFunction
         else -> TVoid
     }
 }
