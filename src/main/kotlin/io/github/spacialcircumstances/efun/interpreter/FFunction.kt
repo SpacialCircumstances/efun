@@ -13,7 +13,7 @@ interface IFunction {
 
 class FunctionPointer(val function: IFunction, val environment: InterpreterContext) {
     fun run(arg: FValue): FValue {
-        return function.run(arg, environment)
+        return function.run(arg, environment.copy())
     }
 }
 
@@ -37,8 +37,24 @@ class CurryFunction(override val parameterName: String, override val inType: FTy
     }
 }
 
+class EmptyFunction(val expressions: List<AbstractExpression>): IFunction {
+    override val parameterName: String
+        get() = ""
+    override val inType: FType<*>
+        get() = TVoid
+    override val outType: FType<*>
+        get() = TVoid
+
+    override fun run(arg: FValue, environment: InterpreterContext): FValue {
+        val result = expressions.map { it.evaluate(environment) }.last()
+        return result
+    }
+}
+
 fun createFunction(parameters: List<Pair<String, FType<*>>>, body: List<AbstractExpression>, environment: InterpreterContext): FunctionPointer {
-    return if (parameters.size == 1) {
+    return if (parameters.isEmpty()) {
+        FunctionPointer(EmptyFunction(body), environment)
+    } else if (parameters.size == 1) {
         val param = parameters.single()
         FunctionPointer(ValueFunction(param.first, param.second, TAny, body), environment)
     } else {
