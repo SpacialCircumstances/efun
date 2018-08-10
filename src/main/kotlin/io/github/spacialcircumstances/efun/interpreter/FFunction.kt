@@ -19,6 +19,7 @@ class FunctionPointer(val function: IFunction, val environment: InterpreterConte
 
 class ValueFunction(override val parameterName: String, override val inType: FType<*>, override val outType: FType<*>, val expressions: List<AbstractExpression>) : IFunction {
     override fun run(arg: FValue, environment: InterpreterContext): FValue {
+        environment[parameterName] = arg
         if (arg.type != inType) throw IllegalStateException("Expected $inType as parameter: $parameterName, but got ${arg.type}")
         val result = expressions.map { it.evaluate(environment) }.last()
         if (outType != result.type) throw IllegalStateException("Expected $outType as result, but got ${result.type} instead")
@@ -37,14 +38,13 @@ class CurryFunction(override val parameterName: String, override val inType: FTy
 }
 
 fun createFunction(parameters: List<Pair<String, FType<*>>>, body: List<AbstractExpression>, environment: InterpreterContext): FunctionPointer {
-    val env = environment.copy()
     return if (parameters.size == 1) {
         val param = parameters.single()
-        FunctionPointer(ValueFunction(param.first, param.second, TAny, body), env)
+        FunctionPointer(ValueFunction(param.first, param.second, TAny, body), environment)
     } else {
-        val next = createFunction(parameters.cdr(), body, env)
+        val next = createFunction(parameters.cdr(), body, environment)
         val function = CurryFunction(parameters.car().first, parameters.car().second, TFunction, next.function)
-        FunctionPointer(function, env)
+        FunctionPointer(function, environment)
     }
 }
 
