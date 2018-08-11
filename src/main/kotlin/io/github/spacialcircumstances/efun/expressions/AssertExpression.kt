@@ -1,11 +1,12 @@
 package io.github.spacialcircumstances.efun.expressions
 
-import io.github.spacialcircumstances.efun.interpreter.FValue
-import io.github.spacialcircumstances.efun.interpreter.InterpreterContext
-import io.github.spacialcircumstances.efun.interpreter.TBool
-import io.github.spacialcircumstances.efun.interpreter.TVoid
+import io.github.spacialcircumstances.efun.interpreter.*
 
 class AssertExpression(val value: AbstractExpression): AbstractExpression() {
+    override fun guessType(context: TypeContext): FType<*> {
+        return TVoid
+    }
+
     override fun evaluate(context: InterpreterContext): FValue {
         val result = value.evaluate(context)
         if (result.type != TBool) {

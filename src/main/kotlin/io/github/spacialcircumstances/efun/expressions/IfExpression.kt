@@ -3,6 +3,10 @@ package io.github.spacialcircumstances.efun.expressions
 import io.github.spacialcircumstances.efun.interpreter.*
 
 class IfExpression(val condition: AbstractExpression, val block: BlockExpression, val elseBlock: BlockExpression?): AbstractExpression() {
+    override fun guessType(context: TypeContext): FType<*> {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
     override fun evaluate(context: InterpreterContext): FValue {
         val conditionResult = condition.evaluate(context)
         if (conditionResult.type != TBool) throw IllegalStateException("If expression takes a expression evaluating to Bool as condition")

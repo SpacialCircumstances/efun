@@ -5,6 +5,10 @@ import io.github.spacialcircumstances.efun.TokenType
 import io.github.spacialcircumstances.efun.interpreter.*
 
 class BinaryExpression(private val left: AbstractExpression, private val operator: Token, private val right: AbstractExpression) : AbstractExpression() {
+    override fun guessType(context: TypeContext): FType<*> {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
     override fun evaluate(context: InterpreterContext): FValue {
         val l = left.evaluate(context)
         val r = right.evaluate(context)
