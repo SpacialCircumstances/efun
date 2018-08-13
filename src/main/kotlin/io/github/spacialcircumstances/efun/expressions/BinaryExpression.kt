@@ -6,7 +6,10 @@ import io.github.spacialcircumstances.efun.interpreter.*
 
 class BinaryExpression(private val left: AbstractExpression, private val operator: Token, private val right: AbstractExpression) : AbstractExpression() {
     override fun guessType(context: TypeContext): FType<*> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        //TODO: Improve checking
+        val lt = left.guessType(context)
+        val rt = right.guessType(context)
+        if (lt == rt) return lt else throw IllegalStateException("Incompatible types for operator ${operator.lexeme}: ${lt.name} and ${rt.name}")
     }
 
     override fun evaluate(context: InterpreterContext): FValue {
