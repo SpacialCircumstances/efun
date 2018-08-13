@@ -6,8 +6,7 @@ import io.github.spacialcircumstances.efun.expressions.AbstractExpression
 
 interface IFunction {
     val parameterName: String
-    val inType: FType<*>
-    val outType: FType<*>
+    val type: FunctionType
     fun run(arg: FValue, environment: InterpreterContext): FValue
 }
 
@@ -17,19 +16,15 @@ class FunctionPointer(val function: IFunction, val environment: InterpreterConte
     }
 }
 
-class ValueFunction(override val parameterName: String, override val inType: FType<*>, override val outType: FType<*>, val expressions: List<AbstractExpression>) : IFunction {
+class ValueFunction(override val parameterName: String, override val type: FunctionType, val expressions: List<AbstractExpression>) : IFunction {
     override fun run(arg: FValue, environment: InterpreterContext): FValue {
         environment[parameterName] = arg
-        if (arg.type != inType) throw IllegalStateException("Expected $inType as parameter: $parameterName, but got ${arg.type}")
-        val result = expressions.map { it.evaluate(environment) }.last()
-        if (outType != result.type) throw IllegalStateException("Expected $outType as result, but got ${result.type} instead")
-        return result
+        return expressions.map { it.evaluate(environment) }.last()
     }
 }
 
-class CurryFunction(override val parameterName: String, override val inType: FType<*>, override val outType: FType<*>, val next: IFunction) : IFunction {
+class CurryFunction(override val parameterName: String, override val type: FunctionType, val next: IFunction) : IFunction {
     override fun run(arg: FValue, environment: InterpreterContext): FValue {
-        if (arg.type != inType) throw IllegalStateException("Expected $inType as parameter: $parameterName, but got ${arg.type}")
         val newEnv = environment.copy()
         newEnv[parameterName] = arg
         val fPointer = FunctionPointer(next, newEnv)
@@ -37,38 +32,35 @@ class CurryFunction(override val parameterName: String, override val inType: FTy
     }
 }
 
-class EmptyFunction(val expressions: List<AbstractExpression>): IFunction {
+class EmptyFunction(val expressions: List<AbstractExpression>, val outType: FType<*>): IFunction {
     override val parameterName: String
         get() = ""
-    override val inType: FType<*>
-        get() = TVoid
-    override val outType: FType<*>
-        get() = TVoid
+    override val type = FunctionType(TVoid, outType)
 
     override fun run(arg: FValue, environment: InterpreterContext): FValue {
-        val result = expressions.map { it.evaluate(environment) }.last()
-        return result
+       return expressions.map { it.evaluate(environment) }.last()
     }
 }
 
-tailrec fun createFunctionType(parameters: List<FType<*>>, returnType: FType<*>): FType<*> {
-    if (parameters.isEmpty()) return returnType
+tailrec fun createFunctionType(parameters: List<FType<*>>, returnType: FType<*>): FunctionType {
+    if (parameters.isEmpty()) return FunctionType(TVoid, returnType)
     val lastType = FunctionType(parameters.last(), returnType)
     if (parameters.size == 1) return lastType
     val rest = parameters.take(parameters.size - 1)
-    return createFunctionType(rest, returnType)
+    return createFunctionType(rest, lastType)
 }
 
-fun createFunction(parameters: List<Pair<String, FType<*>>>, body: List<AbstractExpression>, environment: InterpreterContext): FunctionPointer {
-    return if (parameters.isEmpty()) {
-        FunctionPointer(EmptyFunction(body), environment)
-    } else if (parameters.size == 1) {
-        val param = parameters.single()
-        FunctionPointer(ValueFunction(param.first, param.second, TAny, body), environment)
+fun createFunction(parameterNames: List<String>, type: FunctionType, body: List<AbstractExpression>, environment: InterpreterContext): FunctionPointer {
+    return if (type.inType == TVoid) {
+        FunctionPointer(EmptyFunction(body, type.outType), environment)
     } else {
-        val next = createFunction(parameters.cdr(), body, environment)
-        val function = CurryFunction(parameters.car().first, parameters.car().second, TFunction, next.function)
-        FunctionPointer(function, environment)
+        if (type.outType !is FunctionType || parameterNames.size == 1) {
+            FunctionPointer(ValueFunction(parameterNames.car(), type, body), environment)
+        } else {
+            val next = createFunction(parameterNames.cdr(), type.outType, body, environment)
+            val function = CurryFunction(parameterNames.car(), type, next.function)
+            FunctionPointer(function, environment)
+        }
     }
 }
 
