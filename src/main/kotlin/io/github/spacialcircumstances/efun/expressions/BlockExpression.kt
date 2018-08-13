@@ -8,7 +8,8 @@ class BlockExpression(val parameters: List<Pair<String, FType<*>>>, val body: Li
         parameters.forEach {
             context[it.first] = it.second
         }
-        return body.map { it.guessType(context) }.last()
+        val returnType = body.map { it.guessType(context) }.last()
+        return createFunctionType(parameters.map { it.second }, returnType)
     }
 
     override fun evaluate(context: InterpreterContext): FValue {

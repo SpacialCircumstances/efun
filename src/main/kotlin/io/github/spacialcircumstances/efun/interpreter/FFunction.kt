@@ -51,6 +51,14 @@ class EmptyFunction(val expressions: List<AbstractExpression>): IFunction {
     }
 }
 
+tailrec fun createFunctionType(parameters: List<FType<*>>, returnType: FType<*>): FType<*> {
+    if (parameters.isEmpty()) return returnType
+    val lastType = FunctionType(parameters.last(), returnType)
+    if (parameters.size == 1) return lastType
+    val rest = parameters.take(parameters.size - 1)
+    return createFunctionType(rest, returnType)
+}
+
 fun createFunction(parameters: List<Pair<String, FType<*>>>, body: List<AbstractExpression>, environment: InterpreterContext): FunctionPointer {
     return if (parameters.isEmpty()) {
         FunctionPointer(EmptyFunction(body), environment)
