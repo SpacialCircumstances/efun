@@ -72,7 +72,6 @@ val TFloat = SimpleType<Double>("Float")
 val TString = SimpleType<String>("String")
 val TBool = SimpleType<Boolean>("Bool")
 val TFunction = SimpleType<FunctionPointer>("Function") //Temporary hack until better type system
-val TAny = AnyType() //Worse hack until better type system
 
 fun checkNumeric(type: FType<*>): Boolean {
     return when(type) {
