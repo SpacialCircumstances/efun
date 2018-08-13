@@ -7,7 +7,7 @@ import io.github.spacialcircumstances.efun.interpreter.TypeContext
 
 class VariableExpression(private val name: String): AbstractExpression() {
     override fun guessType(context: TypeContext): FType<*> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return context[name] ?: throw IllegalStateException("Variable $name does not exist in this scope")
     }
 
     override fun evaluate(context: InterpreterContext): FValue {

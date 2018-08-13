@@ -2,6 +2,7 @@ package io.github.spacialcircumstances.efun.interpreter
 
 class InterpreterContext(val parent: InterpreterContext?) {
     private val variables = mutableMapOf<String, FValue>()
+
     operator fun get(key: String): FValue? {
         return variables[key] ?: parent?.get(key)
     }
