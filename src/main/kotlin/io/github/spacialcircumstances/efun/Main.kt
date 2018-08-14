@@ -1,12 +1,14 @@
 package io.github.spacialcircumstances.efun
 
+import io.github.spacialcircumstances.efun.interpreter.InterpreterConfig
 import java.nio.file.Files
 import java.nio.file.Paths
 
 const val QUIT_COMMAND = ":q"
 
 fun main(args: Array<String>) {
-    val interpreter = Interpreter()
+    val config = InterpreterConfig()
+    val interpreter = Interpreter(config)
     if (args.size == 1) {
         val path = Paths.get(args[0])
         interpreter.interpret(String(Files.readAllBytes(path)), errorCallback = {

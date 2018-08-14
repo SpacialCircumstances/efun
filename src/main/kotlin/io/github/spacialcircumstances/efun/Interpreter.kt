@@ -1,12 +1,11 @@
 package io.github.spacialcircumstances.efun
 
 import io.github.spacialcircumstances.efun.interpreter.FValue
-import io.github.spacialcircumstances.efun.interpreter.InterpreterContext
-import io.github.spacialcircumstances.efun.interpreter.TypeContext
+import io.github.spacialcircumstances.efun.interpreter.InterpreterConfig
 
-class Interpreter {
-    val context = InterpreterContext(null)
-    val tc = TypeContext(null)
+class Interpreter(val interpreterConfig: InterpreterConfig) {
+    private val iContext = interpreterConfig.createInterpreterContext()
+    private val tContext = interpreterConfig.createTypeContext()
 
     fun interpret(code: String, resultCallback: (FValue) -> Unit = {}, errorCallback: (Throwable) -> Unit = { throw IllegalStateException(it) }) {
         val tokens = tokenize(code)
@@ -18,10 +17,10 @@ class Interpreter {
         } else {
             try {
                 ast?.forEach {
-                    it.guessType(tc)
+                    it.guessType(tContext)
                 }
                 ast?.forEach {
-                    resultCallback(it.evaluate(context))
+                    resultCallback(it.evaluate(iContext))
                 }
             } catch (e: RuntimeError) {
                 errorCallback(e)
