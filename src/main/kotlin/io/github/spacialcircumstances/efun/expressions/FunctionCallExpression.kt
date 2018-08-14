@@ -1,5 +1,6 @@
 package io.github.spacialcircumstances.efun.expressions
 
+import io.github.spacialcircumstances.efun.TypeError
 import io.github.spacialcircumstances.efun.interpreter.*
 
 class FunctionCallExpression(private val functionExpression: AbstractExpression, private val args: List<AbstractExpression>): AbstractExpression() {
@@ -13,7 +14,7 @@ class FunctionCallExpression(private val functionExpression: AbstractExpression,
                 if (it.inType == argType) {
                     result = it.outType
                 } else {
-                    throw IllegalStateException("Incompatible types for function: got ${argType.name}, expected ${it.inType.name}")
+                    throw TypeError("Incompatible types for function: got ${argType.name}, expected ${it.inType.name}")
                 }
             } ?: break
         }

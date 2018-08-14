@@ -1,12 +1,14 @@
 package io.github.spacialcircumstances.efun.expressions
 
+import io.github.spacialcircumstances.efun.RuntimeError
+import io.github.spacialcircumstances.efun.TypeError
 import io.github.spacialcircumstances.efun.interpreter.*
 
 class UnaryExpression(private val expression: AbstractExpression, private val operator: String): AbstractExpression() {
     override fun guessType(context: TypeContext): FType<*> {
         val subType = expression.guessType(context)
         if (!typeCheck(subType, operator)) {
-            throw IllegalStateException("Error typechecking: Cannot negate ${subType.name} with $operator")
+            throw TypeError("Error typechecking: Cannot negate ${subType.name} with $operator")
         }
         return subType
     }
@@ -16,7 +18,7 @@ class UnaryExpression(private val expression: AbstractExpression, private val op
         val result = when(operator) {
             "-" -> negate(value)
             "!" -> negate(value)
-            else -> throw IllegalStateException("Unsupported operator: $operator")
+            else -> throw RuntimeError("Unsupported operator: $operator")
         }
         return result
     }
@@ -27,7 +29,7 @@ fun negate(value: FValue): FValue {
         TFloat -> FValue(TFloat, -TFloat.castValue(value))
         TInt -> FValue(TInt, -TInt.castValue(value))
         TBool -> FValue(TBool, !TBool.castValue(value))
-        else -> throw IllegalStateException("Type ${value.type} not supported by operator")
+        else -> throw RuntimeError("Type ${value.type} not supported by operator")
     }
 }
 

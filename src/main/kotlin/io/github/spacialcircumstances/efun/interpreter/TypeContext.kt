@@ -1,5 +1,7 @@
 package io.github.spacialcircumstances.efun.interpreter
 
+import io.github.spacialcircumstances.efun.TypeError
+
 class TypeContext(val parent: TypeContext?) {
     private val types = mutableMapOf<String, FType<*>>()
 
@@ -9,7 +11,7 @@ class TypeContext(val parent: TypeContext?) {
 
     operator fun set(key: String, value: FType<*>) {
         if (types[key] != null) {
-            throw IllegalStateException("Cannot shadow variable $key")
+            throw TypeError("Cannot shadow variable $key")
         } else {
             types[key] = value
         }

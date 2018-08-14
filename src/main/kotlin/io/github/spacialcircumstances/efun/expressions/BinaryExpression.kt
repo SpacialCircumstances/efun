@@ -1,7 +1,9 @@
 package io.github.spacialcircumstances.efun.expressions
 
+import io.github.spacialcircumstances.efun.RuntimeError
 import io.github.spacialcircumstances.efun.Token
 import io.github.spacialcircumstances.efun.TokenType
+import io.github.spacialcircumstances.efun.TypeError
 import io.github.spacialcircumstances.efun.expressions.binary.*
 import io.github.spacialcircumstances.efun.interpreter.*
 
@@ -25,14 +27,14 @@ class BinaryExpression(private val left: AbstractExpression, private val operato
     override fun guessType(context: TypeContext): FType<*> {
         val lt = left.guessType(context)
         val rt = right.guessType(context)
-        val op = operatorByToken[operator.type] ?: throw IllegalStateException("No operator found for token ${operator.lexeme}")
+        val op = operatorByToken[operator.type] ?: throw TypeError("No operator found for token ${operator.lexeme}")
         return op.typecheck(lt, rt)
     }
 
     override fun evaluate(context: InterpreterContext): FValue {
         val l = left.evaluate(context)
         val r = right.evaluate(context)
-        val op = operatorByToken[operator.type] ?: throw IllegalStateException("No operator found for token ${operator.lexeme}")
+        val op = operatorByToken[operator.type] ?: throw RuntimeError("No operator found for token ${operator.lexeme}")
         return op.compute(l, r)
     }
 }

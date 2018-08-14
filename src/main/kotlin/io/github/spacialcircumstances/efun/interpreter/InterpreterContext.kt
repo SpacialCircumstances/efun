@@ -1,5 +1,7 @@
 package io.github.spacialcircumstances.efun.interpreter
 
+import io.github.spacialcircumstances.efun.RuntimeError
+
 class InterpreterContext(val parent: InterpreterContext?) {
     private val variables = mutableMapOf<String, FValue>()
 
@@ -9,7 +11,7 @@ class InterpreterContext(val parent: InterpreterContext?) {
 
     operator fun set(key: String, variable: FValue) {
         if (variables[key] != null) {
-            throw IllegalStateException("Values must be immutable")
+            throw RuntimeError("Values must be immutable")
         } else {
             variables[key] = variable
         }

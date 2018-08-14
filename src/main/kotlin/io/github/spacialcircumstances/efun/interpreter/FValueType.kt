@@ -1,5 +1,7 @@
 package io.github.spacialcircumstances.efun.interpreter
 
+import io.github.spacialcircumstances.efun.RuntimeError
+
 abstract class FType<out T> {
     abstract override operator fun equals(other: Any?): Boolean
     abstract val name: String
@@ -35,7 +37,7 @@ class VoidType: FType<Unit>() {
     override val name: String = "Void"
 
     override fun castValue(value: FValue) {
-        throw IllegalStateException("Cannot use value of Type Void in expression")
+        throw RuntimeError("Cannot use value of Type Void in expression")
     }
 }
 

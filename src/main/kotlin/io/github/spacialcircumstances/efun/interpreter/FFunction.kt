@@ -1,5 +1,6 @@
 package io.github.spacialcircumstances.efun.interpreter
 
+import io.github.spacialcircumstances.efun.RuntimeError
 import io.github.spacialcircumstances.efun.car
 import io.github.spacialcircumstances.efun.cdr
 import io.github.spacialcircumstances.efun.expressions.AbstractExpression
@@ -75,7 +76,7 @@ fun runWhileFunction(fp: FunctionPointer, values: List<FValue>): FValue {
         } else if (i == values.size - 1) {
             res = result
             break
-        } else throw IllegalStateException("Expected return value of function, but got ${result.type}")
+        } else throw RuntimeError("Expected return value of function, but got ${result.type}")
     }
-    return res ?: throw IllegalStateException()
+    return res ?: throw RuntimeError("Reached illegal interpreter state")
 }

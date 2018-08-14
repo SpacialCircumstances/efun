@@ -1,21 +1,21 @@
 package io.github.spacialcircumstances.efun.expressions
 
+import io.github.spacialcircumstances.efun.TypeError
 import io.github.spacialcircumstances.efun.interpreter.*
 
 class IfExpression(val condition: AbstractExpression, val block: BlockExpression, val elseBlock: BlockExpression?): AbstractExpression() {
     override fun guessType(context: TypeContext): FType<*> {
         val condType = condition.guessType(context)
-        if (condType != TBool) throw IllegalStateException("Condition evaluation must return a boolean")
+        if (condType != TBool) throw TypeError("Condition evaluation must return a boolean")
         val ifType = block.guessType(context)
         val elseType = elseBlock?.guessType(context)
         if (ifType == elseType) {
             return ifType
-        } else throw IllegalStateException("Incompatible types: If expression returns ${ifType.name}, but else expression returns ${elseType?.name}")
+        } else throw TypeError("Incompatible types: If expression returns ${ifType.name}, but else expression returns ${elseType?.name}")
     }
 
     override fun evaluate(context: InterpreterContext): FValue {
         val conditionResult = condition.evaluate(context)
-        if (conditionResult.type != TBool) throw IllegalStateException("If expression takes a expression evaluating to Bool as condition")
         val isTrue = TBool.castValue(conditionResult)
         return if (isTrue) {
             val f = block.evaluate(context).value as FunctionPointer
