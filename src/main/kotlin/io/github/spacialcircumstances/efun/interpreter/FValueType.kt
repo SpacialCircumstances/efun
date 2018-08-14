@@ -39,19 +39,6 @@ class VoidType: FType<Unit>() {
     }
 }
 
-class AnyType: FType<Any>() {
-    override fun equals(other: Any?): Boolean {
-        return true
-    }
-
-    override val name: String = "Any"
-
-    override fun castValue(value: FValue): Any {
-        return value.type.castValue(value)!!
-    }
-
-}
-
 class FunctionType(val inType: FType<*>, val outType: FType<*>): FType<FunctionPointer>() {
     override val name: String = "(${inType.name} -> ${outType.name})"
 
@@ -71,11 +58,3 @@ val TInt = SimpleType<Long>("Int")
 val TFloat = SimpleType<Double>("Float")
 val TString = SimpleType<String>("String")
 val TBool = SimpleType<Boolean>("Bool")
-
-fun checkNumeric(type: FType<*>): Boolean {
-    return when(type) {
-        TFloat -> true
-        TInt -> true
-        else -> false
-    }
-}
