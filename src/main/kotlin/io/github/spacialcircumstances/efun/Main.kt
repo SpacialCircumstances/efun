@@ -8,7 +8,10 @@ const val QUIT_COMMAND = ":q"
 fun main(args: Array<String>) {
     val interpreter = Interpreter()
     if (args.size == 1) {
-        interpreter.interpret(String(Files.readAllBytes(Paths.get(args[0]))))
+        val path = Paths.get(args[0])
+        interpreter.interpret(String(Files.readAllBytes(path)), errorCallback = {
+            throw IllegalStateException("Error executing script ${path.fileName}: ${it.message}", it)
+        })
     } else if (args.isEmpty()) {
         var running = true
         while (running) {
@@ -18,7 +21,7 @@ fun main(args: Array<String>) {
                 if (it == QUIT_COMMAND) {
                     running = false
                 } else {
-                    interpreter.interpret(it, { res -> println(res) })
+                    interpreter.interpret(it, { res -> println(res) }, { err -> println("Error: ${err.message}") })
                 }
             }
         }

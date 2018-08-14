@@ -1,5 +1,6 @@
 package io.github.spacialcircumstances.efun.expressions.binary
 
+import io.github.spacialcircumstances.efun.RuntimeError
 import io.github.spacialcircumstances.efun.TypeError
 import io.github.spacialcircumstances.efun.interpreter.FType
 import io.github.spacialcircumstances.efun.interpreter.FValue
@@ -29,13 +30,13 @@ abstract class SimpleBinaryOperator<L, R, O>(val lType: FType<L>, val rType: FTy
 abstract class MultiOperator(val operatorByType: Map<Pair<FType<*>, FType<*>>, BinaryOperator>): BinaryOperator() {
     override fun typecheck(l: FType<*>, r: FType<*>): FType<*> {
         val types = Pair(l, r)
-        val operator = operatorByType[types] ?: throw IllegalStateException("No operator found for types: $l, $r")
+        val operator = operatorByType[types] ?: throw TypeError("No operator found for types: $l, $r")
         return operator.typecheck(l, r)
     }
 
     override fun compute(l: FValue, r: FValue): FValue {
         val types = Pair(l.type, r.type)
-        val operator = operatorByType[types] ?: throw IllegalStateException("No operator found for types: $l, $r")
+        val operator = operatorByType[types] ?: throw RuntimeError("No operator found for types: $l, $r")
         return operator.compute(l, r)
     }
 }

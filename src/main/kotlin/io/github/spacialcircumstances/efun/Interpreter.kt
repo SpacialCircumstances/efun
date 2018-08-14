@@ -8,7 +8,7 @@ class Interpreter {
     val context = InterpreterContext(null)
     val tc = TypeContext(null)
 
-    fun interpret(code: String, resultCallback: (FValue) -> Unit = {}) {
+    fun interpret(code: String, resultCallback: (FValue) -> Unit = {}, errorCallback: (Throwable) -> Unit = { throw IllegalStateException(it) }) {
         val tokens = tokenize(code)
         val parseResult = programParser.run(tokens)
         val ast = parseResult.first
@@ -16,11 +16,17 @@ class Interpreter {
             val firstUnparsedToken = parseResult.second.first()
             println("Parser error in line: ${firstUnparsedToken.line} with Token: ${firstUnparsedToken.type}")
         } else {
-            ast?.forEach {
-                it.guessType(tc)
-            }
-            ast?.forEach {
-                resultCallback(it.evaluate(context))
+            try {
+                ast?.forEach {
+                    it.guessType(tc)
+                }
+                ast?.forEach {
+                    resultCallback(it.evaluate(context))
+                }
+            } catch (e: RuntimeError) {
+                errorCallback(e)
+            } catch (e: TypeError) {
+                errorCallback(e)
             }
         }
     }
