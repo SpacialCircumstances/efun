@@ -2,7 +2,7 @@ let square = { n: Int ->
     n * n
 }
 
-let doWith = {  n: Int -> f: Function ->
+let doWith = {  n: Int -> f: (Int -> Int) ->
     f(n)
 }
 

@@ -101,15 +101,20 @@ val typeNameParser = oneWith<FType<*>, Token>({ it.type == TokenType.IDENTIFIER 
         "String" -> TString
         "Int" -> TInt
         "Float" -> TFloat
-        "Function" -> TFunction
         else -> TVoid
     }
 }
 
+val typeFunctionParser = takeMiddle(openParensParser, typeNameParser.andIgnoreResult(arrowParser).andThen(typeNameParser), closeParensParser).map {
+    FunctionType(it.first, it.second)
+}
+
+val typeParser = typeFunctionParser.orElse(typeNameParser)
+
 val blockStartParser = one<Token> { it.type == TokenType.LEFT_BRACE }
 val blockEndParser = one<Token> { it.type == TokenType.RIGHT_BRACE }
 val blockArgumentParser = oneWith<String, Token>({ it.type == TokenType.IDENTIFIER }) { it.lexeme }
-val singleArgParser = blockArgumentParser.andIgnoreResult(one { it.type == TokenType.COLON }).andThen(typeNameParser).andIgnoreResult(arrowParser)
+val singleArgParser = blockArgumentParser.andIgnoreResult(one { it.type == TokenType.COLON }).andThen(typeParser).andIgnoreResult(arrowParser)
 val blockArgumentsParser = singleArgParser.many()
 
 val blockBodyParser = expressionParser.many()
