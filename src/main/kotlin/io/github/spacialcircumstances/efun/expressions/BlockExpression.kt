@@ -18,6 +18,6 @@ class BlockExpression(val parameters: List<Pair<String, FType<*>>>, val body: Li
 
     override fun evaluate(context: InterpreterContext): FValue {
         val function = createFunction(parameterNames, type!!, body, context)
-        return FValue(TFunction, function)
+        return FValue(type!!, function)
     }
 }

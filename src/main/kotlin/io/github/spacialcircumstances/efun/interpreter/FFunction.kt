@@ -28,7 +28,7 @@ class CurryFunction(override val parameterName: String, override val type: Funct
         val newEnv = environment.copy()
         newEnv[parameterName] = arg
         val fPointer = FunctionPointer(next, newEnv)
-        return FValue(TFunction, fPointer)
+        return FValue(next.type, fPointer)
     }
 }
 
@@ -69,9 +69,9 @@ fun runWhileFunction(fp: FunctionPointer, values: List<FValue>): FValue {
     var res: FValue? = null
     for (i in 0 until values.size) {
         val result = currentFp.run(values[i])
-        if (result.type == TFunction) {
-            currentFp = TFunction.castValue(result)
-            res = FValue(TFunction, currentFp)
+        if (result.type is FunctionType) {
+            currentFp = result.type.castValue(result)
+            res = FValue(currentFp.function.type, currentFp)
         } else if (i == values.size - 1) {
             res = result
             break
