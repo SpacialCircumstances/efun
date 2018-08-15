@@ -1,6 +1,10 @@
 package io.github.spacialcircumstances.efun.interpreter
 
-class InterpreterConfig(val externalValues: Map<String, FValue>) {
+import io.github.spacialcircumstances.efun.ExternalBinding
+
+class InterpreterConfig(private val externalBinding: ExternalBinding) {
+    private val externalValues = externalBinding.bindings
+
     fun createInterpreterContext(): InterpreterContext {
         val context = InterpreterContext(null)
         externalValues.forEach {
