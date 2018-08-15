@@ -1,13 +1,18 @@
 package io.github.spacialcircumstances.efun
 
+import io.github.spacialcircumstances.efun.interpreter.FValue
 import io.github.spacialcircumstances.efun.interpreter.InterpreterConfig
+import io.github.spacialcircumstances.efun.interpreter.TFloat
 import java.nio.file.Files
 import java.nio.file.Paths
 
 const val QUIT_COMMAND = ":q"
 
 fun main(args: Array<String>) {
-    val config = InterpreterConfig()
+    val external = mapOf(
+            "pi" to FValue(TFloat, Math.PI)
+    )
+    val config = InterpreterConfig(external)
     val interpreter = Interpreter(config)
     if (args.size == 1) {
         val path = Paths.get(args[0])
