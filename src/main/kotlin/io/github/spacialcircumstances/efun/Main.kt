@@ -1,14 +1,21 @@
 package io.github.spacialcircumstances.efun
 
+import io.github.spacialcircumstances.efun.interpreter.ExternalFunction1
+import io.github.spacialcircumstances.efun.interpreter.FunctionType
 import io.github.spacialcircumstances.efun.interpreter.InterpreterConfig
+import io.github.spacialcircumstances.efun.interpreter.TFloat
 import java.nio.file.Files
 import java.nio.file.Paths
 
 const val QUIT_COMMAND = ":q"
 
 fun main(args: Array<String>) {
+    val externalSquare = ExternalFunction1<Double, Double>({
+        Math.pow(it, 2.0)
+    }, FunctionType(TFloat, TFloat))
     val external = ExternalBinding()
     external.externalFloat("pi", Math.PI)
+    external.externalFunction("ext_square", externalSquare)
     val config = InterpreterConfig(external)
     val interpreter = Interpreter(config)
     if (args.size == 1) {

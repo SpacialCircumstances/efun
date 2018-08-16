@@ -35,6 +35,13 @@ class ExternalBinding {
         }
     }
 
+    fun externalFunction(name: String, value: ExternalFunction) {
+        if (bindings.containsKey(name)) bindingExists(name)
+        else {
+            bindings[name] = FValue(value.functionType, ExternalFunctionPointer(value))
+        }
+    }
+
     operator fun set(name: String, value: String) = ::externalString
     operator fun set(name: String, value: Double) = ::externalFloat
     operator fun set(name: String, value: Int) = ::externalInt
