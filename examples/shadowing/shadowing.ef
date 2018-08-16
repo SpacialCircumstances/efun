@@ -1,0 +1,7 @@
+let x = "Bye!"
+let print_hw = {
+    let x = "Hello World!"
+    debug x
+}
+print_hw()
+debug x

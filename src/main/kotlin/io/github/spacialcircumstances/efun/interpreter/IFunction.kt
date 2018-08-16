@@ -18,7 +18,7 @@ class ValueFunction(val parameterName: String, override val type: FunctionType, 
 
 class CurryFunction(val parameterName: String, override val type: FunctionType, val next: IFunction) : IFunction {
     override fun run(arg: FValue, environment: InterpreterContext): FValue {
-        val newEnv = environment.copy()
+        val newEnv = InterpreterContext(environment)
         newEnv[parameterName] = arg
         val fPointer = FunctionPointer(next, newEnv)
         return FValue(next.type, fPointer)

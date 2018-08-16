@@ -26,7 +26,7 @@ class ExternalFunctionPointer(val externalFunction: ExternalFunction): IFunction
 
 class FunctionPointer(val function: IFunction, val environment: InterpreterContext) : IFunctionPointer {
     fun run(arg: FValue): FValue {
-        return function.run(arg, environment.copy())
+        return function.run(arg, InterpreterContext(environment))
     }
 
     override fun runWithArguments(values: List<FValue>): FValue {

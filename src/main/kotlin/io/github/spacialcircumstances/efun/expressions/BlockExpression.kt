@@ -7,7 +7,7 @@ class BlockExpression(val parameters: List<Pair<String, FType<*>>>, val body: Li
     var type: FunctionType? = null
 
     override fun guessType(context: TypeContext): FType<*> {
-        val context = context.copy()
+        val context = TypeContext(context)
         parameters.forEach {
             context[it.first] = it.second
         }
