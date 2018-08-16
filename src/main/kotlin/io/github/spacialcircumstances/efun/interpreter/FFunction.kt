@@ -10,9 +10,29 @@ interface IFunction {
     fun run(arg: FValue, environment: InterpreterContext): FValue
 }
 
-class FunctionPointer(val function: IFunction, val environment: InterpreterContext) {
+interface IFunctionPointer {
+    fun runWithArguments(values: List<FValue>): FValue
+}
+
+class FunctionPointer(val function: IFunction, val environment: InterpreterContext) : IFunctionPointer {
     fun run(arg: FValue): FValue {
         return function.run(arg, environment.copy())
+    }
+
+    override fun runWithArguments(values: List<FValue>): FValue {
+        var currentFp = this
+        var res: FValue? = null
+        for (i in 0 until values.size) {
+            val result = currentFp.run(values[i])
+            if (result.type is FunctionType) {
+                currentFp = result.type.castValue(result)
+                res = FValue(currentFp.function.type, currentFp)
+            } else if (i == values.size - 1) {
+                res = result
+                break
+            } else throw RuntimeError("Expected return value of function, but got ${result.type}")
+        }
+        return res ?: throw RuntimeError("Reached illegal interpreter state")
     }
 }
 
@@ -32,11 +52,11 @@ class CurryFunction(val parameterName: String, override val type: FunctionType, 
     }
 }
 
-class EmptyFunction(val expressions: List<AbstractExpression>, val outType: FType<*>): IFunction {
+class EmptyFunction(val expressions: List<AbstractExpression>, val outType: FType<*>) : IFunction {
     override val type = FunctionType(TVoid, outType)
 
     override fun run(arg: FValue, environment: InterpreterContext): FValue {
-       return expressions.map { it.evaluate(environment) }.last()
+        return expressions.map { it.evaluate(environment) }.last()
     }
 }
 
@@ -60,20 +80,4 @@ fun createFunction(parameterNames: List<String>, type: FunctionType, body: List<
             FunctionPointer(function, environment)
         }
     }
-}
-
-fun runWhileFunction(fp: FunctionPointer, values: List<FValue>): FValue {
-    var currentFp = fp
-    var res: FValue? = null
-    for (i in 0 until values.size) {
-        val result = currentFp.run(values[i])
-        if (result.type is FunctionType) {
-            currentFp = result.type.castValue(result)
-            res = FValue(currentFp.function.type, currentFp)
-        } else if (i == values.size - 1) {
-            res = result
-            break
-        } else throw RuntimeError("Expected return value of function, but got ${result.type}")
-    }
-    return res ?: throw RuntimeError("Reached illegal interpreter state")
 }

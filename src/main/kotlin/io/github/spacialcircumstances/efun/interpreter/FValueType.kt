@@ -41,11 +41,11 @@ class VoidType: FType<Unit>() {
     }
 }
 
-class FunctionType(val inType: FType<*>, val outType: FType<*>): FType<FunctionPointer>() {
+class FunctionType(val inType: FType<*>, val outType: FType<*>): FType<IFunctionPointer>() {
     override val name: String = "(${inType.name} -> ${outType.name})"
 
-    override fun castValue(value: FValue): FunctionPointer {
-        return value.value as FunctionPointer
+    override fun castValue(value: FValue): IFunctionPointer {
+        return value.value as IFunctionPointer
     }
 
     override fun equals(other: Any?): Boolean {

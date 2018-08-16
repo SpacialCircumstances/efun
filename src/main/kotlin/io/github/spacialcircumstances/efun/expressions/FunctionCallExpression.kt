@@ -22,7 +22,7 @@ class FunctionCallExpression(private val functionExpression: AbstractExpression,
     }
 
     override fun evaluate(context: InterpreterContext): FValue {
-        val function = functionExpression.evaluate(context).value as FunctionPointer
-        return runWhileFunction(function, args.map { it.evaluate(context) })
+        val function = functionExpression.evaluate(context).value as IFunctionPointer
+        return function.runWithArguments(args.map { it.evaluate(context) })
     }
 }
