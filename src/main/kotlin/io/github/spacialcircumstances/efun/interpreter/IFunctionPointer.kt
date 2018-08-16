@@ -32,6 +32,9 @@ class FunctionPointer(val function: IFunction, val environment: InterpreterConte
     override fun runWithArguments(values: List<FValue>): FValue {
         var currentFp = this
         var res: FValue? = null
+        if (values.isEmpty()) {
+            return currentFp.run(FValue(TVoid, null))
+        }
         for (i in 0 until values.size) {
             val result = currentFp.run(values[i])
             if (result.type is FunctionType) {
