@@ -6,7 +6,6 @@ import io.github.spacialcircumstances.efun.cdr
 import io.github.spacialcircumstances.efun.expressions.AbstractExpression
 
 interface IFunction {
-    val parameterName: String
     val type: FunctionType
     fun run(arg: FValue, environment: InterpreterContext): FValue
 }
@@ -17,14 +16,14 @@ class FunctionPointer(val function: IFunction, val environment: InterpreterConte
     }
 }
 
-class ValueFunction(override val parameterName: String, override val type: FunctionType, val expressions: List<AbstractExpression>) : IFunction {
+class ValueFunction(val parameterName: String, override val type: FunctionType, val expressions: List<AbstractExpression>) : IFunction {
     override fun run(arg: FValue, environment: InterpreterContext): FValue {
         environment[parameterName] = arg
         return expressions.map { it.evaluate(environment) }.last()
     }
 }
 
-class CurryFunction(override val parameterName: String, override val type: FunctionType, val next: IFunction) : IFunction {
+class CurryFunction(val parameterName: String, override val type: FunctionType, val next: IFunction) : IFunction {
     override fun run(arg: FValue, environment: InterpreterContext): FValue {
         val newEnv = environment.copy()
         newEnv[parameterName] = arg
@@ -34,8 +33,6 @@ class CurryFunction(override val parameterName: String, override val type: Funct
 }
 
 class EmptyFunction(val expressions: List<AbstractExpression>, val outType: FType<*>): IFunction {
-    override val parameterName: String
-        get() = ""
     override val type = FunctionType(TVoid, outType)
 
     override fun run(arg: FValue, environment: InterpreterContext): FValue {
