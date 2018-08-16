@@ -55,6 +55,19 @@ class FunctionType(val inType: FType<*>, val outType: FType<*>): FType<IFunction
     }
 }
 
+fun getReturnType(type: FunctionType, maxDepth: Int): FType<*>? {
+    var currentFp = type
+    var result: FType<*>? = null
+    for (i in 0 until maxDepth) {
+        val out = currentFp.outType
+        result = out
+        if (out is FunctionType) {
+            currentFp = out
+        }
+    }
+    return result
+}
+
 val TVoid = VoidType()
 val TInt = SimpleType<Long>("Int")
 val TFloat = SimpleType<Double>("Float")

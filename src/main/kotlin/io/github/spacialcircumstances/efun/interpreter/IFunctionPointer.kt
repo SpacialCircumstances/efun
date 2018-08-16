@@ -6,13 +6,21 @@ interface IFunctionPointer {
     fun runWithArguments(values: List<FValue>): FValue
 }
 
+class ExternalCurryFunctionPointer(val externalFunction: ExternalFunction, val args: List<FValue>): IFunctionPointer {
+    override fun runWithArguments(values: List<FValue>): FValue {
+        val newArgs = args + values
+        return if (newArgs.size == externalFunction.argumentCount) {
+            externalFunction.run(newArgs)
+        } else {
+            val resultType = getReturnType(externalFunction.functionType, newArgs.size)!!
+            FValue(resultType, ExternalCurryFunctionPointer(externalFunction, args))
+        }
+    }
+}
+
 class ExternalFunctionPointer(val externalFunction: ExternalFunction): IFunctionPointer {
     override fun runWithArguments(values: List<FValue>): FValue {
-        if (values.size == externalFunction.argumentCount) {
-            return externalFunction.run(values)
-        } else {
-            throw RuntimeError("Curried external functions are not supported yet")
-        }
+        return ExternalCurryFunctionPointer(externalFunction, values).runWithArguments(emptyList())
     }
 }
 
