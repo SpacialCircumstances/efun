@@ -25,7 +25,7 @@ class FunctionPointer(val function: IFunction, val environment: InterpreterConte
         for (i in 0 until values.size) {
             val result = currentFp.run(values[i])
             if (result.type is FunctionType) {
-                currentFp = result.type.castValue(result)
+                currentFp = result.type.castValue(result) as FunctionPointer
                 res = FValue(currentFp.function.type, currentFp)
             } else if (i == values.size - 1) {
                 res = result
