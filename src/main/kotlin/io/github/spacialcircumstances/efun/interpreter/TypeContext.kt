@@ -2,13 +2,16 @@ package io.github.spacialcircumstances.efun.interpreter
 
 import io.github.spacialcircumstances.efun.TypeError
 
-class TypeContext(val parent: TypeContext?) {
+class TypeContext(val parent: TypeContext?, additionalTypeMappings: Map<String, FType<*>>? = null) {
     private val types = mutableMapOf<String, FType<*>>()
     private val typesResolveMap = mutableMapOf<String, FType<*>>()
 
     init {
-        parent?.let {
-            typesResolveMap.putAll(it.typesResolveMap)
+        if (parent != null) {
+            typesResolveMap.putAll(parent.typesResolveMap)
+        }
+        if (additionalTypeMappings != null) {
+            typesResolveMap.putAll(additionalTypeMappings)
         }
     }
 
