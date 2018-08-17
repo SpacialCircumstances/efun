@@ -5,6 +5,7 @@ import io.github.spacialcircumstances.efun.interpreter.*
 
 class AssertExpression(val value: AbstractExpression): AbstractExpression() {
     override fun guessType(context: TypeContext): FType<*> {
+        value.guessType(context)
         return TVoid
     }
 
