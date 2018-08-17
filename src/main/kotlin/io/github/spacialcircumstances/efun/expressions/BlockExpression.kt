@@ -2,17 +2,18 @@ package io.github.spacialcircumstances.efun.expressions
 
 import io.github.spacialcircumstances.efun.interpreter.*
 
-class BlockExpression(val parameters: List<Pair<String, FType<*>>>, val body: List<AbstractExpression>): AbstractExpression() {
+class BlockExpression(val parameters: List<Pair<String, PlaceholderType>>, val body: List<AbstractExpression>): AbstractExpression() {
     val parameterNames = parameters.map { it.first }
     var type: FunctionType? = null
 
     override fun guessType(context: TypeContext): FType<*> {
         val context = TypeContext(context)
-        parameters.forEach {
+        val actualTypes = parameters.map { Pair(it.first, it.second.resolveType(context)) }
+        actualTypes.forEach {
             context[it.first] = it.second
         }
         val returnType = body.map { it.guessType(context) }.last()
-        type = createFunctionType(parameters.map { it.second }, returnType)
+        type = createFunctionType(actualTypes.map { it.second }, returnType)
         return type!!
     }
 

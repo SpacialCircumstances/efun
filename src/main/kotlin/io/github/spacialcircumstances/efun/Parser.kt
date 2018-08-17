@@ -5,23 +5,23 @@ import io.github.spacialcircumstances.efun.interpreter.*
 import io.github.spacialcircumstances.efun.parser.*
 
 val stringLiteralParser = oneWith<LiteralExpression, Token>({ it.type == TokenType.STRING }) {
-    LiteralExpression(FValue(TString, it.literal))
+    LiteralExpression(Pair(SimplePlaceholderType("String"), it.literal!!))
 }
 
 val intLiteralParser = oneWith<LiteralExpression, Token>({ it.type == TokenType.INTEGER }) {
-    LiteralExpression(FValue(TInt, it.literal))
+    LiteralExpression(Pair(SimplePlaceholderType("Int"), it.literal!!))
 }
 
 val floatLiteralParser = oneWith<LiteralExpression, Token>({ it.type == TokenType.FLOAT }) {
-    LiteralExpression(FValue(TFloat, it.literal))
+    LiteralExpression(Pair(SimplePlaceholderType("Float"), it.literal!!))
 }
 
 val trueLiteralParser = oneWith<LiteralExpression, Token>({ it.type == TokenType.TRUE }) {
-    LiteralExpression(FValue(TBool, true))
+    LiteralExpression(Pair(SimplePlaceholderType("Bool"), true))
 }
 
 val falseLiteralParser = oneWith<LiteralExpression, Token>({ it.type == TokenType.FALSE }) {
-    LiteralExpression(FValue(TBool, false))
+    LiteralExpression(Pair(SimplePlaceholderType("Bool"), false))
 }
 
 val expressionParser = lazy(::createExpressionParser)
@@ -95,20 +95,14 @@ val binaryExpressionParser = operatorExpressionParser.andThen(binaryOperatorPars
 
 val unaryExpressionParser = unaryOperatorParser.andThen(operatorExpressionParser).map { UnaryExpression(it.second, it.first) }
 
-val typeNameParser = oneWith<FType<*>, Token>({ it.type == TokenType.IDENTIFIER }) {
-    when(it.lexeme) {
-        "Bool" -> TBool
-        "String" -> TString
-        "Int" -> TInt
-        "Float" -> TFloat
-        else -> TVoid
-    }
+val typeNameParser = oneWith<PlaceholderType, Token>({ it.type == TokenType.IDENTIFIER }) {
+    SimplePlaceholderType(it.lexeme)
 }
 
 val typeFunctionParser = takeMiddle(openParensParser, typeNameParser.separator(arrowParser), closeParensParser).map {
     val returnType = it.last()
     val paramTypes = it.take(it.size - 1)
-    createFunctionType(paramTypes, returnType)
+    FunctionPlaceholderType(paramTypes, returnType)
 }
 
 val typeParser = typeFunctionParser.orElse(typeNameParser)

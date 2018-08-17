@@ -1,16 +1,15 @@
 package io.github.spacialcircumstances.efun.expressions
 
-import io.github.spacialcircumstances.efun.interpreter.FType
-import io.github.spacialcircumstances.efun.interpreter.FValue
-import io.github.spacialcircumstances.efun.interpreter.InterpreterContext
-import io.github.spacialcircumstances.efun.interpreter.TypeContext
+import io.github.spacialcircumstances.efun.interpreter.*
 
-class LiteralExpression(private val literal: FValue): AbstractExpression() {
+class LiteralExpression(private val parserLiteral: Pair<PlaceholderType, Any>): AbstractExpression() {
+    private var literal: FValue? = null
     override fun evaluate(context: InterpreterContext): FValue {
-        return literal
+        return literal!!
     }
 
     override fun guessType(context: TypeContext): FType<*> {
-        return literal.type
+        literal = FValue(parserLiteral.first.resolveType(context), parserLiteral.second)
+        return literal!!.type
     }
 }
