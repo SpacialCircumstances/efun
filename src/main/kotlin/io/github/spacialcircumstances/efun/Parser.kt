@@ -105,8 +105,10 @@ val typeNameParser = oneWith<FType<*>, Token>({ it.type == TokenType.IDENTIFIER 
     }
 }
 
-val typeFunctionParser = takeMiddle(openParensParser, typeNameParser.andIgnoreResult(arrowParser).andThen(typeNameParser), closeParensParser).map {
-    FunctionType(it.first, it.second)
+val typeFunctionParser = takeMiddle(openParensParser, typeNameParser.separator(arrowParser), closeParensParser).map {
+    val returnType = it.last()
+    val paramTypes = it.take(it.size - 1)
+    createFunctionType(paramTypes, returnType)
 }
 
 val typeParser = typeFunctionParser.orElse(typeNameParser)
