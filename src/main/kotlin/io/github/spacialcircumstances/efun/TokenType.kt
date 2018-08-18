@@ -37,5 +37,6 @@ enum class TokenType {
     AND,
     OR,
     XOR,
-    EOF
+    EOF,
+    ENUM
 }
