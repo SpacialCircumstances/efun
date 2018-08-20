@@ -55,6 +55,32 @@ class FunctionType(val inType: FType<*>, val outType: FType<*>): FType<IFunction
     }
 }
 
+class EnumInstance(val name: String, val id: Int) {
+    override fun equals(other: Any?): Boolean {
+        return if (other is EnumInstance) {
+            (other.id == id) && (other.name == name)
+        } else false
+    }
+
+    override fun toString(): String {
+        return "Enum ($id): $name"
+    }
+}
+
+class EnumType(val instances: List<EnumInstance>): FType<EnumInstance>() {
+    override val name: String = "Enum of: ${instances.joinToString()}"
+
+    override fun castValue(value: FValue): EnumInstance {
+        return value.value as EnumInstance
+    }
+
+    override fun equals(other: Any?): Boolean {
+        return if (other is EnumType) {
+            (name == other.name) && (instances == other.instances)
+        } else false
+    }
+}
+
 fun getReturnType(type: FunctionType, maxDepth: Int): FType<*>? {
     var currentFp = type
     var result: FType<*>? = null
@@ -73,3 +99,4 @@ val TInt = SimpleType<Long>("Int")
 val TFloat = SimpleType<Double>("Float")
 val TString = SimpleType<String>("String")
 val TBool = SimpleType<Boolean>("Bool")
+val TType = SimpleType<FType<*>>("Type")
