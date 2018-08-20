@@ -1,16 +1,16 @@
 package io.github.spacialcircumstances.efun.expressions
 
-import io.github.spacialcircumstances.efun.interpreter.FType
-import io.github.spacialcircumstances.efun.interpreter.FValue
-import io.github.spacialcircumstances.efun.interpreter.InterpreterContext
-import io.github.spacialcircumstances.efun.interpreter.TypeContext
+import io.github.spacialcircumstances.efun.interpreter.*
 
 class TypeExpression(val name: String, val typeExpr: AbstractExpression): AbstractExpression() {
     override fun evaluate(context: InterpreterContext): FValue {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        typeExpr.evaluate(context)
+        return FValue(TVoid, null)
     }
 
     override fun guessType(context: TypeContext): FType<*> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val type = typeExpr.guessType(context)
+        context.registerType(name, type)
+        return type
     }
 }

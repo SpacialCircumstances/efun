@@ -27,6 +27,11 @@ class TypeContext(val parent: TypeContext?, additionalTypeMappings: Map<String, 
         }
     }
 
+    fun registerType(name: String, type: FType<*>) {
+        if (typesResolveMap.containsKey(name)) throw TypeError("Type $name already exists")
+        typesResolveMap[name] = type
+    }
+
     fun resolveSimpleType(placeholderType: SimplePlaceholderType): FType<*> {
         return typesResolveMap[placeholderType.name] ?: throw TypeError("Type ${placeholderType.name} not defined")
     }

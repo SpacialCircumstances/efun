@@ -1,1 +1,3 @@
 type TestEnum = enum Test1, Test2
+debug Test1
+debug Test2
