@@ -14,7 +14,8 @@ val identifierReplacements = mapOf(
         "or" to TokenType.OR,
         "xor" to TokenType.XOR,
         "enum" to TokenType.ENUM,
-        "type" to TokenType.TYPE
+        "type" to TokenType.TYPE,
+        "rec" to TokenType.REC
 )
 
 fun tokenize(code: String): List<Token> {

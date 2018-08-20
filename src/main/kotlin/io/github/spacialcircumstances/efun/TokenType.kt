@@ -39,5 +39,6 @@ enum class TokenType {
     XOR,
     EOF,
     TYPE,
-    ENUM
+    ENUM,
+    REC
 }

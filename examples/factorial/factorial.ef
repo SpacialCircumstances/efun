@@ -1,4 +1,4 @@
-let factorial = { number: Int ->
+let rec -> Int factorial = { number: Int ->
   if number == 0 {
     1
   } else {

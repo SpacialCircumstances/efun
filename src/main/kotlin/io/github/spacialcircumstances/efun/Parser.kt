@@ -36,14 +36,6 @@ val nameParser = oneWith<String, Token>({ it.type == TokenType.IDENTIFIER }) {
     it.literal as String
 }
 
-val letNameParser = takeMiddle(one { it.type == TokenType.LET },
-                                nameParser,
-                                one { it.type == TokenType.EQUAL })
-
-val letExpressionParser = letNameParser.andThen(valueProducingExpressionParser).map {
-    LetExpression(it.second, it.first)
-}
-
 val unaryOperatorParser: Parser<String, Token> = choice<Token, Token>(
         one { it.type == TokenType.MINUS },
         one { it.type == TokenType.BANG }
@@ -126,6 +118,22 @@ val enumDefinitionParser = typeExprNameParser.andIgnoreResult(one { it.type == T
     TypeExpression(it.first, EnumTypeExpression(it.second))
 }
 
+val letNameParser = takeMiddle(one { it.type == TokenType.LET },
+        nameParser,
+        one { it.type == TokenType.EQUAL })
+
+val recTypeParser = takeRight(one<Token> { it.type == TokenType.REC }.andThen(arrowParser), typeParser)
+
+val letRecNameParser = takeRight(one { it.type == TokenType.LET }, recTypeParser).andThen(nameParser).andIgnoreResult(one { it.type == TokenType.EQUAL })
+
+val letRecExpressionParser = letRecNameParser.andThen(valueProducingExpressionParser).map {
+    RecLetExpression(it.first.second, it.first.first, it.second as BlockExpression)
+}
+
+val letExpressionParser = letNameParser.andThen(valueProducingExpressionParser).map {
+    LetExpression(it.second, it.first)
+}
+
 val noArgBlockParser = takeMiddle(blockStartParser, blockBodyParser, blockEndParser)
 
 val elseParser = takeRight(one { it.type == TokenType.ELSE }, noArgBlockParser)
@@ -148,7 +156,7 @@ fun createValueProducingExpressionParser(): Parser<AbstractExpression, Token> {
 }
 
 fun createExpressionParser(): Parser<AbstractExpression, Token> {
-    return choice(binaryExpressionParser, unaryExpressionParser, literalParser, debugExpressionParser, groupingExpressionParser, letExpressionParser, enumDefinitionParser, functionCallParser, variableExpressionParser, ifExpressionParser, assertStatementParser, blockParser)
+    return choice(binaryExpressionParser, unaryExpressionParser, literalParser, debugExpressionParser, groupingExpressionParser, letRecExpressionParser, letExpressionParser, enumDefinitionParser, functionCallParser, variableExpressionParser, ifExpressionParser, assertStatementParser, blockParser)
 }
 
 val programParser = expressionParser.many()
