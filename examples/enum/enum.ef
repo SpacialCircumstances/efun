@@ -1,3 +1,12 @@
 type TestEnum = enum Test1, Test2
-debug Test1
-debug Test2
+
+let enumFun = { e: TestEnum ->
+    if e == Test1 {
+        1
+    } else {
+        2
+    }
+}
+
+let r = enumFun(Test2)
+debug r
