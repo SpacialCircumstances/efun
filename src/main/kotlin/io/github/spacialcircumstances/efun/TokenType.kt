@@ -38,5 +38,6 @@ enum class TokenType {
     OR,
     XOR,
     EOF,
+    TYPE,
     ENUM
 }

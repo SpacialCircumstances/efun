@@ -1,0 +1,1 @@
+type TestEnum = enum Test1, Test2

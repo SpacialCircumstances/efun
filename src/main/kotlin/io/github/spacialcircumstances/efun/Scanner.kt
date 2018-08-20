@@ -13,7 +13,8 @@ val identifierReplacements = mapOf(
         "and" to TokenType.AND,
         "or" to TokenType.OR,
         "xor" to TokenType.XOR,
-        "enum" to TokenType.ENUM
+        "enum" to TokenType.ENUM,
+        "type" to TokenType.TYPE
 )
 
 fun tokenize(code: String): List<Token> {

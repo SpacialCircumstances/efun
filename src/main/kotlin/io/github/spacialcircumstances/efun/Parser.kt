@@ -118,6 +118,14 @@ val blockParser = takeMiddle(blockStartParser, blockArgumentsParser.andThen(bloc
     BlockExpression(it.first, it.second)
 }
 
+val typeExprNameParser = takeMiddle(one { it.type == TokenType.TYPE }, oneWith<String, Token>({ it.type == TokenType.IDENTIFIER }, { it.lexeme }), one { it.type == TokenType.EQUAL })
+
+val enumValuesParser = oneWith<String, Token>({ it.type == TokenType.IDENTIFIER }, { it.lexeme }).separator(commaParser)
+
+val enumDefinitionParser = typeExprNameParser.andIgnoreResult(one { it.type == TokenType.ENUM }).andThen(enumValuesParser).map {
+    TypeExpression(it.first, EnumTypeExpression(it.second))
+}
+
 val noArgBlockParser = takeMiddle(blockStartParser, blockBodyParser, blockEndParser)
 
 val elseParser = takeRight(one { it.type == TokenType.ELSE }, noArgBlockParser)
@@ -140,7 +148,7 @@ fun createValueProducingExpressionParser(): Parser<AbstractExpression, Token> {
 }
 
 fun createExpressionParser(): Parser<AbstractExpression, Token> {
-    return choice(binaryExpressionParser, unaryExpressionParser, literalParser, debugExpressionParser, groupingExpressionParser, letExpressionParser, functionCallParser, variableExpressionParser, ifExpressionParser, assertStatementParser, blockParser)
+    return choice(binaryExpressionParser, unaryExpressionParser, literalParser, debugExpressionParser, groupingExpressionParser, letExpressionParser, enumDefinitionParser, functionCallParser, variableExpressionParser, ifExpressionParser, assertStatementParser, blockParser)
 }
 
 val programParser = expressionParser.many()
