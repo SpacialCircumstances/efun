@@ -19,7 +19,7 @@ fun main(args: Array<String>) {
         val path = Paths.get(args[0])
         interpreter.interpret(String(Files.readAllBytes(path)), errorCallback = {
             throw IllegalStateException("Error executing script ${path.fileName}: ${it.message}", it)
-        })
+        }, executionLogCallback = { s, t -> println("##### $s: ${t/1000000}ms")})
     } else if (args.isEmpty()) {
         var running = true
         while (running) {
