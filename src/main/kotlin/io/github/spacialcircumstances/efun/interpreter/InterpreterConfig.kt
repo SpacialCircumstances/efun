@@ -1,6 +1,7 @@
 package io.github.spacialcircumstances.efun.interpreter
 
 import io.github.spacialcircumstances.efun.ExternalBinding
+import io.github.spacialcircumstances.efun.Interpreter
 
 class InterpreterConfig(private val externalBinding: ExternalBinding) {
     private val externalValues = externalBinding.bindings
@@ -27,4 +28,14 @@ class InterpreterConfig(private val externalBinding: ExternalBinding) {
         }
         return context
     }
+}
+
+fun defaultConfig(): InterpreterConfig {
+    val extPow = ExternalFunction2<Double, Double, Double>({ d1, d2 ->
+        Math.pow(d1, d2)
+    }, createFunctionType(listOf(TFloat, TFloat), TFloat))
+    val external = ExternalBinding()
+    external.externalFloat("pi", Math.PI)
+    external.externalFunction("pow", extPow)
+    return InterpreterConfig(external)
 }
