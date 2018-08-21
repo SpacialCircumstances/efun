@@ -6,7 +6,7 @@ import io.github.spacialcircumstances.efun.interpreter.defaultConfig
 
 const val QUIT_COMMAND = ":q"
 
-class Repl: CliktCommand() {
+class Repl: CliktCommand(help = "Run the REPL") {
     override fun run() {
         val interpreter = Interpreter(defaultConfig())
         var running = true
