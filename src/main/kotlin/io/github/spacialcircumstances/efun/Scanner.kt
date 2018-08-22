@@ -38,6 +38,8 @@ private fun scanToken(state: ScannerState): ScannerState {
         ')' -> withToken(newState, token(newState, TokenType.RIGHT_PAREN))
         '{' -> withToken(newState, token(newState, TokenType.LEFT_BRACE))
         '}' -> withToken(newState, token(newState, TokenType.RIGHT_BRACE))
+        '[' -> withToken(newState, token(newState, TokenType.LEFT_BRACKET))
+        ']' -> withToken(newState, token(newState, TokenType.RIGHT_BRACKET))
         '*' -> withToken(newState, token(newState, TokenType.STAR))
         '/' -> withToken(newState, token(newState, TokenType.SLASH))
         '+' -> withToken(newState, token(newState, TokenType.PLUS))
