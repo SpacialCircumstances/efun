@@ -44,5 +44,6 @@ enum class TokenType {
     TYPE,
     ENUM,
     REC,
-    IS //is
+    IS, //is
+    RECORD
 }

@@ -121,6 +121,13 @@ val enumDefinitionParser = typeExprNameParser.andIgnoreResult(one { it.type == T
     TypeExpression(it.first, EnumTypeExpression(it.second))
 }
 
+val recordValueParser = oneWith<String, Token>({ it.type == TokenType.IDENTIFIER }) { it.lexeme }.andIgnoreResult(one { it.type == TokenType.COLON }).andThen(typeParser)
+
+val recordBodyParser = takeMiddle(one { it.type == TokenType.LEFT_BRACE }, recordValueParser.separator(commaParser), one { it.type == TokenType.RIGHT_BRACE })
+
+val recordDefinitionParser = typeExprNameParser.andIgnoreResult(one { it.type == TokenType.RECORD }).andThen(recordBodyParser).map {
+}
+
 val letNameParser = takeMiddle(one { it.type == TokenType.LET },
         nameParser,
         one { it.type == TokenType.EQUAL })
