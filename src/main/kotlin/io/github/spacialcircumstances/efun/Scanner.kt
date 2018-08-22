@@ -47,6 +47,7 @@ private fun scanToken(state: ScannerState): ScannerState {
         ',' -> withToken(newState, token(newState, TokenType.COMMA))
         '.' -> withToken(newState, token(newState, TokenType.DOT))
         ':' -> withToken(newState, token(newState, TokenType.COLON))
+        ';' -> withToken(newState, token(newState, TokenType.SEMICOLON))
         '!' -> lookahead(newState, '=', TokenType.BANG_EQUAL, TokenType.BANG)
         '=' -> lookahead(newState, '=', TokenType.EQUAL_EQUAL, TokenType.EQUAL)
         '>' -> lookahead(newState, '=', TokenType.GREATER_EQUAL, TokenType.GREATER)

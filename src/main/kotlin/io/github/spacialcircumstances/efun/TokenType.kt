@@ -14,6 +14,7 @@ enum class TokenType {
     PLUS,
     MINUS,
     COLON,
+    SEMICOLON,
     BANG,
     BANG_EQUAL,
     EQUAL,
