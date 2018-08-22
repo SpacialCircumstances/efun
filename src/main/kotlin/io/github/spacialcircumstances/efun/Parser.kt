@@ -126,6 +126,7 @@ val recordValueParser = oneWith<String, Token>({ it.type == TokenType.IDENTIFIER
 val recordBodyParser = takeMiddle(one { it.type == TokenType.LEFT_BRACE }, recordValueParser.separator(commaParser), one { it.type == TokenType.RIGHT_BRACE })
 
 val recordDefinitionParser = typeExprNameParser.andIgnoreResult(one { it.type == TokenType.RECORD }).andThen(recordBodyParser).map {
+    TypeExpression(it.first, RecordTypeExpression(it.second))
 }
 
 val letNameParser = takeMiddle(one { it.type == TokenType.LET },
@@ -166,7 +167,7 @@ fun createValueProducingExpressionParser(): Parser<AbstractExpression, Token> {
 }
 
 fun createExpressionParser(): Parser<AbstractExpression, Token> {
-    return choice(binaryExpressionParser, unaryExpressionParser, literalParser, debugExpressionParser, groupingExpressionParser, letRecExpressionParser, letExpressionParser, enumDefinitionParser, functionCallParser, variableExpressionParser, ifExpressionParser, assertStatementParser, blockParser)
+    return choice(binaryExpressionParser, unaryExpressionParser, literalParser, debugExpressionParser, groupingExpressionParser, letRecExpressionParser, letExpressionParser, enumDefinitionParser, recordDefinitionParser, functionCallParser, variableExpressionParser, ifExpressionParser, assertStatementParser, blockParser)
 }
 
 val programParser = expressionParser.many()

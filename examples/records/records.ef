@@ -1,0 +1,6 @@
+type Vehicle = record {
+    name: String,
+    wheelCount: Int
+}
+
+debug "Hello World!"
