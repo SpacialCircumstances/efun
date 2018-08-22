@@ -56,7 +56,8 @@ val binaryOperatorParser: Parser<Token, Token> = choice(
         one { it.type == TokenType.EQUAL_EQUAL },
         one { it.type == TokenType.OR },
         one { it.type == TokenType.AND },
-        one { it.type == TokenType.XOR }
+        one { it.type == TokenType.XOR },
+        one { it.type == TokenType.IS }
 )
 
 val openParensParser = one<Token> { it.type == TokenType.LEFT_PAREN }

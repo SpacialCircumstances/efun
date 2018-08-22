@@ -43,5 +43,6 @@ enum class TokenType {
     EOF,
     TYPE,
     ENUM,
-    REC
+    REC,
+    IS //is
 }

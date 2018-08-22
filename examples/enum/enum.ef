@@ -1,7 +1,7 @@
 type TestEnum = enum Test1, Test2;
 
 let enumFun = { e: TestEnum ->
-    if e == Test1 {
+    if e is Test1 {
         1
     } else {
         2
