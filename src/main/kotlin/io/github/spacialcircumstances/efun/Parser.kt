@@ -24,6 +24,8 @@ val falseLiteralParser = oneWith<LiteralExpression, Token>({ it.type == TokenTyp
     LiteralExpression(Pair(SimplePlaceholderType("Bool"), false))
 }
 
+val semicolonParser = one<Token> { it.type == TokenType.SEMICOLON }
+
 val expressionParser = lazy(::createExpressionParser)
 
 val valueProducingExpressionParser = lazy(::createValueProducingExpressionParser)
@@ -112,7 +114,7 @@ val blockParser = takeMiddle(blockStartParser, blockArgumentsParser.andThen(bloc
 
 val typeExprNameParser = takeMiddle(one { it.type == TokenType.TYPE }, oneWith<String, Token>({ it.type == TokenType.IDENTIFIER }, { it.lexeme }), one { it.type == TokenType.EQUAL })
 
-val enumValuesParser = oneWith<String, Token>({ it.type == TokenType.IDENTIFIER }, { it.lexeme }).separator(commaParser)
+val enumValuesParser = oneWith<String, Token>({ it.type == TokenType.IDENTIFIER }, { it.lexeme }).separator(commaParser).andIgnoreResult(semicolonParser)
 
 val enumDefinitionParser = typeExprNameParser.andIgnoreResult(one { it.type == TokenType.ENUM }).andThen(enumValuesParser).map {
     TypeExpression(it.first, EnumTypeExpression(it.second))

@@ -1,4 +1,4 @@
-type TestEnum = enum Test1, Test2
+type TestEnum = enum Test1, Test2;
 
 let enumFun = { e: TestEnum ->
     if e == Test1 {
