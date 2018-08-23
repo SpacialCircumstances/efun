@@ -69,6 +69,20 @@ class EnumType(val instances: List<EnumInstance>): FType<EnumInstance>() {
     }
 }
 
+class RecordType(val definition: RecordDefinition): FType<RecordInstance>() {
+    override fun equals(other: Any?): Boolean {
+        return if (other is RecordType) {
+            other.definition == definition
+        } else false
+    }
+
+    override val name: String = "Record ${definition.name}"
+
+    override fun castValue(value: FValue): RecordInstance {
+        return value as RecordInstance
+    }
+}
+
 fun getReturnType(type: FunctionType, maxDepth: Int): FType<*>? {
     var currentFp = type
     var result: FType<*>? = null
