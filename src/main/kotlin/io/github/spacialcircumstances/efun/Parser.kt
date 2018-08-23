@@ -121,12 +121,26 @@ val enumDefinitionParser = typeExprNameParser.andIgnoreResult(one { it.type == T
     TypeExpression(it.first, EnumTypeExpression(it.second))
 }
 
-val recordValueParser = oneWith<String, Token>({ it.type == TokenType.IDENTIFIER }) { it.lexeme }.andIgnoreResult(one { it.type == TokenType.COLON }).andThen(typeParser)
+val leftBraceParser = one<Token> { it.type == TokenType.LEFT_BRACE }
 
-val recordBodyParser = takeMiddle(one { it.type == TokenType.LEFT_BRACE }, recordValueParser.separator(commaParser), one { it.type == TokenType.RIGHT_BRACE })
+val rightBraceParser = one<Token> { it.type == TokenType.RIGHT_BRACE }
+
+val colonParser = one<Token> { it.type == TokenType.COLON }
+
+val recordValueParser = oneWith<String, Token>({ it.type == TokenType.IDENTIFIER }) { it.lexeme }.andIgnoreResult(colonParser).andThen(typeParser)
+
+val recordBodyParser = takeMiddle(leftBraceParser, recordValueParser.separator(commaParser), rightBraceParser)
 
 val recordDefinitionParser = typeExprNameParser.andIgnoreResult(one { it.type == TokenType.RECORD }).andThen(recordBodyParser).map {
     TypeExpression(it.first, RecordTypeExpression(it.first, it.second))
+}
+
+val constructorPairParser = nameParser.andIgnoreResult(colonParser).andThen(valueProducingExpressionParser)
+
+val constructorBodyParser = takeMiddle(leftBraceParser, constructorPairParser.separator(commaParser), rightBraceParser)
+
+val constructorParser = takeRight(one { it.type == TokenType.STAR }, nameParser).andThen(constructorBodyParser).map {
+    ConstructorExpression(it.first, it.second)
 }
 
 val letNameParser = takeMiddle(one { it.type == TokenType.LET },
@@ -163,11 +177,11 @@ fun createOperatorExpressionParser(): Parser<AbstractExpression, Token> {
 }
 
 fun createValueProducingExpressionParser(): Parser<AbstractExpression, Token> {
-    return choice(binaryExpressionParser, unaryExpressionParser, literalParser, groupingExpressionParser, functionCallParser, variableExpressionParser, blockParser, ifExpressionParser)
+    return choice(binaryExpressionParser, unaryExpressionParser, literalParser, groupingExpressionParser, functionCallParser, variableExpressionParser, blockParser, ifExpressionParser, constructorParser)
 }
 
 fun createExpressionParser(): Parser<AbstractExpression, Token> {
-    return choice(binaryExpressionParser, unaryExpressionParser, literalParser, debugExpressionParser, groupingExpressionParser, letRecExpressionParser, letExpressionParser, enumDefinitionParser, recordDefinitionParser, functionCallParser, variableExpressionParser, ifExpressionParser, assertStatementParser, blockParser)
+    return choice(binaryExpressionParser, unaryExpressionParser, literalParser, debugExpressionParser, groupingExpressionParser, letRecExpressionParser, letExpressionParser, enumDefinitionParser, recordDefinitionParser, functionCallParser, variableExpressionParser, ifExpressionParser, constructorParser, assertStatementParser, blockParser)
 }
 
 val programParser = expressionParser.many()
