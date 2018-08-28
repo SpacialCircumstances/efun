@@ -3,4 +3,7 @@ type Vehicle = record {
     wheelCount: Int
 }
 
-debug "Hello World!"
+let car = Vehicle {
+    name: "Test Car",
+    wheelCount: 4
+}

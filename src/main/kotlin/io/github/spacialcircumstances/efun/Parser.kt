@@ -139,7 +139,7 @@ val constructorPairParser = nameParser.andIgnoreResult(colonParser).andThen(valu
 
 val constructorBodyParser = takeMiddle(leftBraceParser, constructorPairParser.separator(commaParser), rightBraceParser)
 
-val constructorParser = takeRight(one { it.type == TokenType.STAR }, nameParser).andThen(constructorBodyParser).map {
+val constructorParser = nameParser.andThen(constructorBodyParser).map {
     ConstructorExpression(it.first, it.second)
 }
 
@@ -177,11 +177,11 @@ fun createOperatorExpressionParser(): Parser<AbstractExpression, Token> {
 }
 
 fun createValueProducingExpressionParser(): Parser<AbstractExpression, Token> {
-    return choice(binaryExpressionParser, unaryExpressionParser, literalParser, groupingExpressionParser, functionCallParser, variableExpressionParser, blockParser, ifExpressionParser, constructorParser)
+    return choice(binaryExpressionParser, unaryExpressionParser, literalParser, groupingExpressionParser, functionCallParser, constructorParser, variableExpressionParser, blockParser, ifExpressionParser)
 }
 
 fun createExpressionParser(): Parser<AbstractExpression, Token> {
-    return choice(binaryExpressionParser, unaryExpressionParser, literalParser, debugExpressionParser, groupingExpressionParser, letRecExpressionParser, letExpressionParser, enumDefinitionParser, recordDefinitionParser, functionCallParser, variableExpressionParser, ifExpressionParser, constructorParser, assertStatementParser, blockParser)
+    return choice(binaryExpressionParser, unaryExpressionParser, literalParser, debugExpressionParser, groupingExpressionParser, letRecExpressionParser, letExpressionParser, enumDefinitionParser, recordDefinitionParser, functionCallParser, constructorParser, variableExpressionParser, ifExpressionParser, assertStatementParser, blockParser)
 }
 
 val programParser = expressionParser.many()
