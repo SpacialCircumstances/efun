@@ -11,10 +11,10 @@ class RecordDefinition(val name: String, val fieldDefs: Map<String, FType<*>>) {
     }
 
     fun createInstance(values: Map<String, FValue>): RecordInstance {
-        return RecordInstance(this, values.values.toList())
+        return RecordInstance(this, values)
     }
 }
 
-class RecordInstance(val definition: RecordDefinition, values: List<FValue>) {
-    val fields = mapOf<String, FValue>()
+class RecordInstance(val definition: RecordDefinition, val values: Map<String, FValue>) {
+    operator fun get(key: String): FValue? = values[key]
 }
