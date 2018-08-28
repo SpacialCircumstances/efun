@@ -1,16 +1,24 @@
 package io.github.spacialcircumstances.efun.expressions
 
-import io.github.spacialcircumstances.efun.interpreter.FType
-import io.github.spacialcircumstances.efun.interpreter.FValue
-import io.github.spacialcircumstances.efun.interpreter.InterpreterContext
-import io.github.spacialcircumstances.efun.interpreter.TypeContext
+import io.github.spacialcircumstances.efun.TypeError
+import io.github.spacialcircumstances.efun.interpreter.*
 
-class ConstructorExpression(val typeName: String, val fields: List<Pair<String, AbstractExpression>>): AbstractExpression() {
+class ConstructorExpression(val typeName: PlaceholderType, val fields: List<Pair<String, AbstractExpression>>): AbstractExpression() {
+    var type: RecordType? = null
+
     override fun evaluate(context: InterpreterContext): FValue {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val params = fields.map { Pair(it.first, it.second.evaluate(context)) }.toMap()
+        val instance = type!!.definition.createInstance(params)
+        return FValue(type!!, instance)
     }
 
     override fun guessType(context: TypeContext): FType<*> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        type = typeName.resolveType(context) as RecordType
+        if (type == null) throw TypeError("$typeName is not a record type")
+        val params = fields.map { Pair(it.first, it.second.guessType(context)) }.toMap()
+        if (!type!!.definition.checkValues(params)) {
+            throw TypeError("Error in constructor for type ${type!!.name}")
+        }
+        return type!!
     }
 }

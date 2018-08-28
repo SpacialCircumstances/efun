@@ -139,7 +139,7 @@ val constructorPairParser = nameParser.andIgnoreResult(colonParser).andThen(valu
 
 val constructorBodyParser = takeMiddle(leftBraceParser, constructorPairParser.separator(commaParser), rightBraceParser)
 
-val constructorParser = nameParser.andThen(constructorBodyParser).map {
+val constructorParser = typeNameParser.andThen(constructorBodyParser).map {
     ConstructorExpression(it.first, it.second)
 }
 
