@@ -79,7 +79,7 @@ class RecordType(val definition: RecordDefinition): FType<RecordInstance>() {
     override val name: String = "Record ${definition.name}"
 
     override fun castValue(value: FValue): RecordInstance {
-        return value as RecordInstance
+        return value.value as RecordInstance
     }
 }
 
