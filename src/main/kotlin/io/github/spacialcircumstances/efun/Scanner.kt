@@ -78,7 +78,7 @@ private fun identifier(state: ScannerState): ScannerState {
 }
 
 private fun isIdentifierPart(c: Char): Boolean {
-    return isIdentifierStart(c) || isDigit(c)
+    return isIdentifierStart(c) || isDigit(c) || c == '.'
 }
 
 private fun isIdentifierStart(c: Char): Boolean {
