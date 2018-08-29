@@ -7,3 +7,6 @@ let car = Vehicle {
     name: "Test Car",
     wheelCount: 4
 }
+
+assert (car.wheelCount == 4)
+debug car.name

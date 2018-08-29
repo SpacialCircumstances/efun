@@ -6,6 +6,7 @@ abstract class FType<out T> {
     abstract override operator fun equals(other: Any?): Boolean
     abstract val name: String
     abstract fun castValue(value: FValue): T
+    abstract val subTypeStore: IFTypeStore?
 
     override fun hashCode(): Int {
         return name.hashCode()
@@ -17,6 +18,8 @@ abstract class FType<out T> {
 }
 
 class SimpleType<out T>(override val name: String): FType<T>() {
+    override val subTypeStore: IFTypeStore? = null
+
     override fun castValue(value: FValue): T {
         @Suppress("UNCHECKED_CAST")
         return value.value as T
@@ -30,6 +33,8 @@ class SimpleType<out T>(override val name: String): FType<T>() {
 }
 
 class VoidType: FType<Unit>() {
+    override val subTypeStore: IFTypeStore? = null
+
     override fun equals(other: Any?): Boolean {
         return other is VoidType
     }
@@ -42,6 +47,7 @@ class VoidType: FType<Unit>() {
 }
 
 class FunctionType(val inType: FType<*>, val outType: FType<*>): FType<IFunctionPointer>() {
+    override val subTypeStore: IFTypeStore? = null
     override val name: String = "(${inType.name} -> ${outType.name})"
 
     override fun castValue(value: FValue): IFunctionPointer {
@@ -56,6 +62,7 @@ class FunctionType(val inType: FType<*>, val outType: FType<*>): FType<IFunction
 }
 
 class EnumType(val instances: List<EnumInstance>): FType<EnumInstance>() {
+    override val subTypeStore: IFTypeStore? = null
     override val name: String = "Enum of: ${instances.joinToString()}"
 
     override fun castValue(value: FValue): EnumInstance {
@@ -70,6 +77,8 @@ class EnumType(val instances: List<EnumInstance>): FType<EnumInstance>() {
 }
 
 class RecordType(val definition: RecordDefinition): FType<RecordInstance>() {
+    override val subTypeStore: IFTypeStore? = definition
+
     override fun equals(other: Any?): Boolean {
         return if (other is RecordType) {
             other.definition == definition
