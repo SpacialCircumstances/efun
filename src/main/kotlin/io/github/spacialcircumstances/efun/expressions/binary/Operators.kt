@@ -17,6 +17,7 @@ class BoolXorOperator: SimpleBinaryOperator<Boolean, Boolean, Boolean>(TBool, TB
 
 class AnyEqualOperator: BinaryOperator() {
     override fun typecheck(l: FType<*>, r: FType<*>): FType<*> {
+        if (l != r) throw TypeError("Operator == cannot be used on types ${l.name} and ${r.name}")
         return TBool
     }
 
@@ -25,6 +26,7 @@ class AnyEqualOperator: BinaryOperator() {
 
 class AnyNotEqualOperator: BinaryOperator() {
     override fun typecheck(l: FType<*>, r: FType<*>): FType<*> {
+        if (l != r) throw TypeError("Operator != cannot be used on types ${l.name} and ${r.name}")
         return TBool
     }
 
