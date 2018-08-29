@@ -64,11 +64,27 @@ val openParensParser = one<Token> { it.type == TokenType.LEFT_PAREN }
 
 val closeParensParser = one<Token> { it.type == TokenType.RIGHT_PAREN }
 
+val commaParser = one<Token> { it.type == TokenType.COMMA }
+
+val typeNameParser = oneWith<PlaceholderType, Token>({ it.type == TokenType.IDENTIFIER }) {
+    SimplePlaceholderType(it.lexeme)
+}
+
+val typeFunctionParser = takeMiddle(openParensParser, typeNameParser.separator(arrowParser), closeParensParser).map {
+    val returnType = it.last()
+    val paramTypes = it.take(it.size - 1)
+    FunctionPlaceholderType(paramTypes, returnType)
+}
+
+val typeParser = typeFunctionParser.orElse(typeNameParser)
+
+val singleGenericArgParser = takeRight(one { it.type == TokenType.HIGH_COMMA }, nameParser)
+
+val genericsDefinitionParser = takeMiddle(one { it.type == TokenType.LEFT_BRACKET }, singleGenericArgParser.separator(commaParser), one { it.type == TokenType.RIGHT_BRACKET})
+
 val groupingExpressionParser = takeMiddle(openParensParser, valueProducingExpressionParser, closeParensParser).map {
     GroupingExpression(it)
 }
-
-val commaParser = one<Token> { it.type == TokenType.COMMA }
 
 val debugExpressionParser = takeRight(one { it.type == TokenType.DEBUG }, expressionParser).map { DebugExpression(it) }
 
@@ -89,18 +105,6 @@ val binaryExpressionParser = operatorExpressionParser.andThen(binaryOperatorPars
 }
 
 val unaryExpressionParser = unaryOperatorParser.andThen(operatorExpressionParser).map { UnaryExpression(it.second, it.first) }
-
-val typeNameParser = oneWith<PlaceholderType, Token>({ it.type == TokenType.IDENTIFIER }) {
-    SimplePlaceholderType(it.lexeme)
-}
-
-val typeFunctionParser = takeMiddle(openParensParser, typeNameParser.separator(arrowParser), closeParensParser).map {
-    val returnType = it.last()
-    val paramTypes = it.take(it.size - 1)
-    FunctionPlaceholderType(paramTypes, returnType)
-}
-
-val typeParser = typeFunctionParser.orElse(typeNameParser)
 
 val blockStartParser = one<Token> { it.type == TokenType.LEFT_BRACE }
 val blockEndParser = one<Token> { it.type == TokenType.RIGHT_BRACE }

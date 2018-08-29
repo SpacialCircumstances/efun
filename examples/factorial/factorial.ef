@@ -6,4 +6,4 @@ let rec -> Int factorial = { number: Int ->
   }
 }
 
-debug factorial(5)
+debug factorial(12)
