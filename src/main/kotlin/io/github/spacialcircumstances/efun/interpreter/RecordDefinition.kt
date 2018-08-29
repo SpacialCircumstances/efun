@@ -1,6 +1,10 @@
 package io.github.spacialcircumstances.efun.interpreter
 
-class RecordDefinition(val name: String, val fieldDefs: Map<String, FType<*>>) {
+class RecordDefinition(val name: String, val fieldDefs: Map<String, FType<*>>): IFTypeStore {
+    override fun get(key: String): FType<*>? {
+        return fieldDefs[key]
+    }
+
     fun checkValues(values: Map<String, FType<*>>): Boolean {
         if (values.size != fieldDefs.size) return false
         values.forEach {
