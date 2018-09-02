@@ -15,12 +15,11 @@ class UnaryExpression(private val expression: AbstractExpression, private val op
 
     override fun evaluate(context: InterpreterContext): FValue {
         val value = expression.evaluate(context)
-        val result = when(operator) {
+        return when(operator) {
             "-" -> negate(value)
             "!" -> negate(value)
             else -> throw RuntimeError("Unsupported operator: $operator")
         }
-        return result
     }
 }
 

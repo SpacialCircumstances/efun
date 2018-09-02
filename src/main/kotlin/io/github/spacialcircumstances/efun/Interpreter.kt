@@ -4,7 +4,7 @@ import io.github.spacialcircumstances.efun.interpreter.FValue
 import io.github.spacialcircumstances.efun.interpreter.InterpreterConfig
 import io.github.spacialcircumstances.efun.performance.Stopwatch
 
-class Interpreter(val interpreterConfig: InterpreterConfig) {
+class Interpreter(private val interpreterConfig: InterpreterConfig) {
     private val iContext = interpreterConfig.createInterpreterContext()
     private val tContext = interpreterConfig.createTypeContext()
 

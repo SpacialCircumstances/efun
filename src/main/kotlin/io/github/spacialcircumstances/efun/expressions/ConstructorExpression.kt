@@ -3,7 +3,7 @@ package io.github.spacialcircumstances.efun.expressions
 import io.github.spacialcircumstances.efun.TypeError
 import io.github.spacialcircumstances.efun.interpreter.*
 
-class ConstructorExpression(val typeName: PlaceholderType, val fields: List<Pair<String, AbstractExpression>>): AbstractExpression() {
+class ConstructorExpression(private val typeName: PlaceholderType, val fields: List<Pair<String, AbstractExpression>>): AbstractExpression() {
     var type: RecordType? = null
 
     override fun evaluate(context: InterpreterContext): FValue {

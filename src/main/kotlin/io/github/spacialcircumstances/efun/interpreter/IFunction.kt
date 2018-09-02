@@ -9,7 +9,7 @@ interface IFunction {
     fun run(arg: FValue, environment: InterpreterContext): FValue
 }
 
-class ValueFunction(val parameterName: String, override val type: FunctionType, val expressions: List<AbstractExpression>) : IFunction {
+class ValueFunction(private val parameterName: String, override val type: FunctionType, val expressions: List<AbstractExpression>) : IFunction {
     override fun run(arg: FValue, environment: InterpreterContext): FValue {
         environment[parameterName] = arg
         return expressions.map { it.evaluate(environment) }.last()
@@ -25,7 +25,7 @@ class CurryFunction(val parameterName: String, override val type: FunctionType, 
     }
 }
 
-class EmptyFunction(val expressions: List<AbstractExpression>, val outType: FType<*>) : IFunction {
+class EmptyFunction(val expressions: List<AbstractExpression>, outType: FType<*>) : IFunction {
     override val type = FunctionType(TVoid, outType)
 
     override fun run(arg: FValue, environment: InterpreterContext): FValue {

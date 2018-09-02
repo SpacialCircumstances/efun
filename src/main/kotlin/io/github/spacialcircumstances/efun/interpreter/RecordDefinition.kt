@@ -19,6 +19,6 @@ class RecordDefinition(val name: String, val fieldDefs: Map<String, FType<*>>): 
     }
 }
 
-class RecordInstance(val definition: RecordDefinition, val values: Map<String, FValue>): IFValueStore {
+class RecordInstance(val definition: RecordDefinition, private val values: Map<String, FValue>): IFValueStore {
     override operator fun get(key: String): FValue? = values[key]
 }

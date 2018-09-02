@@ -2,8 +2,8 @@ package io.github.spacialcircumstances.efun.performance
 
 class Stopwatch {
     var running = false
-    var last = 0L
-    var currentTime = 0L
+    private var last = 0L
+    private var currentTime = 0L
 
     fun start() {
         last = System.nanoTime()

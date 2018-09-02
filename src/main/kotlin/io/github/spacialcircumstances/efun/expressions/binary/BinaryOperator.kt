@@ -10,7 +10,7 @@ abstract class BinaryOperator {
     abstract fun compute(l: FValue, r: FValue): FValue
 }
 
-abstract class SimpleBinaryOperator<L, R, O>(val lType: FType<L>, val rType: FType<R>, val outType: FType<O>): BinaryOperator() {
+abstract class SimpleBinaryOperator<L, R, O>(private val lType: FType<L>, private val rType: FType<R>, private val outType: FType<O>): BinaryOperator() {
     override fun typecheck(l: FType<*>, r: FType<*>): FType<*> {
         if (l != lType) throw TypeError("Expected type $lType, but got $l")
         if (r != rType) throw TypeError("Expected type $rType, but got $r")

@@ -2,7 +2,7 @@ package io.github.spacialcircumstances.efun.interpreter
 
 import io.github.spacialcircumstances.efun.TypeError
 
-class TypeContext(val parent: TypeContext?, additionalTypeMappings: Map<String, FType<*>>? = null): IFTypeStore {
+class TypeContext(private val parent: TypeContext?, additionalTypeMappings: Map<String, FType<*>>? = null): IFTypeStore {
     private val types = mutableMapOf<String, FType<*>>()
     private val typesResolveMap = mutableMapOf<String, FType<*>>()
 

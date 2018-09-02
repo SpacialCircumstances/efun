@@ -2,7 +2,7 @@ package io.github.spacialcircumstances.efun.expressions
 
 import io.github.spacialcircumstances.efun.interpreter.*
 
-class BlockExpression(val parameters: List<Pair<String, PlaceholderType>>, val body: List<AbstractExpression>): AbstractExpression() {
+class BlockExpression(val parameters: List<Pair<String, PlaceholderType>>, private val body: List<AbstractExpression>): AbstractExpression() {
     val parameterNames = parameters.map { it.first }
     var type: FunctionType? = null
 

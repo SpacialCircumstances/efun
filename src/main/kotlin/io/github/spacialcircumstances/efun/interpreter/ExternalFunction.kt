@@ -8,7 +8,7 @@ abstract class ExternalFunction {
     abstract fun run(args: List<FValue>): FValue
 }
 
-class ExternalFunction0<R>(val external: () -> R, val outType: FType<*>): ExternalFunction() {
+class ExternalFunction0<R>(val external: () -> R, private val outType: FType<*>): ExternalFunction() {
     override val argumentCount: Int = 0
     override val functionType: FunctionType = FunctionType(TVoid, outType)
     override fun run(args: List<FValue>): FValue {

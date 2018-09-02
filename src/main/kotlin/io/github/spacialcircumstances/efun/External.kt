@@ -14,7 +14,7 @@ class ExternalBinding {
         }
     }
 
-    fun externalInt(name: String, value: Long) {
+    private fun externalInt(name: String, value: Long) {
         if (bindings.containsKey(name)) bindingExists(name)
         else {
             bindings[name] = FValue(TInt, value)
