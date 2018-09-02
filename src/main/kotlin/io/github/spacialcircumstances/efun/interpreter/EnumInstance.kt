@@ -10,4 +10,10 @@ class EnumInstance(val name: String, val id: Int) {
     override fun toString(): String {
         return "Enum ($id): $name"
     }
+
+    override fun hashCode(): Int {
+        var result = name.hashCode()
+        result = 31 * result + id
+        return result
+    }
 }

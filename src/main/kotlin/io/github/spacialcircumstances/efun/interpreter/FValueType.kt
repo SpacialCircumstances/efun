@@ -8,12 +8,14 @@ abstract class FType<out T> {
     abstract fun castValue(value: FValue): T
     abstract val subTypeStore: IFTypeStore?
 
-    override fun hashCode(): Int {
-        return name.hashCode()
-    }
-
     override fun toString(): String {
         return name
+    }
+
+    override fun hashCode(): Int {
+        var result = name.hashCode()
+        result = 31 * result + (subTypeStore?.hashCode() ?: 0)
+        return result
     }
 }
 
@@ -30,6 +32,13 @@ class SimpleType<out T>(override val name: String): FType<T>() {
             other.name == name
         } else false
     }
+
+    override fun hashCode(): Int {
+        var result = super.hashCode()
+        result = 31 * result + name.hashCode()
+        result = 31 * result + (subTypeStore?.hashCode() ?: 0)
+        return result
+    }
 }
 
 class VoidType: FType<Unit>() {
@@ -43,6 +52,13 @@ class VoidType: FType<Unit>() {
 
     override fun castValue(value: FValue) {
         throw RuntimeError("Cannot use value of Type Void in expression")
+    }
+
+    override fun hashCode(): Int {
+        var result = super.hashCode()
+        result = 31 * result + (subTypeStore?.hashCode() ?: 0)
+        result = 31 * result + name.hashCode()
+        return result
     }
 }
 
@@ -59,6 +75,15 @@ class FunctionType(val inType: FType<*>, val outType: FType<*>): FType<IFunction
             (other.inType == inType) && (other.outType == outType)
         } else false
     }
+
+    override fun hashCode(): Int {
+        var result = super.hashCode()
+        result = 31 * result + inType.hashCode()
+        result = 31 * result + outType.hashCode()
+        result = 31 * result + (subTypeStore?.hashCode() ?: 0)
+        result = 31 * result + name.hashCode()
+        return result
+    }
 }
 
 class EnumType(val instances: List<EnumInstance>): FType<EnumInstance>() {
@@ -73,6 +98,14 @@ class EnumType(val instances: List<EnumInstance>): FType<EnumInstance>() {
         return if (other is EnumType) {
             (name == other.name) && (instances == other.instances)
         } else false
+    }
+
+    override fun hashCode(): Int {
+        var result = super.hashCode()
+        result = 31 * result + instances.hashCode()
+        result = 31 * result + (subTypeStore?.hashCode() ?: 0)
+        result = 31 * result + name.hashCode()
+        return result
     }
 }
 
@@ -89,6 +122,14 @@ class RecordType(val definition: RecordDefinition): FType<RecordInstance>() {
 
     override fun castValue(value: FValue): RecordInstance {
         return value.value as RecordInstance
+    }
+
+    override fun hashCode(): Int {
+        var result = super.hashCode()
+        result = 31 * result + definition.hashCode()
+        result = 31 * result + (subTypeStore?.hashCode() ?: 0)
+        result = 31 * result + name.hashCode()
+        return result
     }
 }
 
