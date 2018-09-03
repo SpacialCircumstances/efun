@@ -56,7 +56,14 @@ debug car.name
 
 ## Reference
 
-TODO
+### Debug printing
+
+The `debug` statement prints the specified value.
+Example: `debug "Hello World!"` will print `Hello World!`.
+
+### Assert statements
+
+The `assert` statement will cause a runtime error if the argument does not evaluate to true.
 
 ## Building
 
@@ -70,5 +77,7 @@ TODO
 
 ## Running
 
-Command `repl` runs the REPL
-Command `run` runs the specified script file. Use the flag `-p` to show some performance numbers.
+Command `repl` runs the REPL.
+
+Command `run` runs the specified script file.
+Use the flag `-p` to show some performance numbers.
