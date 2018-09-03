@@ -117,6 +117,10 @@ val blockParser = takeMiddle(blockStartParser, blockArgumentsParser.andThen(bloc
     BlockExpression(it.first, it.second)
 }
 
+val genericBlockParser = genericsDefinitionParser.andIgnoreResult(blockStartParser).andThen(blockArgumentsParser.andThen(blockBodyParser)).andIgnoreResult(blockEndParser).map {
+    GenericBlockExpression(it.first, it.second.first, it.second.second)
+}
+
 val typeExprNameParser = takeMiddle(one { it.type == TokenType.TYPE }, oneWith<String, Token>({ it.type == TokenType.IDENTIFIER }, { it.lexeme }), one { it.type == TokenType.EQUAL })
 
 val enumValuesParser = oneWith<String, Token>({ it.type == TokenType.IDENTIFIER }, { it.lexeme }).separator(commaParser).andIgnoreResult(semicolonParser)
