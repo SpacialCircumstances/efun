@@ -76,11 +76,17 @@ val typeFunctionParser = takeMiddle(openParensParser, typeNameParser.separator(a
     FunctionPlaceholderType(paramTypes, returnType)
 }
 
+val openBracketParser = one<Token> { it.type == TokenType.LEFT_BRACKET }
+
+val closeBracketParser = one<Token> { it.type == TokenType.RIGHT_BRACKET }
+
 val typeParser = typeFunctionParser.orElse(typeNameParser)
 
 val singleGenericArgParser = takeRight(one { it.type == TokenType.HIGH_COMMA }, nameParser)
 
-val genericsDefinitionParser = takeMiddle(one { it.type == TokenType.LEFT_BRACKET }, singleGenericArgParser.separator(commaParser), one { it.type == TokenType.RIGHT_BRACKET})
+val genericsDefinitionParser = takeMiddle(openBracketParser, singleGenericArgParser.separator(commaParser), closeBracketParser)
+
+val genericsArgumentParser = takeMiddle(openBracketParser, nameParser.separator(commaParser), closeBracketParser)
 
 val groupingExpressionParser = takeMiddle(openParensParser, valueProducingExpressionParser, closeParensParser).map {
     GroupingExpression(it)
