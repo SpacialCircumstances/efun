@@ -6,6 +6,7 @@ import io.github.spacialcircumstances.efun.interpreter.defaultConfig
 import java.util.*
 
 const val QUIT_COMMAND = ":q"
+const val EVAL_COMMAND = ":eval"
 
 class Repl: CliktCommand(help = "Run the REPL") {
     override fun run() {
@@ -14,12 +15,24 @@ class Repl: CliktCommand(help = "Run the REPL") {
         val interpreter = Interpreter(defaultConfig())
         var running = true
         while (running) {
-            val code = lineReader.readLines()
-            code?.let {
-                if (it == QUIT_COMMAND) {
+            val code = lineReader.readLine()
+            if (code != null) {
+                if (code == QUIT_COMMAND) {
                     running = false
                 } else {
-                    interpreter.interpret(it, { res -> println(res) }, { err -> println("Error: ${err.message}") })
+                    val lines = mutableListOf(code)
+                    while(true) {
+                        val line = lineReader.readLine()
+                        if (line != null) {
+                            if (line == EVAL_COMMAND) {
+                                break
+                            } else {
+                                lines.add(line)
+                            }
+                        }
+                    }
+                    val script = lines.joinToString("\n")
+                    interpreter.interpret(script, { res -> println(res) }, { err -> println("Error: ${err.message}") })
                 }
             }
         }
