@@ -43,6 +43,9 @@ class Repl: CliktCommand(help = "Run the REPL") {
                         if (line != null) {
                             if (line == EVAL_COMMAND) {
                                 break
+                            } else if (line == QUIT_COMMAND) {
+                                running = false
+                                break
                             } else {
                                 lines.add(line)
                             }
