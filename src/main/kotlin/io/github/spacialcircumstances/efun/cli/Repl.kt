@@ -7,6 +7,7 @@ import java.util.*
 
 const val QUIT_COMMAND = ":q"
 const val EVAL_COMMAND = ":eval"
+const val TYPE_COMMAND = ":type"
 
 class Repl: CliktCommand(help = "Run the REPL") {
     override fun run() {
@@ -19,6 +20,10 @@ class Repl: CliktCommand(help = "Run the REPL") {
             if (code != null) {
                 if (code == QUIT_COMMAND) {
                     running = false
+                } else if (code.startsWith(TYPE_COMMAND)) {
+                    val expr = code.removePrefix("$TYPE_COMMAND ")
+                    //TODO: Only typecheck this to avoid side effects
+                    interpreter.interpret(expr, { result -> println(result.type.name)}, { err -> println("Error: ${err.message}") })
                 } else {
                     val lines = mutableListOf(code)
                     while(true) {
