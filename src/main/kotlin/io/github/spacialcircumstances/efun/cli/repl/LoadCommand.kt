@@ -4,8 +4,12 @@ import java.io.File
 import java.nio.charset.Charset
 
 class LoadCommand: ICommand {
+    companion object {
+        const val LOAD_COMMAND = ":load "
+    }
+
     override fun execute(line: String, context: ReplContext): Boolean {
-        val filename = line.removePrefix(":load ")
+        val filename = line.removePrefix(LOAD_COMMAND)
         val file = File(filename)
         if (!file.exists()) {
             println("Cannot load file ${file.path}")
@@ -17,6 +21,6 @@ class LoadCommand: ICommand {
     }
 
     override fun parse(line: String): Boolean {
-        return line.startsWith(":load ")
+        return line.startsWith(LOAD_COMMAND)
     }
 }

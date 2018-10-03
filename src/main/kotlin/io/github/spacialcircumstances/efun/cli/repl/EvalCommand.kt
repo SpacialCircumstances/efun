@@ -1,6 +1,12 @@
 package io.github.spacialcircumstances.efun.cli.repl
 
+import io.github.spacialcircumstances.efun.cli.repl.QuitCommand.Companion.QUIT_COMMAND
+
 class EvalCommand: ICommand {
+    companion object {
+        const val EVAL_COMMAND = ":eval"
+    }
+
     override fun parse(line: String): Boolean {
         return !line.startsWith(":")
     }
@@ -10,9 +16,9 @@ class EvalCommand: ICommand {
         while(true) {
             val nline = context.lineReader.readLine()
             if (nline != null) {
-                if (nline == ":eval") {
+                if (nline == EVAL_COMMAND) {
                     break
-                } else if (nline == ":q") {
+                } else if (nline == QUIT_COMMAND) {
                     return false
                 } else {
                     lines.add(nline)
