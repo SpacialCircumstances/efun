@@ -6,7 +6,9 @@ import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.path
 import io.github.spacialcircumstances.efun.Interpreter
+import io.github.spacialcircumstances.efun.InterpreterState
 import io.github.spacialcircumstances.efun.interpreter.defaultConfig
+import java.lang.IllegalStateException
 import java.nio.file.Files
 
 class Run: CliktCommand(help = "Run the specified script file") {
@@ -14,16 +16,16 @@ class Run: CliktCommand(help = "Run the specified script file") {
     private val performanceMeasuring by option("-p", "--performance", help = "Log performance metrics").flag(default = false)
 
     override fun run() {
-        val interpreter = Interpreter(defaultConfig())
+        val config = defaultConfig()
+        val interpreterState = InterpreterState(config.createInterpreterContext(),
+                config.createTypeContext(),
+                { err -> throw IllegalStateException("Parser error: ${err.message}") },
+                { err -> throw IllegalStateException("Type error: ${err.message}") },
+                { err -> throw IllegalStateException("Runtime error: ${err.message}") },
+                { _ -> })
+        val interpreter = Interpreter(interpreterState)
         val code = String(Files.readAllBytes(filename))
-        if (performanceMeasuring) {
-            interpreter.interpret(code, errorCallback = {
-                throw IllegalStateException("Error executing script ${filename.fileName}: ${it.message}", it)
-            }, executionLogCallback = { s, t -> println("##### $s: ${t / 1000000}ms") })
-        } else {
-            interpreter.interpret(code, errorCallback = {
-                throw IllegalStateException("Error executing script ${filename.fileName}: ${it.message}", it)
-            })
-        }
+        //TODO: Performance measuring
+        interpreter.interpret(code)
     }
 }

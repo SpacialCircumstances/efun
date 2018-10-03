@@ -5,8 +5,8 @@ class QuitCommand: ICommand {
         const val QUIT_COMMAND = ":q"
     }
 
-    override fun execute(line: String, context: ReplContext): Boolean {
-        return false
+    override fun execute(line: String, state: ReplState): ReplState {
+        return state.copy(running = false)
     }
 
     override fun parse(line: String): Boolean {

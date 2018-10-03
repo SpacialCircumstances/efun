@@ -1,17 +1,26 @@
 package io.github.spacialcircumstances.efun.cli.repl
 
+import io.github.spacialcircumstances.efun.parse
+
 class TypeCommand: ICommand {
     companion object {
-        val TYPE_COMMAND = ":type "
+        const val TYPE_COMMAND = ":type "
     }
     override fun parse(line: String): Boolean {
         return line.startsWith(TYPE_COMMAND)
     }
 
-    override fun execute(line: String, context: ReplContext): Boolean {
+    override fun execute(line: String, state: ReplState): ReplState {
         val expr = line.removePrefix(TYPE_COMMAND)
-        //TODO: Only typecheck this to avoid side effects
-        context.interpreter.interpret(expr, { result -> println(result.type.name) }, { err -> println("Error: ${err.message}") })
-        return true
+        val parsedAst = parse(expr, state.interpreterState)
+        if (parsedAst != null) {
+            val expression = parsedAst.singleOrNull()
+            if (expression != null) {
+                println(expression.guessType(state.interpreterState.typeContext))
+            } else {
+                println("Only single expressions supported")
+            }
+        } //Parser errors should be already printed
+        return state
     }
 }
