@@ -5,6 +5,9 @@ import io.github.spacialcircumstances.efun.interpreter.FType
 import io.github.spacialcircumstances.efun.interpreter.FValue
 import io.github.spacialcircumstances.efun.interpreter.InterpreterContext
 import io.github.spacialcircumstances.efun.interpreter.TypeContext
+import io.github.spacialcircumstances.efun.performance.PerformanceMetric
+import io.github.spacialcircumstances.efun.performance.Stopwatch
+import java.time.Duration
 
 class ParserError(val message: String)
 
@@ -52,14 +55,41 @@ fun interpret(ast: List<AbstractExpression>, state: InterpreterState): Interpret
     }
 }
 
+interface IInterpreter {
+    fun interpret(code: String): InterpreterState?
+}
+
 //Simple interpreter for running all steps
-class Interpreter(private val initialState: InterpreterState) {
-    fun interpret(code: String): InterpreterState? {
+class Interpreter(private val initialState: InterpreterState): IInterpreter {
+    override fun interpret(code: String): InterpreterState? {
         val parsedAst = parse(code, initialState)
         return if (parsedAst != null) {
             val checkedAst = typeCheck(parsedAst, initialState)
             if (checkedAst != null) {
                 interpret(checkedAst, initialState)
+                initialState
+            } else null
+        } else null
+    }
+}
+
+class PerformanceMeasuringInterpreter(private val initialState: InterpreterState, private val performanceHandler: (PerformanceMetric) -> Unit): IInterpreter {
+    override fun interpret(code: String): InterpreterState? {
+        val sw = Stopwatch()
+        sw.start()
+        val parsedAst = parse(code, initialState)
+        return if (parsedAst != null) {
+            sw.stop()
+            performanceHandler(PerformanceMetric("Parser", Duration.ofNanos(sw.elapsedTimeNanoseconds)))
+            sw.start()
+            val checkedAst = typeCheck(parsedAst, initialState)
+            if (checkedAst != null) {
+                sw.stop()
+                performanceHandler(PerformanceMetric("Typechecker", Duration.ofNanos(sw.elapsedTimeNanoseconds)))
+                sw.start()
+                interpret(checkedAst, initialState)
+                sw.stop()
+                performanceHandler(PerformanceMetric("Interpreter", Duration.ofNanos(sw.elapsedTimeNanoseconds)))
                 initialState
             } else null
         } else null

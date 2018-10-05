@@ -7,6 +7,7 @@ import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.path
 import io.github.spacialcircumstances.efun.Interpreter
 import io.github.spacialcircumstances.efun.InterpreterState
+import io.github.spacialcircumstances.efun.PerformanceMeasuringInterpreter
 import io.github.spacialcircumstances.efun.interpreter.defaultConfig
 import java.lang.IllegalStateException
 import java.nio.file.Files
@@ -23,9 +24,11 @@ class Run: CliktCommand(help = "Run the specified script file") {
                 { err -> throw IllegalStateException("Type error: ${err.message}") },
                 { err -> throw IllegalStateException("Runtime error: ${err.message}") },
                 { _ -> })
-        val interpreter = Interpreter(interpreterState)
+        val interpreter = if (performanceMeasuring)
+            PerformanceMeasuringInterpreter(interpreterState, { m -> println("${m.name}: ${m.duration.toMillis()}ms")})
+        else
+            Interpreter(interpreterState)
         val code = String(Files.readAllBytes(filename))
-        //TODO: Performance measuring
         interpreter.interpret(code)
     }
 }
