@@ -1,12 +1,14 @@
-type Vehicle = record {
-    name: String,
-    wheelCount: Int
-}
+module Records {
+    type Vehicle = record {
+        name: String,
+        wheelCount: Int
+    }
 
-let car = Vehicle {
-    name: "Test Car",
-    wheelCount: 4
-}
+    let car = Vehicle {
+        name: "Test Car",
+        wheelCount: 4
+    }
 
-assert (car.wheelCount == 4)
-debug car.name
+    assert (car.wheelCount == 4)
+    debug car.name
+}
