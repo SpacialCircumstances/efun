@@ -45,5 +45,6 @@ enum class TokenType {
     ENUM,
     REC,
     IS, //is
-    RECORD
+    RECORD,
+    MODULE //module
 }
