@@ -12,3 +12,5 @@ module Records {
     assert (car.wheelCount == 4)
     debug car.name
 }
+
+debug Records.car.name
