@@ -29,9 +29,9 @@ fun getValue(start: IFValueStore, keys: List<String>): FValue? {
 
 fun getType(start: IFTypeStore, keys: List<String>): FType<*>? {
     return if (keys.size == 1) {
-        start[keys.single()]
+        start.getType(keys.single())
     } else {
-        val next = start[keys.car()]?.subTypeStore ?: return null
+        val next = start.getType(keys.car())?.subTypeStore ?: return null
         getType(next, keys.cdr())
     }
 }

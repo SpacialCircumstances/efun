@@ -2,7 +2,7 @@ package io.github.spacialcircumstances.efun.interpreter
 
 import io.github.spacialcircumstances.efun.TypeError
 
-class TypeContext(private val parent: TypeContext?, additionalTypeMappings: Map<String, FType<*>>? = null): IFTypeStore {
+class TypeContext(private val parent: TypeContext?, val additionalTypeMappings: Map<String, FType<*>>? = null): IFTypeStore {
     private val types = mutableMapOf<String, FType<*>>()
     private val typesResolveMap = mutableMapOf<String, FType<*>>()
 
@@ -15,8 +15,8 @@ class TypeContext(private val parent: TypeContext?, additionalTypeMappings: Map<
         }
     }
 
-    override operator fun get(key: String): FType<*>? {
-        return types[key] ?: parent?.get(key)
+    override fun getType(key: String): FType<*>? {
+        return types[key] ?: parent?.getType(key)
     }
 
     operator fun set(key: String, value: FType<*>) {

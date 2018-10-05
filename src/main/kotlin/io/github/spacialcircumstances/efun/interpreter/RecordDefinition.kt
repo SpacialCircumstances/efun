@@ -1,7 +1,7 @@
 package io.github.spacialcircumstances.efun.interpreter
 
 class RecordDefinition(val name: String, val fieldDefs: Map<String, FType<*>>): IFTypeStore {
-    override fun get(key: String): FType<*>? {
+    override fun getType(key: String): FType<*>? {
         return fieldDefs[key]
     }
 
