@@ -14,3 +14,8 @@ module Records {
 }
 
 debug Records.car.name
+
+let newCar = Records.Vehicle {
+    name: "New test car!",
+    wheelCount: 24
+}
