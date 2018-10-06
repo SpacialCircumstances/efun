@@ -20,6 +20,7 @@ class ModuleExpression(val name: String, val expressions: List<AbstractExpressio
         val module = Module(moduleContext)
         val type = ModuleType(name, module)
         context[name] = type
+        context.typesResolveContext.importChildModule(name, module)
         moduleType = type
         return type
     }
