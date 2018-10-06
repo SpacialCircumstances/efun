@@ -1,0 +1,10 @@
+module Module1 {
+    module Sub1 {
+        let y = 4
+    }
+    let x = 2
+}
+
+module Module2 {
+    debug Module1.x
+}
