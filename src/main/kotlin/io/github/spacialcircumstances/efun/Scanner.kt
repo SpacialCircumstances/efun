@@ -18,7 +18,8 @@ val identifierReplacements = mapOf(
         "rec" to TokenType.REC,
         "is" to TokenType.IS,
         "record" to TokenType.RECORD,
-        "module" to TokenType.MODULE
+        "module" to TokenType.MODULE,
+        "uses" to TokenType.USES
 )
 
 fun tokenize(code: String): List<Token> {

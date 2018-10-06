@@ -92,10 +92,12 @@ val binaryExpressionParser = operatorExpressionParser.andThen(binaryOperatorPars
     BinaryExpression(it.first.first, it.first.second, it.second)
 }
 
-val moduleDeclarationParser = takeRight(one { it.type == TokenType.MODULE }, nameParser)
+val usesDeclarationParser = takeRight(one { it.type == TokenType.USES }, nameParser.separator(commaParser))
+
+val moduleDeclarationParser = takeRight(one { it.type == TokenType.MODULE }, nameParser).andThen(usesDeclarationParser.optional())
 
 val moduleParser = moduleDeclarationParser.andThen(takeMiddle(leftBraceParser, expressionParser.many(), rightBraceParser)).map {
-    ModuleExpression(it.first, it.second)
+    ModuleExpression(it.first.first, it.second)
 }
 
 val unaryExpressionParser = unaryOperatorParser.andThen(operatorExpressionParser).map { UnaryExpression(it.second, it.first) }
