@@ -4,6 +4,7 @@ import io.github.spacialcircumstances.efun.TypeError
 
 class TypeContext(private val parent: TypeContext?, val additionalTypeMappings: Map<String, FType<*>>? = null): IFTypeStore {
     private val types = mutableMapOf<String, FType<*>>()
+    val childModules = mutableMapOf<String, Module>()
     val typesResolveContext: TypeResolveContext = TypeResolveContext(parent?.typesResolveContext, additionalTypeMappings)
 
     override fun getType(key: String): FType<*>? {
@@ -16,6 +17,11 @@ class TypeContext(private val parent: TypeContext?, val additionalTypeMappings: 
         } else {
             types[key] = value
         }
+    }
+
+    fun registerChildModule(name: String, module: Module) {
+        if (childModules.contains(name)) throw TypeError("Context already contains child module $name")
+        childModules[name] = module
     }
 
     fun registerType(name: String, type: FType<*>) {

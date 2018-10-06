@@ -19,6 +19,7 @@ class ModuleExpression(val name: String, val expressions: List<AbstractExpressio
         expressions.forEach { it.guessType(moduleContext) }
         val module = Module(moduleContext)
         val type = ModuleType(name, module)
+        context.registerChildModule(name, module)
         context[name] = type
         context.typesResolveContext.importChildModule(name, module)
         moduleType = type
