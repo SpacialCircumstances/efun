@@ -97,7 +97,7 @@ val usesDeclarationParser = takeRight(one { it.type == TokenType.USES }, namePar
 val moduleDeclarationParser = takeRight(one { it.type == TokenType.MODULE }, nameParser).andThen(usesDeclarationParser.optional())
 
 val moduleParser = moduleDeclarationParser.andThen(takeMiddle(leftBraceParser, expressionParser.many(), rightBraceParser)).map {
-    ModuleExpression(it.first.first, it.second)
+    ModuleExpression(it.first.first,  if (it.first.second.isEmpty()) listOf() else it.first.second.first(), it.second)
 }
 
 val unaryExpressionParser = unaryOperatorParser.andThen(operatorExpressionParser).map { UnaryExpression(it.second, it.first) }

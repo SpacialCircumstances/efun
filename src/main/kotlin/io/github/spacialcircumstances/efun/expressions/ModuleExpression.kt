@@ -2,7 +2,7 @@ package io.github.spacialcircumstances.efun.expressions
 
 import io.github.spacialcircumstances.efun.interpreter.*
 
-class ModuleExpression(val name: String, val expressions: List<AbstractExpression>): AbstractExpression() {
+class ModuleExpression(val name: String, val uses: List<String>, val expressions: List<AbstractExpression>): AbstractExpression() {
     private var moduleType: ModuleType? = null
 
     override fun evaluate(context: InterpreterContext): FValue {
