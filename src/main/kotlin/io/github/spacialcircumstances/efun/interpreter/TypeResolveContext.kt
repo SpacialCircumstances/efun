@@ -20,10 +20,18 @@ class TypeResolveContext(parent: TypeResolveContext?, additionalTypeMappings: Ma
     }
 
     fun importChildModule(name: String, module: Module) {
-        module.typeContext.typesResolveContext.scopeTypes.forEach { t, u ->
-            val newName = "$name.$t"
+        module.typeContext.typesResolveContext.scopeTypes.forEach { typeName, type ->
+            val newName = "$name.$typeName"
             if (childModuleTypes.containsKey(newName)) throw TypeError("Type $newName already exists")
-            childModuleTypes[newName] = u
+            childModuleTypes[newName] = type
+        }
+    }
+
+    fun importExternModule(name: String, module: Module) {
+        module.typeContext.typesResolveContext.scopeTypes.forEach { typeName, type ->
+            val newName = "$name.$typeName"
+            if (moduleTypes.containsKey(newName)) throw TypeError("Type $newName already exists")
+            moduleTypes[newName] = type
         }
     }
 

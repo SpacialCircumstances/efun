@@ -19,9 +19,16 @@ class TypeContext(private val parent: TypeContext?, val additionalTypeMappings: 
         }
     }
 
-    fun registerChildModule(name: String, module: Module) {
+    fun importChildModule(moduleType: ModuleType) {
+        val name = moduleType.name
         if (childModules.contains(name)) throw TypeError("Context already contains child module $name")
-        childModules[name] = module
+        childModules[name] = moduleType.module
+        typesResolveContext.importChildModule(name, moduleType.module)
+    }
+
+    fun importExternModule(moduleType: ModuleType) {
+        typesResolveContext.importExternModule(moduleType.name, moduleType.module)
+        types[moduleType.name] = moduleType
     }
 
     fun registerType(name: String, type: FType<*>) {

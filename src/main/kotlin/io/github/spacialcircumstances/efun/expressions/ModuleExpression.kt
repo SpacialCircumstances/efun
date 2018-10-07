@@ -1,5 +1,7 @@
 package io.github.spacialcircumstances.efun.expressions
 
+import io.github.spacialcircumstances.efun.RuntimeError
+import io.github.spacialcircumstances.efun.TypeError
 import io.github.spacialcircumstances.efun.interpreter.*
 
 class ModuleExpression(val name: String, val uses: List<String>, val expressions: List<AbstractExpression>): AbstractExpression() {
@@ -7,6 +9,9 @@ class ModuleExpression(val name: String, val uses: List<String>, val expressions
 
     override fun evaluate(context: InterpreterContext): FValue {
         val moduleContext = InterpreterContext(null)
+        uses.forEach {
+            moduleContext.importExternModule(it, context[it] ?: throw RuntimeError("Module $it not found"))
+        }
         expressions.forEach { it.evaluate(moduleContext) }
         val moduleInstance = ModuleInstance(moduleContext)
         val value = FValue(moduleType!!, moduleInstance)
@@ -16,12 +21,15 @@ class ModuleExpression(val name: String, val uses: List<String>, val expressions
 
     override fun guessType(context: TypeContext): FType<*> {
         val moduleContext = TypeContext(null, context.additionalTypeMappings)
+        uses.forEach {
+            val module = context.getType(it) as? ModuleType ?: throw TypeError("Module $it not found in parent context")
+            moduleContext.importExternModule(module)
+        }
         expressions.forEach { it.guessType(moduleContext) }
         val module = Module(moduleContext)
         val type = ModuleType(name, module)
-        context.registerChildModule(name, module)
+        context.importChildModule(type)
         context[name] = type
-        context.typesResolveContext.importChildModule(name, module)
         moduleType = type
         return type
     }
