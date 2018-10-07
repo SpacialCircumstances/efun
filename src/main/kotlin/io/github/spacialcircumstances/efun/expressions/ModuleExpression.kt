@@ -29,7 +29,6 @@ class ModuleExpression(val name: String, val uses: List<String>, val expressions
         val module = Module(moduleContext)
         val type = ModuleType(name, module)
         context.importChildModule(type)
-        context[name] = type
         moduleType = type
         return type
     }

@@ -23,6 +23,7 @@ class TypeContext(private val parent: TypeContext?, val additionalTypeMappings: 
         val name = moduleType.name
         if (childModules.contains(name)) throw TypeError("Context already contains child module $name")
         childModules[name] = moduleType.module
+        types[name] = moduleType
         typesResolveContext.importChildModule(name, moduleType.module)
     }
 
