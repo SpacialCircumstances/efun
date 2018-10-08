@@ -1,21 +1,12 @@
-module Records {
-    type Vehicle = record {
-        name: String,
-        wheelCount: Int
-    }
-
-    let car = Vehicle {
-        name: "Test Car",
-        wheelCount: 4
-    }
-
-    assert (car.wheelCount == 4)
-    debug car.name
+type Vehicle = record {
+    name: String,
+    wheelCount: Int
 }
 
-debug Records.car.name
-
-let newCar = Records.Vehicle {
-    name: "New test car!",
-    wheelCount: 24
+let car = Vehicle {
+    name: "Test Car",
+    wheelCount: 4
 }
+
+assert (car.wheelCount == 4)
+debug car.name
