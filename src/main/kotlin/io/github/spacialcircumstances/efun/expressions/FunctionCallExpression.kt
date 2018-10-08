@@ -4,7 +4,7 @@ import io.github.spacialcircumstances.efun.TypeError
 import io.github.spacialcircumstances.efun.interpreter.*
 
 class FunctionCallExpression(private val functionExpression: AbstractExpression, private val args: List<AbstractExpression>): AbstractExpression() {
-    override fun guessType(context: TypeContext): FType<*> {
+    override fun guessType(context: TypesContext): FType<*> {
         val fType = functionExpression.guessType(context) as FunctionType
         val argTypes = args.map { it.guessType(context) }
         var result: FType<*> = fType

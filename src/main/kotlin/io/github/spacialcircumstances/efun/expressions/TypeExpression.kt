@@ -8,9 +8,9 @@ class TypeExpression(val name: String, private val typeExpr: AbstractExpression)
         return FValue(TVoid, null)
     }
 
-    override fun guessType(context: TypeContext): FType<*> {
+    override fun guessType(context: TypesContext): FType<*> {
         val type = typeExpr.guessType(context)
-        context.registerType(name, type)
+        context.registerPublicType(name, TypeType(type))
         return type
     }
 }

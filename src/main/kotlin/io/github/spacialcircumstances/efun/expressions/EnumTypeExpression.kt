@@ -11,9 +11,9 @@ class EnumTypeExpression(elements: List<String>): AbstractExpression() {
         return FValue(TVoid, null)
     }
 
-    override fun guessType(context: TypeContext): EnumType {
+    override fun guessType(context: TypesContext): EnumType {
         type.instances.map {
-            context[it.name] = type
+            context.registerPrivateType(it.name, type)
         }
         return type
     }

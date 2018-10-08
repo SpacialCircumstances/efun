@@ -21,8 +21,8 @@ class Run: CliktCommand(help = "Run the specified script file") {
         val interpreterState = InterpreterState(config.createInterpreterContext(),
                 config.createTypeContext(),
                 { err -> throw IllegalStateException("Parser error: ${err.message}") },
-                { err -> throw IllegalStateException("Type error: ${err.message}") },
-                { err -> throw IllegalStateException("Runtime error: ${err.message}") },
+                { err -> throw IllegalStateException("Type error: ${err.message}", err) },
+                { err -> throw IllegalStateException("Runtime error: ${err.message}", err) },
                 { _ -> })
         val interpreter = if (performanceMeasuring)
             PerformanceMeasuringInterpreter(interpreterState, { m -> println("${m.name}: ${m.duration.toMillis()}ms")})

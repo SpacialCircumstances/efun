@@ -25,7 +25,7 @@ val operatorByToken = mapOf(
 )
 
 class BinaryExpression(private val left: AbstractExpression, private val operator: Token, private val right: AbstractExpression) : AbstractExpression() {
-    override fun guessType(context: TypeContext): FType<*> {
+    override fun guessType(context: TypesContext): FType<*> {
         val lt = left.guessType(context)
         val rt = right.guessType(context)
         val op = operatorByToken[operator.type] ?: throw TypeError("No operator found for token ${operator.lexeme}")

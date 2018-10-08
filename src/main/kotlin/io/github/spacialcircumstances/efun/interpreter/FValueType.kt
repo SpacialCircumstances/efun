@@ -1,6 +1,8 @@
 package io.github.spacialcircumstances.efun.interpreter
 
 import io.github.spacialcircumstances.efun.RuntimeError
+import java.lang.IllegalStateException
+import javax.naming.OperationNotSupportedException
 
 abstract class FType<out T> {
     abstract override operator fun equals(other: Any?): Boolean
@@ -144,6 +146,22 @@ fun getReturnType(type: FunctionType, maxDepth: Int): FType<*>? {
         }
     }
     return result
+}
+
+class TypeType(val type: FType<*>): FType<FType<*>>() {
+    override fun equals(other: Any?): Boolean {
+        return if (other is TypeType) {
+            other.type == type
+        } else false
+    }
+
+    override val name: String = "Type ${type.name}"
+
+    override fun castValue(value: FValue): FType<*> {
+        throw IllegalStateException()
+    }
+
+    override val subTypeStore: IFTypeStore? = null
 }
 
 val TVoid = VoidType()

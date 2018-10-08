@@ -22,4 +22,8 @@ class InterpreterContext(private val parent: InterpreterContext?): IFValueStore 
         newCtx.variables.putAll(variables)
         return newCtx
     }
+
+    fun importExternModule(name: String, module: FValue) {
+        set(name, module)
+    }
 }

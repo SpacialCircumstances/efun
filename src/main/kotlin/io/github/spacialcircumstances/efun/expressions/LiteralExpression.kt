@@ -8,7 +8,7 @@ class LiteralExpression(private val parserLiteral: Pair<PlaceholderType, Any>): 
         return literal!!
     }
 
-    override fun guessType(context: TypeContext): FType<*> {
+    override fun guessType(context: TypesContext): FType<*> {
         literal = FValue(parserLiteral.first.resolveType(context), parserLiteral.second)
         return literal!!.type
     }

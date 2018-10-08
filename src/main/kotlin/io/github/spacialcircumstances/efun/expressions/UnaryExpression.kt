@@ -5,7 +5,7 @@ import io.github.spacialcircumstances.efun.TypeError
 import io.github.spacialcircumstances.efun.interpreter.*
 
 class UnaryExpression(private val expression: AbstractExpression, private val operator: String): AbstractExpression() {
-    override fun guessType(context: TypeContext): FType<*> {
+    override fun guessType(context: TypesContext): FType<*> {
         val subType = expression.guessType(context)
         if (!typeCheck(subType, operator)) {
             throw TypeError("Error typechecking: Cannot negate ${subType.name} with $operator")
