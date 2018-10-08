@@ -6,11 +6,11 @@ class BlockExpression(val parameters: List<Pair<String, PlaceholderType>>, priva
     val parameterNames = parameters.map { it.first }
     var type: FunctionType? = null
 
-    override fun guessType(context: TypeContext): FType<*> {
-        val context = TypeContext(context)
+    override fun guessType(context: TypesContext): FType<*> {
+        val context = TypesContext(context)
         val actualTypes = parameters.map { Pair(it.first, it.second.resolveType(context)) }
         actualTypes.forEach {
-            context[it.first] = it.second
+            context.registerPrivateType(it.first, it.second)
         }
         val returnType = body.map { it.guessType(context) }.last()
         type = createFunctionType(actualTypes.map { it.second }, returnType)

@@ -9,12 +9,12 @@ class RecLetExpression(val name: String, val retType: PlaceholderType, val expr:
         return result
     }
 
-    override fun guessType(context: TypeContext): FType<*> {
+    override fun guessType(context: TypesContext): FType<*> {
         val resolvedParamTypes = expr.parameters.map {
             it.second.resolveType(context)
         }
         val finalFunctionType = createFunctionType(resolvedParamTypes, retType.resolveType(context))
-        context[name] = finalFunctionType
+        context.registerPublicType(name, finalFunctionType)
         expr.guessType(context)
         return TVoid
     }

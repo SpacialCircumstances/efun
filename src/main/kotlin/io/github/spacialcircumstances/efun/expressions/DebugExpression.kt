@@ -3,7 +3,7 @@ package io.github.spacialcircumstances.efun.expressions
 import io.github.spacialcircumstances.efun.interpreter.*
 
 class DebugExpression(private val expression: AbstractExpression): AbstractExpression() {
-    override fun guessType(context: TypeContext): FType<*> {
+    override fun guessType(context: TypesContext): FType<*> {
         expression.guessType(context)
         return TVoid
     }

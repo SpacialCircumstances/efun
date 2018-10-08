@@ -4,7 +4,7 @@ import io.github.spacialcircumstances.efun.RuntimeError
 import io.github.spacialcircumstances.efun.interpreter.*
 
 class AssertExpression(val value: AbstractExpression): AbstractExpression() {
-    override fun guessType(context: TypeContext): FType<*> {
+    override fun guessType(context: TypesContext): FType<*> {
         value.guessType(context)
         return TVoid
     }

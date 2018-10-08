@@ -16,7 +16,7 @@ class TypeCommand: ICommand {
         if (parsedAst != null) {
             val expression = parsedAst.singleOrNull()
             if (expression != null) {
-                println(expression.guessType(state.interpreterState.typeContext))
+                println(expression.guessType(state.interpreterState.typesContext))
             } else {
                 println("Only single expressions supported")
             }

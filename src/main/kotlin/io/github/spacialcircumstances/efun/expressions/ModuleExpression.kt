@@ -19,8 +19,8 @@ class ModuleExpression(val name: String, val uses: List<String>, val expressions
         return value
     }
 
-    override fun guessType(context: TypeContext): FType<*> {
-        val moduleContext = TypeContext(null, context.additionalTypeMappings)
+    override fun guessType(context: TypesContext): FType<*> {
+        val moduleContext = TypesContext(null)
         uses.forEach {
             val module = context.getType(it) as? ModuleType ?: throw TypeError("Module $it not found in parent context")
             moduleContext.importExternModule(module)

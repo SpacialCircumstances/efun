@@ -1,10 +1,9 @@
 package io.github.spacialcircumstances.efun
 
 import io.github.spacialcircumstances.efun.expressions.AbstractExpression
-import io.github.spacialcircumstances.efun.interpreter.FType
 import io.github.spacialcircumstances.efun.interpreter.FValue
 import io.github.spacialcircumstances.efun.interpreter.InterpreterContext
-import io.github.spacialcircumstances.efun.interpreter.TypeContext
+import io.github.spacialcircumstances.efun.interpreter.TypesContext
 import io.github.spacialcircumstances.efun.performance.PerformanceMetric
 import io.github.spacialcircumstances.efun.performance.Stopwatch
 import java.time.Duration
@@ -12,7 +11,7 @@ import java.time.Duration
 class ParserError(val message: String)
 
 data class InterpreterState(val interpreterContext: InterpreterContext,
-                            val typeContext: TypeContext,
+                            val typesContext: TypesContext,
                             val parserErrorHandler: (ParserError) -> Unit,
                             val typeErrorHandler: (TypeError) -> Unit,
                             val runtimeErrorHandler: (RuntimeError) -> Unit,
@@ -33,7 +32,7 @@ fun parse(code: String, state: InterpreterState): List<AbstractExpression>? {
 fun typeCheck(ast: List<AbstractExpression>, state: InterpreterState): List<AbstractExpression>? {
     return try {
         ast.forEach {
-            it.guessType(state.typeContext)
+            it.guessType(state.typesContext)
         }
         ast
     } catch (e: TypeError) {

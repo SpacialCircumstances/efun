@@ -3,8 +3,8 @@ package io.github.spacialcircumstances.efun.expressions
 import io.github.spacialcircumstances.efun.interpreter.*
 
 class LetExpression(private val expression: AbstractExpression, private val name: String): AbstractExpression() {
-    override fun guessType(context: TypeContext): FType<*> {
-        context[name] = expression.guessType(context)
+    override fun guessType(context: TypesContext): FType<*> {
+        context.registerPublicType(name, expression.guessType(context))
         return TVoid
     }
 

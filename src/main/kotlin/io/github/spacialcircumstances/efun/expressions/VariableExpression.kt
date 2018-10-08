@@ -9,7 +9,7 @@ import io.github.spacialcircumstances.efun.interpreter.*
 class VariableExpression(name: String): AbstractExpression() {
     private val keys = name.split('.')
 
-    override fun guessType(context: TypeContext): FType<*> {
+    override fun guessType(context: TypesContext): FType<*> {
         return getType(context, keys) ?: throw TypeError("Variable ${keys.joinToString(".")} does not exist in this scope")
     }
 

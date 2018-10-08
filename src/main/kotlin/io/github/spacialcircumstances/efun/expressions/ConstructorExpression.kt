@@ -12,7 +12,7 @@ class ConstructorExpression(private val typeName: PlaceholderType, val fields: L
         return FValue(type!!, instance)
     }
 
-    override fun guessType(context: TypeContext): FType<*> {
+    override fun guessType(context: TypesContext): FType<*> {
         type = typeName.resolveType(context) as RecordType
         if (type == null) throw TypeError("$typeName is not a record type")
         val params = fields.map { Pair(it.first, it.second.guessType(context)) }.toMap()
