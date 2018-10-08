@@ -20,7 +20,7 @@ class ModuleExpression(val name: String, val uses: List<String>, val expressions
     }
 
     override fun guessType(context: TypesContext): FType<*> {
-        val moduleContext = TypesContext(null)
+        val moduleContext = TypesContext(null, context.defaultTypeMappings)
         uses.forEach {
             val module = context.getType(it) as? ModuleType ?: throw TypeError("Module $it not found in parent context")
             moduleContext.importExternModule(module)

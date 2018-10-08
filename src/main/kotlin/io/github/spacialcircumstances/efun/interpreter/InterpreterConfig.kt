@@ -21,10 +21,7 @@ class InterpreterConfig(private val externalBinding: ExternalBinding) {
     }
 
     fun createTypeContext(): TypesContext {
-        val context = TypesContext(null)
-        defaultTypeMappings.forEach { name, type ->
-            context.registerPrivateType(name, TypeType(type))
-        }
+        val context = TypesContext(null, defaultTypeMappings)
         externalValues.forEach {
             context.registerPrivateType(it.key, it.value.type)
         }

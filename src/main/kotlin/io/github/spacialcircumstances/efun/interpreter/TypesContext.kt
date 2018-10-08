@@ -46,9 +46,15 @@ import io.github.spacialcircumstances.efun.TypeError
     }
 }*/
 
-class TypesContext(private val parent: TypesContext?): IFTypeStore {
+class TypesContext(private val parent: TypesContext?, val defaultTypeMappings: Map<String, FType<*>>): IFTypeStore {
     private val privateTypes = mutableMapOf<String, FType<*>>()
     private val publicTypes = mutableMapOf<String, FType<*>>()
+
+    init {
+        defaultTypeMappings.forEach { name, type ->
+            privateTypes[name] = TypeType(type)
+        }
+    }
 
     override fun getType(key: String): FType<*>? = publicTypes[key] ?: privateTypes[key] ?: parent?.getType(key) ?: throw TypeError("Type for $key not found")
 

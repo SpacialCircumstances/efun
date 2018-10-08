@@ -7,7 +7,7 @@ class BlockExpression(val parameters: List<Pair<String, PlaceholderType>>, priva
     var type: FunctionType? = null
 
     override fun guessType(context: TypesContext): FType<*> {
-        val context = TypesContext(context)
+        val context = TypesContext(context, emptyMap()) //Can get default type mappings via parent
         val actualTypes = parameters.map { Pair(it.first, it.second.resolveType(context)) }
         actualTypes.forEach {
             context.registerPrivateType(it.first, it.second)
