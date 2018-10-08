@@ -7,4 +7,7 @@ module Module1 {
 
 module Module2 uses Module1 {
     debug Module1.x
+    debug Module1.Sub1.y
 }
+
+debug Module1.x
