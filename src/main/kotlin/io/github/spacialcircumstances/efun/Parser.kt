@@ -56,8 +56,7 @@ val binaryOperatorParser: Parser<Token, Token> = choice(
         one { it.type == TokenType.EQUAL_EQUAL },
         one { it.type == TokenType.OR },
         one { it.type == TokenType.AND },
-        one { it.type == TokenType.XOR },
-        one { it.type == TokenType.IS }
+        one { it.type == TokenType.XOR }
 )
 
 val openParensParser = one<Token> { it.type == TokenType.LEFT_PAREN }
@@ -127,12 +126,6 @@ val blockParser = takeMiddle(blockStartParser, blockArgumentsParser.andThen(bloc
 
 val typeExprNameParser = takeMiddle(one { it.type == TokenType.TYPE }, oneWith<String, Token>({ it.type == TokenType.IDENTIFIER }, { it.lexeme }), one { it.type == TokenType.EQUAL })
 
-val enumValuesParser = oneWith<String, Token>({ it.type == TokenType.IDENTIFIER }, { it.lexeme }).separator(commaParser).andIgnoreResult(semicolonParser)
-
-val enumDefinitionParser = typeExprNameParser.andIgnoreResult(one { it.type == TokenType.ENUM }).andThen(enumValuesParser).map {
-    TypeExpression(it.first, EnumTypeExpression(it.second))
-}
-
 val colonParser = one<Token> { it.type == TokenType.COLON }
 
 val recordValueParser = oneWith<String, Token>({ it.type == TokenType.IDENTIFIER }) { it.lexeme }.andIgnoreResult(colonParser).andThen(typeParser)
@@ -189,7 +182,7 @@ fun createValueProducingExpressionParser(): Parser<AbstractExpression, Token> {
 }
 
 fun createExpressionParser(): Parser<AbstractExpression, Token> {
-    return choice(moduleParser, binaryExpressionParser, unaryExpressionParser, literalParser, debugExpressionParser, groupingExpressionParser, letRecExpressionParser, letExpressionParser, enumDefinitionParser, recordDefinitionParser, functionCallParser, constructorParser, variableExpressionParser, ifExpressionParser, assertStatementParser, blockParser)
+    return choice(moduleParser, binaryExpressionParser, unaryExpressionParser, literalParser, debugExpressionParser, groupingExpressionParser, letRecExpressionParser, letExpressionParser, recordDefinitionParser, functionCallParser, constructorParser, variableExpressionParser, ifExpressionParser, assertStatementParser, blockParser)
 }
 
 val programParser = expressionParser.many()

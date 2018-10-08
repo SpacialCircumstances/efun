@@ -20,8 +20,7 @@ val operatorByToken = mapOf(
         TokenType.LESS to SmallerOperator(),
         TokenType.LESS_EQUAL to SmallerEqualOperator(),
         TokenType.GREATER to GreaterOperator(),
-        TokenType.GREATER_EQUAL to GreaterEqualOperator(),
-        TokenType.IS to IsOperator()
+        TokenType.GREATER_EQUAL to GreaterEqualOperator()
 )
 
 class BinaryExpression(private val left: AbstractExpression, private val operator: Token, private val right: AbstractExpression) : AbstractExpression() {

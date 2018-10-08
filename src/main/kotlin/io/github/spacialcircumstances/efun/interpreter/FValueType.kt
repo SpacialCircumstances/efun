@@ -88,29 +88,6 @@ class FunctionType(val inType: FType<*>, val outType: FType<*>): FType<IFunction
     }
 }
 
-class EnumType(val instances: List<EnumInstance>): FType<EnumInstance>() {
-    override val subTypeStore: IFTypeStore? = null
-    override val name: String = "Enum of: ${instances.joinToString()}"
-
-    override fun castValue(value: FValue): EnumInstance {
-        return value.value as EnumInstance
-    }
-
-    override fun equals(other: Any?): Boolean {
-        return if (other is EnumType) {
-            (name == other.name) && (instances == other.instances)
-        } else false
-    }
-
-    override fun hashCode(): Int {
-        var result = super.hashCode()
-        result = 31 * result + instances.hashCode()
-        result = 31 * result + (subTypeStore?.hashCode() ?: 0)
-        result = 31 * result + name.hashCode()
-        return result
-    }
-}
-
 class RecordType(val definition: RecordDefinition): FType<RecordInstance>() {
     override val subTypeStore: IFTypeStore? = definition
 

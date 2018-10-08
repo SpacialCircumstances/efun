@@ -72,17 +72,3 @@ class SmallerOperator: MultiOperator(mapOf(
         Pair(TInt, TInt) to IntSmallerOperator(),
         Pair(TFloat, TFloat) to FloatSmallerOperator()
 ))
-
-class IsOperator: BinaryOperator() {
-    override fun typecheck(l: FType<*>, r: FType<*>): FType<*> {
-        if (r !is EnumType) throw TypeError("Expected ${TType.name}, but got ${r.name}")
-        if (l !is EnumType) throw TypeError("Expected ${TType.name}, but got ${l.name}")
-        return TBool
-    }
-
-    override fun compute(l: FValue, r: FValue): FValue {
-        val le = l.value as EnumInstance
-        val re = r.value as EnumInstance
-        return FValue(TBool, le == re)
-    }
-}

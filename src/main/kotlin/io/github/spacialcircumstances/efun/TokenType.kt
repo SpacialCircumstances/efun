@@ -42,9 +42,7 @@ enum class TokenType {
     XOR,
     EOF,
     TYPE,
-    ENUM,
     REC,
-    IS, //is
     RECORD,
     MODULE, //module
     USES //uses
