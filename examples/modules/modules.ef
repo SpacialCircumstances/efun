@@ -1,11 +1,11 @@
-module Module1 {
-    module Sub1 {
+type Module1 = module {
+    type Sub1 = module {
         let y = 4
     }
     let x = 2
 }
 
-module Module2 uses Module1 {
+type Module2 = module uses Module1 {
     debug Module1.x
     debug Module1.Sub1.y
 }
