@@ -91,14 +91,6 @@ val binaryExpressionParser = operatorExpressionParser.andThen(binaryOperatorPars
     BinaryExpression(it.first.first, it.first.second, it.second)
 }
 
-val usesDeclarationParser = takeRight(one { it.type == TokenType.USES }, nameParser.separator(commaParser))
-
-val moduleDeclarationParser = takeRight(one { it.type == TokenType.MODULE }, nameParser).andThen(usesDeclarationParser.optional())
-
-val moduleParser = moduleDeclarationParser.andThen(takeMiddle(leftBraceParser, expressionParser.many(), rightBraceParser)).map {
-    ModuleExpression(it.first.first,  if (it.first.second.isEmpty()) listOf() else it.first.second.first(), it.second)
-}
-
 val unaryExpressionParser = unaryOperatorParser.andThen(operatorExpressionParser).map { UnaryExpression(it.second, it.first) }
 
 val typeNameParser = oneWith<PlaceholderType, Token>({ it.type == TokenType.IDENTIFIER }) {
@@ -134,6 +126,15 @@ val recordBodyParser = takeMiddle(leftBraceParser, recordValueParser.separator(c
 
 val recordDefinitionParser = typeExprNameParser.andIgnoreResult(one { it.type == TokenType.RECORD }).andThen(recordBodyParser).map {
     TypeExpression(it.first, RecordTypeExpression(it.first, it.second))
+}
+
+val usesDeclarationParser = takeRight(one { it.type == TokenType.USES }, nameParser.separator(commaParser))
+
+val moduleDeclarationParser = takeRight(one { it.type == TokenType.MODULE }, usesDeclarationParser.optional())
+
+val moduleParser = typeExprNameParser.andThen(moduleDeclarationParser).andThen(takeMiddle(leftBraceParser, expressionParser.many(), rightBraceParser)).map {
+    val uses = if (it.first.second.isEmpty()) emptyList() else it.first.second.first()
+    TypeExpression(it.first.first, ModuleExpression(it.first.first, uses, it.second))
 }
 
 val constructorPairParser = nameParser.andIgnoreResult(colonParser).andThen(valueProducingExpressionParser)
