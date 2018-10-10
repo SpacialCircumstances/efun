@@ -77,16 +77,16 @@ class TypesContext(private val parent: TypesContext?, val defaultTypeMappings: M
         return createFunctionType(inTypes, retType)
     }
 
-    fun importChildModule(moduleType: ModuleType) {
+    fun importChildType(moduleType: DataStructureType) {
         registerPublicType(moduleType.name, moduleType)
-        moduleType.module.typeContext.publicTypes.forEach { name, type ->
+        moduleType.definition.typesContext.publicTypes.forEach { name, type ->
             registerPrivateType("${moduleType.name}.$name", type)
         }
     }
 
-    fun importExternModule(moduleType: ModuleType) {
+    fun importExternModule(moduleType: DataStructureType) {
         registerPrivateType(moduleType.name, moduleType)
-        moduleType.module.typeContext.publicTypes.forEach { name, type ->
+        moduleType.definition.typesContext.publicTypes.forEach { name, type ->
             registerPrivateType("${moduleType.name}.$name", type)
         }
     }
