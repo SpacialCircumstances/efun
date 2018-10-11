@@ -88,30 +88,6 @@ class FunctionType(val inType: FType<*>, val outType: FType<*>): FType<IFunction
     }
 }
 
-class RecordType(val definition: RecordDefinition): FType<RecordInstance>() {
-    override val subTypeStore: IFTypeStore? = definition
-
-    override fun equals(other: Any?): Boolean {
-        return if (other is RecordType) {
-            other.definition == definition
-        } else false
-    }
-
-    override val name: String = "Record ${definition.name}"
-
-    override fun castValue(value: FValue): RecordInstance {
-        return value.value as RecordInstance
-    }
-
-    override fun hashCode(): Int {
-        var result = super.hashCode()
-        result = 31 * result + definition.hashCode()
-        result = 31 * result + (subTypeStore?.hashCode() ?: 0)
-        result = 31 * result + name.hashCode()
-        return result
-    }
-}
-
 fun getReturnType(type: FunctionType, maxDepth: Int): FType<*>? {
     var currentFp = type
     var result: FType<*>? = null
