@@ -138,7 +138,7 @@ class TypeType(val type: FType<*>): FType<FType<*>>() {
         throw IllegalStateException()
     }
 
-    override val subTypeStore: IFTypeStore? = null
+    override val subTypeStore: IFTypeStore? = type.subTypeStore
 }
 
 val TVoid = VoidType()
