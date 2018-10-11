@@ -3,7 +3,7 @@ package io.github.spacialcircumstances.efun.expressions
 import io.github.spacialcircumstances.efun.TypeError
 import io.github.spacialcircumstances.efun.interpreter.*
 
-class IfExpression(private val condition: AbstractExpression, val block: BlockExpression, val elseBlock: BlockExpression?): AbstractExpression() {
+class IfExpression(private val condition: AbstractExpression, private val block: BlockExpression, private val elseBlock: BlockExpression?): AbstractExpression() {
     override fun guessType(context: TypesContext): FType<*> {
         val condType = condition.guessType(context)
         if (condType != TBool) throw TypeError("Condition evaluation must return a boolean")

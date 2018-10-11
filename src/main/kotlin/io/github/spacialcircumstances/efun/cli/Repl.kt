@@ -1,7 +1,6 @@
 package io.github.spacialcircumstances.efun.cli
 
 import com.github.ajalt.clikt.core.CliktCommand
-import io.github.spacialcircumstances.efun.Interpreter
 import io.github.spacialcircumstances.efun.InterpreterState
 import io.github.spacialcircumstances.efun.cli.repl.*
 import io.github.spacialcircumstances.efun.interpreter.defaultConfig

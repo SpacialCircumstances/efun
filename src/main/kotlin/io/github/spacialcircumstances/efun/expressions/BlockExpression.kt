@@ -3,7 +3,7 @@ package io.github.spacialcircumstances.efun.expressions
 import io.github.spacialcircumstances.efun.interpreter.*
 
 class BlockExpression(val parameters: List<Pair<String, PlaceholderType>>, private val body: List<AbstractExpression>): AbstractExpression() {
-    val parameterNames = parameters.map { it.first }
+    private val parameterNames = parameters.map { it.first }
     var type: FunctionType? = null
 
     override fun guessType(context: TypesContext): FType<*> {
@@ -12,7 +12,7 @@ class BlockExpression(val parameters: List<Pair<String, PlaceholderType>>, priva
         actualTypes.forEach {
             context.registerPrivateType(it.first, it.second)
         }
-        val returnType = body.map { it.guessType(context) }.last()
+        val returnType = body.asSequence().map { it.guessType(context) }.last()
         type = createFunctionType(actualTypes.map { it.second }, returnType)
         return type!!
     }

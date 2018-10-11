@@ -17,12 +17,6 @@ class InterpreterContext(private val parent: InterpreterContext?): IFValueStore 
         }
     }
 
-    fun copy(): InterpreterContext {
-        val newCtx = InterpreterContext(parent)
-        newCtx.variables.putAll(variables)
-        return newCtx
-    }
-
     fun importExternModule(name: String, module: FValue) {
         set(name, module)
     }

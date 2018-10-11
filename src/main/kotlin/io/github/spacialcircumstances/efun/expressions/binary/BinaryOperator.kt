@@ -27,7 +27,7 @@ abstract class SimpleBinaryOperator<L, R, O>(private val lType: FType<L>, privat
     }
 }
 
-abstract class MultiOperator(val operatorByType: Map<Pair<FType<*>, FType<*>>, BinaryOperator>): BinaryOperator() {
+abstract class MultiOperator(private val operatorByType: Map<Pair<FType<*>, FType<*>>, BinaryOperator>): BinaryOperator() {
     override fun typecheck(l: FType<*>, r: FType<*>): FType<*> {
         val types = Pair(l, r)
         val operator = operatorByType[types] ?: throw TypeError("No operator found for types: $l, $r")

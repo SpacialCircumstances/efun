@@ -11,5 +11,12 @@ class DataStructureType(override val name: String, val definition: DataStructure
         return value.value as DataStructureInstance
     }
 
+    override fun hashCode(): Int {
+        var result = super.hashCode()
+        result = 31 * result + name.hashCode()
+        result = 31 * result + definition.hashCode()
+        return result
+    }
+
     override val subTypeStore: IFTypeStore? = definition
 }

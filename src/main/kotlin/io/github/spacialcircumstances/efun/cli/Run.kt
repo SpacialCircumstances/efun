@@ -25,7 +25,7 @@ class Run: CliktCommand(help = "Run the specified script file") {
                 { err -> throw IllegalStateException("Runtime error: ${err.message}", err) },
                 { _ -> })
         val interpreter = if (performanceMeasuring)
-            PerformanceMeasuringInterpreter(interpreterState, { m -> println("${m.name}: ${m.duration.toMillis()}ms")})
+            PerformanceMeasuringInterpreter(interpreterState) { m -> println("${m.name}: ${m.duration.toMillis()}ms")}
         else
             Interpreter(interpreterState)
         val code = String(Files.readAllBytes(filename))

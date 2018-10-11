@@ -2,7 +2,7 @@ package io.github.spacialcircumstances.efun.interpreter
 
 import io.github.spacialcircumstances.efun.ExternalBinding
 
-class InterpreterConfig(private val externalBinding: ExternalBinding) {
+class InterpreterConfig(externalBinding: ExternalBinding) {
     private val externalValues = externalBinding.bindings
     private val defaultTypeMappings = mapOf<String, FType<*>>(
             "Int" to TInt,

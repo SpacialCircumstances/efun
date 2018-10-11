@@ -2,7 +2,6 @@ package io.github.spacialcircumstances.efun.interpreter
 
 import io.github.spacialcircumstances.efun.RuntimeError
 import java.lang.IllegalStateException
-import javax.naming.OperationNotSupportedException
 
 abstract class FType<out T> {
     abstract override operator fun equals(other: Any?): Boolean
@@ -114,6 +113,13 @@ class TypeType(val type: FType<*>): FType<FType<*>>() {
         throw IllegalStateException()
     }
 
+    override fun hashCode(): Int {
+        var result = super.hashCode()
+        result = 31 * result + type.hashCode()
+        result = 31 * result + name.hashCode()
+        return result
+    }
+
     override val subTypeStore: IFTypeStore? = type.subTypeStore
 }
 
@@ -122,4 +128,3 @@ val TInt = SimpleType<Long>("Int")
 val TFloat = SimpleType<Double>("Float")
 val TString = SimpleType<String>("String")
 val TBool = SimpleType<Boolean>("Bool")
-val TType = SimpleType<FType<*>>("Type")

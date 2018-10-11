@@ -2,7 +2,7 @@ package io.github.spacialcircumstances.efun.expressions
 
 import io.github.spacialcircumstances.efun.interpreter.*
 
-class RecLetExpression(val name: String, val retType: PlaceholderType, val expr: BlockExpression): AbstractExpression() {
+class RecLetExpression(val name: String, private val retType: PlaceholderType, private val expr: BlockExpression): AbstractExpression() {
     override fun evaluate(context: InterpreterContext): FValue {
         val result = expr.evaluate(context)
         context[name] = result

@@ -12,11 +12,11 @@ interface IFunction {
 class ValueFunction(private val parameterName: String, override val type: FunctionType, val expressions: List<AbstractExpression>) : IFunction {
     override fun run(arg: FValue, environment: InterpreterContext): FValue {
         environment[parameterName] = arg
-        return expressions.map { it.evaluate(environment) }.last()
+        return expressions.asSequence().map { it.evaluate(environment) }.last()
     }
 }
 
-class CurryFunction(val parameterName: String, override val type: FunctionType, val next: IFunction) : IFunction {
+class CurryFunction(private val parameterName: String, override val type: FunctionType, val next: IFunction) : IFunction {
     override fun run(arg: FValue, environment: InterpreterContext): FValue {
         val newEnv = InterpreterContext(environment)
         newEnv[parameterName] = arg
@@ -29,7 +29,7 @@ class EmptyFunction(val expressions: List<AbstractExpression>, outType: FType<*>
     override val type = FunctionType(TVoid, outType)
 
     override fun run(arg: FValue, environment: InterpreterContext): FValue {
-        return expressions.map { it.evaluate(environment) }.last()
+        return expressions.asSequence().map { it.evaluate(environment) }.last()
     }
 }
 

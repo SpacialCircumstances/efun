@@ -6,7 +6,7 @@ interface IFunctionPointer {
     fun runWithArguments(values: List<FValue>): FValue
 }
 
-class ExternalCurryFunctionPointer(val externalFunction: ExternalFunction, val args: List<FValue>): IFunctionPointer {
+class ExternalCurryFunctionPointer(private val externalFunction: ExternalFunction, private val args: List<FValue>): IFunctionPointer {
     override fun runWithArguments(values: List<FValue>): FValue {
         val newArgs = args + values
         return if (newArgs.size == externalFunction.argumentCount) {
@@ -18,13 +18,13 @@ class ExternalCurryFunctionPointer(val externalFunction: ExternalFunction, val a
     }
 }
 
-class ExternalFunctionPointer(val externalFunction: ExternalFunction): IFunctionPointer {
+class ExternalFunctionPointer(private val externalFunction: ExternalFunction): IFunctionPointer {
     override fun runWithArguments(values: List<FValue>): FValue {
         return ExternalCurryFunctionPointer(externalFunction, values).runWithArguments(emptyList())
     }
 }
 
-class FunctionPointer(val function: IFunction, val environment: InterpreterContext) : IFunctionPointer {
+class FunctionPointer(val function: IFunction, private val environment: InterpreterContext) : IFunctionPointer {
     fun run(arg: FValue): FValue {
         return function.run(arg, InterpreterContext(environment))
     }
