@@ -14,6 +14,8 @@ class TypesContext(private val parent: TypesContext?, val defaultTypeMappings: M
 
     override fun getType(key: String): FType<*>? = publicTypes[key] ?: privateTypes[key] ?: parent?.getType(key) ?: throw TypeError("Type for $key not found")
 
+    fun getPublicType(key: String): FType<*>? = publicTypes[key] ?: parent?.getPublicType(key)
+
     fun registerPrivateType(name: String, type: FType<*>) {
         privateTypes[name] = type
     }
