@@ -165,9 +165,8 @@ val noArgBlockParser = takeMiddle(blockStartParser, blockBodyParser, blockEndPar
 
 val elseParser = takeRight(one { it.type == TokenType.ELSE }, noArgBlockParser)
 
-val ifExpressionParser = takeRight(one { it.type == TokenType.IF }, valueProducingExpressionParser.andThen(noArgBlockParser).andThen(elseParser.optional())).map {
-    val elseExpressions = it.second.singleOrNull()
-    IfExpression(it.first.first, BlockExpression(emptyList(), it.first.second), if (elseExpressions == null) null else BlockExpression(emptyList(), elseExpressions))
+val ifExpressionParser = takeRight(one { it.type == TokenType.IF }, valueProducingExpressionParser.andThen(noArgBlockParser).andThen(elseParser)).map {
+    IfExpression(it.first.first, BlockExpression(emptyList(), it.first.second), BlockExpression(emptyList(), it.second))
 }
 
 val assertStatementParser = takeRight(one { it.type == TokenType.ASSERT }, valueProducingExpressionParser).map {
