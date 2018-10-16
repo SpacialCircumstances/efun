@@ -1,0 +1,13 @@
+type Object1 = object {
+    let succ = { x: Int ->
+        x + 1
+    }
+}
+
+type Object2 = object(obj1: Object1, num: Int) {
+    let numSucc = obj1.succ(num)
+}
+
+let obj1 = Object1()
+let obj = Object2(obj1, 3)
+debug obj.numSucc

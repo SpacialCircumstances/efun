@@ -128,11 +128,21 @@ val recordDefinitionParser = typeExprNameParser.andIgnoreResult(one { it.type ==
     TypeExpression(it.first, RecordTypeExpression(it.first, it.second))
 }
 
+val singleParamParser = nameParser.andIgnoreResult(colonParser).andThen(typeParser)
+
+val objectParametersParser = takeMiddle(openParensParser, (singleParamParser.separator(commaParser)), closeParensParser).optional()
+
+val bodyParser = takeMiddle(leftBraceParser, expressionParser.many(), rightBraceParser)
+
+val objectDefinitionParser = typeExprNameParser.andIgnoreResult(one { it.type == TokenType.OBJECT }).andThen(objectParametersParser).andThen(bodyParser).map {
+    TypeExpression(it.first.first, ObjectTypeExpression(it.first.second.singleOrNull()?.toMap() ?: emptyMap(), it.second))
+}
+
 val usesDeclarationParser = takeRight(one { it.type == TokenType.USES }, nameParser.separator(commaParser))
 
 val moduleDeclarationParser = takeRight(one { it.type == TokenType.MODULE }, usesDeclarationParser.optional())
 
-val moduleParser = typeExprNameParser.andThen(moduleDeclarationParser).andThen(takeMiddle(leftBraceParser, expressionParser.many(), rightBraceParser)).map {
+val moduleParser = typeExprNameParser.andThen(moduleDeclarationParser).andThen(bodyParser).map {
     val uses = if (it.first.second.isEmpty()) emptyList() else it.first.second.first()
     TypeExpression(it.first.first, ModuleExpression(it.first.first, uses, it.second))
 }
@@ -182,7 +192,7 @@ fun createValueProducingExpressionParser(): Parser<AbstractExpression, Token> {
 }
 
 fun createExpressionParser(): Parser<AbstractExpression, Token> {
-    return choice(moduleParser, binaryExpressionParser, unaryExpressionParser, literalParser, debugExpressionParser, groupingExpressionParser, letRecExpressionParser, letExpressionParser, recordDefinitionParser, functionCallParser, constructorParser, variableExpressionParser, ifExpressionParser, assertStatementParser, blockParser)
+    return choice(moduleParser, binaryExpressionParser, unaryExpressionParser, literalParser, debugExpressionParser, groupingExpressionParser, letRecExpressionParser, letExpressionParser, recordDefinitionParser, objectDefinitionParser, functionCallParser, constructorParser, variableExpressionParser, ifExpressionParser, assertStatementParser, blockParser)
 }
 
 val programParser = expressionParser.many()
