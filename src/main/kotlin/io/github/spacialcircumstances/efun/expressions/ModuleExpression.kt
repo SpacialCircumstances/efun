@@ -5,7 +5,7 @@ import io.github.spacialcircumstances.efun.interpreter.*
 class ModuleExpression(val name: String, private val uses: List<String>, val expressions: List<AbstractExpression>): AbstractTypeExpression() {
     var type: DataStructureType? = null
 
-    override fun evaluate(context: InterpreterContext): FValue {
+    override fun evaluate(context: InterpreterContext) {
         val moduleContext = InterpreterContext(null)
         uses.forEach {
             moduleContext.importExternModule(it, context[it]!!)
@@ -16,7 +16,6 @@ class ModuleExpression(val name: String, private val uses: List<String>, val exp
         val instance = DataStructureInstance(moduleContext)
         val value = FValue(type!!, instance)
         context[name] = value
-        return value
     }
 
     override fun type(context: TypesContext): DataStructureType {

@@ -5,7 +5,9 @@ import io.github.spacialcircumstances.efun.interpreter.*
 class RecordTypeExpression(private val name: String, private val elements: List<Pair<String, PlaceholderType>>): AbstractTypeExpression() {
     var type: DataStructureType? = null
 
-    override fun evaluate(context: InterpreterContext): FValue = FValue(TVoid, null)
+    override fun evaluate(context: InterpreterContext) {
+
+    }
 
     override fun type(context: TypesContext): DataStructureType {
         val recordContext = TypesContext(null, context.defaultTypeMappings)

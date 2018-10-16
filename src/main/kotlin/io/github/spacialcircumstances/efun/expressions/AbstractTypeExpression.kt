@@ -6,6 +6,6 @@ import io.github.spacialcircumstances.efun.interpreter.InterpreterContext
 import io.github.spacialcircumstances.efun.interpreter.TypesContext
 
 abstract class AbstractTypeExpression {
-    abstract fun evaluate(context: InterpreterContext): FValue
+    abstract fun evaluate(context: InterpreterContext)
     abstract fun type(context: TypesContext): DataStructureType
 }
