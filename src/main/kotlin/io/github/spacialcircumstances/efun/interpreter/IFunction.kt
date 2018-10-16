@@ -1,9 +1,11 @@
 package io.github.spacialcircumstances.efun.interpreter
 
 import io.github.spacialcircumstances.efun.car
+import io.github.spacialcircumstances.efun.carOrNull
 import io.github.spacialcircumstances.efun.cdr
 import io.github.spacialcircumstances.efun.expressions.AbstractExpression
 
+//Describes efun-native functions
 interface IFunction {
     val type: FunctionType
     fun run(arg: FValue, environment: InterpreterContext): FValue
@@ -30,6 +32,27 @@ class EmptyFunction(val expressions: List<AbstractExpression>, outType: FType<*>
 
     override fun run(arg: FValue, environment: InterpreterContext): FValue {
         return expressions.asSequence().map { it.evaluate(environment) }.last()
+    }
+}
+
+class ConstructorFunction(private val parameterName: String?, override val type: FunctionType, private val dataStructureType: DataStructureType, private val body: List<AbstractExpression>) : IFunction {
+    override fun run(arg: FValue, environment: InterpreterContext): FValue {
+        parameterName?.let {
+            environment[it] = arg
+        }
+        body.forEach { it.evaluate(environment) }
+        val instance = DataStructureInstance(environment)
+        return FValue(dataStructureType, instance)
+    }
+}
+
+fun createConstructor(parameterNames: List<String>, type: FunctionType, dataStructureType: DataStructureType, environment: InterpreterContext, body: List<AbstractExpression>): FunctionPointer {
+    return if (type.outType !is FunctionType || parameterNames.size == 1) {
+        FunctionPointer(ConstructorFunction(parameterNames.carOrNull(), type, dataStructureType, body), environment)
+    } else {
+        val next = createConstructor(parameterNames.cdr(), type.outType, dataStructureType, environment, body)
+        val function = CurryFunction(parameterNames.car(), type, next.function)
+        FunctionPointer(function, environment)
     }
 }
 

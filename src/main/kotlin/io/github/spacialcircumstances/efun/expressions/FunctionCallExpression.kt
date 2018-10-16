@@ -6,6 +6,9 @@ import io.github.spacialcircumstances.efun.interpreter.*
 class FunctionCallExpression(private val functionExpression: AbstractExpression, private val args: List<AbstractExpression>): AbstractExpression() {
     override fun guessType(context: TypesContext): FType<*> {
         val fType = functionExpression.guessType(context) as FunctionType
+        if (args.isEmpty() && fType.inType == TVoid) {
+            return fType.outType
+        }
         val argTypes = args.map { it.guessType(context) }
         var result: FType<*> = fType
         for (i in 0 until argTypes.size) {

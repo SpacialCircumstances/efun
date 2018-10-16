@@ -7,8 +7,8 @@ class ObjectTypeExpression(val name: String, val params: Map<String, Placeholder
     var constructorType: FunctionType? = null
     val constructorName = "new$name"
     override fun evaluate(context: InterpreterContext) {
-        //TODO: Create constructor
-
+        val constr = createConstructor(params.map { it.key }, constructorType!!, type!!, context, body)
+        context[constructorName] = FValue(constructorType!!, constr)
     }
 
     override fun type(context: TypesContext): DataStructureType {
