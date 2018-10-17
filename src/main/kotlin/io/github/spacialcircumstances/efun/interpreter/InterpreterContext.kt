@@ -3,7 +3,7 @@ package io.github.spacialcircumstances.efun.interpreter
 import io.github.spacialcircumstances.efun.RuntimeError
 
 class InterpreterContext(private val parent: InterpreterContext?): IFValueStore {
-    private val variables = mutableMapOf<String, FValue>()
+    val variables = mutableMapOf<String, FValue>()
 
     override operator fun get(key: String): FValue? {
         return variables[key] ?: parent?.get(key)
