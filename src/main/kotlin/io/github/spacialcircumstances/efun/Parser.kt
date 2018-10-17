@@ -128,17 +128,18 @@ val recordDefinitionParser = typeExprNameParser.andIgnoreResult(one { it.type ==
     TypeExpression(it.first, RecordTypeExpression(it.first, it.second))
 }
 
-val singleParamParser = nameParser.andIgnoreResult(colonParser).andThen(typeParser)
+val optionalLetParser = one<Token> { it.type == TokenType.LET }.optional()
+
+val singleParamParser = optionalLetParser.andThen(nameParser).andIgnoreResult(colonParser).andThen(typeParser).map {
+    ObjectParameter(it.first.second, it.second, it.first.first.isNotEmpty())
+}
 
 val objectParametersParser = takeMiddle(openParensParser, (singleParamParser.separator(commaParser)), closeParensParser).optional()
 
 val bodyParser = takeMiddle(leftBraceParser, expressionParser.many(), rightBraceParser)
 
 val objectDefinitionParser = typeExprNameParser.andIgnoreResult(one { it.type == TokenType.OBJECT }).andThen(objectParametersParser).andThen(bodyParser).map {
-    val params = it.first.second.singleOrNull()?.map {
-        ObjectParameter(it.first, it.second, false)
-    } ?: emptyList()
-    TypeExpression(it.first.first, ObjectTypeExpression(it.first.first, params, it.second))
+    TypeExpression(it.first.first, ObjectTypeExpression(it.first.first, it.first.second.singleOrNull() ?: emptyList(), it.second))
 }
 
 val usesDeclarationParser = takeRight(one { it.type == TokenType.USES }, nameParser.separator(commaParser))

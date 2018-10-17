@@ -4,10 +4,11 @@ type Object1 = object {
     }
 }
 
-type Object2 = object(obj1: Object1, num: Int) {
+type Object2 = object(obj1: Object1, let num: Int) {
     let numSucc = obj1.succ(num)
 }
 
 let obj1 = newObject1()
 let obj = newObject2(obj1, 3)
 debug obj.numSucc
+debug obj.num
