@@ -8,7 +8,11 @@ type Object2 = object(obj1: Object1, let num: Int) {
     let numSucc = obj1.succ(num)
 }
 
+type DataObject = object(let t1: String, let t2: Int)
+
 let obj1 = newObject1()
 let obj = newObject2(obj1, 3)
+let do = newDataObject("Test", 0)
 debug obj.numSucc
 debug obj.num
+debug do
