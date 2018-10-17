@@ -1,5 +1,6 @@
 package io.github.spacialcircumstances.efun.expressions
 
+import io.github.spacialcircumstances.efun.TypeError
 import io.github.spacialcircumstances.efun.interpreter.*
 
 data class ObjectParameter(val name: String, val type: PlaceholderType, val isPublic: Boolean)
@@ -14,6 +15,13 @@ class ObjectTypeExpression(val name: String, val params: List<ObjectParameter>, 
     }
 
     override fun type(context: TypesContext): DataStructureType {
+        //Check if definition is valid
+        if (body.isEmpty()) {
+            if (!params.all { it.isPublic }) {
+                throw TypeError("All params must be public when creating body-less objects")
+            }
+        }
+        
         val objectContext = TypesContext(null, context.defaultTypeMappings)
         val resolvedParams = params.map {
             val paramType = it.type.resolveType(context)
