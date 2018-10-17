@@ -135,7 +135,10 @@ val objectParametersParser = takeMiddle(openParensParser, (singleParamParser.sep
 val bodyParser = takeMiddle(leftBraceParser, expressionParser.many(), rightBraceParser)
 
 val objectDefinitionParser = typeExprNameParser.andIgnoreResult(one { it.type == TokenType.OBJECT }).andThen(objectParametersParser).andThen(bodyParser).map {
-    TypeExpression(it.first.first, ObjectTypeExpression(it.first.first, it.first.second.singleOrNull()?.toMap() ?: emptyMap(), it.second))
+    val params = it.first.second.singleOrNull()?.map {
+        ObjectParameter(it.first, it.second, false)
+    } ?: emptyList()
+    TypeExpression(it.first.first, ObjectTypeExpression(it.first.first, params, it.second))
 }
 
 val usesDeclarationParser = takeRight(one { it.type == TokenType.USES }, nameParser.separator(commaParser))
