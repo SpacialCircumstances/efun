@@ -1,0 +1,9 @@
+type DO1 = object(let test: String, let num: Int)
+
+type DO2 = object(let test: String, let num: Int)
+
+let o1 = newDO1("Test", 1)
+
+let o2 = newDO2("Test", 1)
+
+assert (o1 == o2)
