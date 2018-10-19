@@ -120,14 +120,6 @@ val typeExprNameParser = takeMiddle(one { it.type == TokenType.TYPE }, oneWith<S
 
 val colonParser = one<Token> { it.type == TokenType.COLON }
 
-val recordValueParser = oneWith<String, Token>({ it.type == TokenType.IDENTIFIER }) { it.lexeme }.andIgnoreResult(colonParser).andThen(typeParser)
-
-val recordBodyParser = takeMiddle(leftBraceParser, recordValueParser.separator(commaParser), rightBraceParser)
-
-val recordDefinitionParser = typeExprNameParser.andIgnoreResult(one { it.type == TokenType.RECORD }).andThen(recordBodyParser).map {
-    TypeExpression(it.first, RecordTypeExpression(it.first, it.second))
-}
-
 val optionalLetParser = one<Token> { it.type == TokenType.LET }.optional()
 
 val singleParamParser = optionalLetParser.andThen(nameParser).andIgnoreResult(colonParser).andThen(typeParser).map {
@@ -149,14 +141,6 @@ val moduleDeclarationParser = takeRight(one { it.type == TokenType.MODULE }, use
 val moduleParser = typeExprNameParser.andThen(moduleDeclarationParser).andThen(bodyParser).map {
     val uses = if (it.first.second.isEmpty()) emptyList() else it.first.second.first()
     TypeExpression(it.first.first, ModuleExpression(it.first.first, uses, it.second.single()))
-}
-
-val constructorPairParser = nameParser.andIgnoreResult(colonParser).andThen(valueProducingExpressionParser)
-
-val constructorBodyParser = takeMiddle(leftBraceParser, constructorPairParser.separator(commaParser), rightBraceParser)
-
-val constructorParser = typeNameParser.andThen(constructorBodyParser).map {
-    ConstructorExpression(it.first, it.second)
 }
 
 val letNameParser = takeMiddle(one { it.type == TokenType.LET },
@@ -192,11 +176,11 @@ fun createOperatorExpressionParser(): Parser<AbstractExpression, Token> {
 }
 
 fun createValueProducingExpressionParser(): Parser<AbstractExpression, Token> {
-    return choice(binaryExpressionParser, unaryExpressionParser, literalParser, groupingExpressionParser, functionCallParser, constructorParser, variableExpressionParser, blockParser, ifExpressionParser)
+    return choice(binaryExpressionParser, unaryExpressionParser, literalParser, groupingExpressionParser, functionCallParser, variableExpressionParser, blockParser, ifExpressionParser)
 }
 
 fun createExpressionParser(): Parser<AbstractExpression, Token> {
-    return choice(moduleParser, binaryExpressionParser, unaryExpressionParser, literalParser, debugExpressionParser, groupingExpressionParser, letRecExpressionParser, letExpressionParser, recordDefinitionParser, objectDefinitionParser, functionCallParser, constructorParser, variableExpressionParser, ifExpressionParser, assertStatementParser, blockParser)
+    return choice(moduleParser, binaryExpressionParser, unaryExpressionParser, literalParser, debugExpressionParser, groupingExpressionParser, letRecExpressionParser, letExpressionParser, objectDefinitionParser, functionCallParser, variableExpressionParser, ifExpressionParser, assertStatementParser, blockParser)
 }
 
 val programParser = expressionParser.many()

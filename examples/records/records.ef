@@ -1,12 +1,6 @@
-type Vehicle = record {
-    name: String,
-    wheelCount: Int
-}
+type Vehicle = object(let name: String, let wheelCount: Int)
 
-let car = Vehicle {
-    name: "Test Car",
-    wheelCount: 4
-}
+let car = newVehicle("Test Car", 4)
 
 assert (car.wheelCount == 4)
 debug car.name

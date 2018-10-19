@@ -15,7 +15,6 @@ val identifierReplacements = mapOf(
         "xor" to TokenType.XOR,
         "type" to TokenType.TYPE,
         "rec" to TokenType.REC,
-        "record" to TokenType.RECORD,
         "module" to TokenType.MODULE,
         "uses" to TokenType.USES,
         "object" to TokenType.OBJECT
