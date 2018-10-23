@@ -8,7 +8,7 @@ class DataStructureDefinition(val typesContext: TypesContext): IFTypeStore {
         } else false
     }
 
-    fun runtimeEqual(dataStructureInstance1: DataStructureInstance, dataStructureInstance2: DataStructureInstance): Boolean {
+    fun instancesEqual(dataStructureInstance1: DataStructureInstance, dataStructureInstance2: DataStructureInstance): Boolean {
         val publicTypes = typesContext.types
 
         return publicTypes.all {

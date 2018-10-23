@@ -19,7 +19,7 @@ class DataStructureInstance(private val definition: DataStructureDefinition, pri
 
     override fun equals(other: Any?): Boolean {
         return if (other is DataStructureInstance) {
-            definition.runtimeEqual(other, this)
+            definition.instancesEqual(other, this)
         } else false
     }
 }
