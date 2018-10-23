@@ -41,7 +41,7 @@ class ConstructorFunction(private val parameterName: String?, override val type:
             environment[it] = arg
         }
         body.forEach { it.evaluate(environment) }
-        val instance = DataStructureInstance(environment)
+        val instance = DataStructureInstance(dataStructureType.definition, environment)
         return FValue(dataStructureType, instance)
     }
 }

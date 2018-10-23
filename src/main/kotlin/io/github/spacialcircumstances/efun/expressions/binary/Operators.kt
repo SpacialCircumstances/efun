@@ -21,7 +21,7 @@ class AnyEqualOperator: BinaryOperator() {
         return TBool
     }
 
-    override fun compute(l: FValue, r: FValue): FValue = FValue(TBool, (l.type == r.type) && (l.value == r.value))
+    override fun compute(l: FValue, r: FValue): FValue = FValue(TBool, (l.value == r.value))
 }
 
 class AnyNotEqualOperator: BinaryOperator() {

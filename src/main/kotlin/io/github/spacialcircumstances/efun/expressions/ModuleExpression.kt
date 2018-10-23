@@ -13,7 +13,7 @@ class ModuleExpression(val name: String, private val uses: List<String>, val exp
         expressions.forEach {
             it.evaluate(moduleContext)
         }
-        val instance = DataStructureInstance(moduleContext)
+        val instance = DataStructureInstance(type!!.definition, moduleContext)
         val value = FValue(type!!, instance)
         context[name] = value
     }

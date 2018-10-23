@@ -6,6 +6,9 @@ class TypesContext(private val parent: TypesContext?, val defaultTypeMappings: M
     private val privateTypes = mutableMapOf<String, FType<*>>()
     private val publicTypes = mutableMapOf<String, FType<*>>()
 
+    val types: Map<String, FType<*>>
+        get() = publicTypes
+
     init {
         defaultTypeMappings.forEach { name, type ->
             privateTypes[name] = TypeType(type)
@@ -41,5 +44,11 @@ class TypesContext(private val parent: TypesContext?, val defaultTypeMappings: M
 
     fun importExternModule(moduleType: DataStructureType) {
         registerPrivateType(moduleType.name, TypeType(moduleType))
+    }
+
+    override fun equals(other: Any?): Boolean {
+        return if (other is TypesContext) {
+            other.publicTypes == this.publicTypes
+        } else false
     }
 }

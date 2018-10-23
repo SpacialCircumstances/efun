@@ -1,6 +1,6 @@
 package io.github.spacialcircumstances.efun.interpreter
 
-class DataStructureInstance(private val interpreterContext: InterpreterContext): IFValueStore {
+class DataStructureInstance(private val definition: DataStructureDefinition, private val interpreterContext: InterpreterContext): IFValueStore {
     override fun get(key: String): FValue? = interpreterContext[key]
 
     override fun toString(): String {
@@ -15,5 +15,11 @@ class DataStructureInstance(private val interpreterContext: InterpreterContext):
 
         builder.append("}")
         return builder.toString()
+    }
+
+    override fun equals(other: Any?): Boolean {
+        return if (other is DataStructureInstance) {
+            definition.runtimeEqual(other, this)
+        } else false
     }
 }
