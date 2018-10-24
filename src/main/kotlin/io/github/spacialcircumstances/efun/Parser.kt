@@ -134,15 +134,6 @@ val objectDefinitionParser = typeExprNameParser.andIgnoreResult(one { it.type ==
     TypeExpression(it.first.first, ObjectTypeExpression(it.first.first, it.first.second.singleOrNull() ?: emptyList(), it.second.singleOrNull() ?: emptyList()))
 }
 
-val usesDeclarationParser = takeRight(one { it.type == TokenType.USES }, nameParser.separator(commaParser))
-
-val moduleDeclarationParser = takeRight(one { it.type == TokenType.MODULE }, usesDeclarationParser.optional())
-
-val moduleParser = typeExprNameParser.andThen(moduleDeclarationParser).andThen(bodyParser).map {
-    val uses = if (it.first.second.isEmpty()) emptyList() else it.first.second.first()
-    TypeExpression(it.first.first, ModuleExpression(it.first.first, uses, it.second.single()))
-}
-
 val letNameParser = takeMiddle(one { it.type == TokenType.LET },
         nameParser,
         one { it.type == TokenType.EQUAL })
@@ -180,7 +171,7 @@ fun createValueProducingExpressionParser(): Parser<AbstractExpression, Token> {
 }
 
 fun createExpressionParser(): Parser<AbstractExpression, Token> {
-    return choice(moduleParser, binaryExpressionParser, unaryExpressionParser, literalParser, debugExpressionParser, groupingExpressionParser, letRecExpressionParser, letExpressionParser, objectDefinitionParser, functionCallParser, variableExpressionParser, ifExpressionParser, assertStatementParser, blockParser)
+    return choice(binaryExpressionParser, unaryExpressionParser, literalParser, debugExpressionParser, groupingExpressionParser, letRecExpressionParser, letExpressionParser, objectDefinitionParser, functionCallParser, variableExpressionParser, ifExpressionParser, assertStatementParser, blockParser)
 }
 
 val programParser = expressionParser.many()

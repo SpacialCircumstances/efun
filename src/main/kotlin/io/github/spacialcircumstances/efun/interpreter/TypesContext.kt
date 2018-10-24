@@ -42,10 +42,6 @@ class TypesContext(private val parent: TypesContext?, val defaultTypeMappings: M
         registerPublicType(moduleType.name, TypeType(moduleType))
     }
 
-    fun importExternModule(moduleType: DataStructureType) {
-        registerPrivateType(moduleType.name, TypeType(moduleType))
-    }
-
     override fun equals(other: Any?): Boolean {
         return if (other is TypesContext) {
             other.publicTypes == this.publicTypes

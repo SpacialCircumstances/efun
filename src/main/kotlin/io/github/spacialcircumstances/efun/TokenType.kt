@@ -43,7 +43,6 @@ enum class TokenType {
     EOF,
     TYPE,
     REC,
-    MODULE, //module
     USES, //uses
     OBJECT //object
 }
