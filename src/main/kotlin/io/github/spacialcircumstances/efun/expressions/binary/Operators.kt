@@ -35,7 +35,8 @@ class AnyNotEqualOperator: BinaryOperator() {
 
 class AdditionOperator: MultiOperator(mapOf(
         Pair(TInt, TInt) to IntAdditionOperator(),
-        Pair(TFloat, TFloat) to FloatAdditionOperator()
+        Pair(TFloat, TFloat) to FloatAdditionOperator(),
+        Pair(TString, TString) to StringConcatOperator()
 ))
 
 class SubstractionOperator: MultiOperator(mapOf(
