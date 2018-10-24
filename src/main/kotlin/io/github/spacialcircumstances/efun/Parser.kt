@@ -120,9 +120,9 @@ val typeExprNameParser = takeMiddle(one { it.type == TokenType.TYPE }, oneWith<S
 
 val colonParser = one<Token> { it.type == TokenType.COLON }
 
-val optionalLetParser = one<Token> { it.type == TokenType.LET }.optional()
+val optionalValParser = one<Token> { it.type == TokenType.VAL }.optional()
 
-val singleParamParser = optionalLetParser.andThen(nameParser).andIgnoreResult(colonParser).andThen(typeParser).map {
+val singleParamParser = optionalValParser.andThen(nameParser).andIgnoreResult(colonParser).andThen(typeParser).map {
     ObjectParameter(it.first.second, it.second, it.first.first.isNotEmpty())
 }
 

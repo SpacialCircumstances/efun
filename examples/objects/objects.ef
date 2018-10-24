@@ -4,11 +4,11 @@ type Object1 = object {
     }
 }
 
-type Object2 = object(obj1: Object1, let num: Int) {
+type Object2 = object(obj1: Object1, val num: Int) {
     let numSucc = obj1.succ(num)
 }
 
-type DataObject = object(let t1: String, let t2: Int)
+type DataObject = object(val t1: String, val t2: Int)
 
 let obj1 = newObject1()
 let obj = newObject2(obj1, 3)
