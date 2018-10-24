@@ -1,0 +1,5 @@
+type Named = signature {
+    val name: String
+}
+
+type Person = object(val name: String)

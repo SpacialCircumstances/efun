@@ -162,6 +162,16 @@ val assertStatementParser = takeRight(one { it.type == TokenType.ASSERT }, value
     AssertExpression(it)
 }
 
+val signatureArgsParser = takeMiddle(openParensParser, typeNameParser.separator(commaParser), closeParensParser).optional()
+
+val signatureElementParser = takeRight(one { it.type == TokenType.VAL }, nameParser).andIgnoreResult(colonParser).andThen(typeParser)
+
+val signatureBodyParser = takeMiddle(leftBraceParser, signatureElementParser.separator(commaParser), rightBraceParser)
+
+val signatureParser = typeExprNameParser.andIgnoreResult(one { it.type == TokenType.SIGNATURE }).andThen(signatureArgsParser).andThen(signatureBodyParser).map {
+    TypeExpression(it.first.first, SignatureExpression())
+}
+
 fun createOperatorExpressionParser(): Parser<AbstractExpression, Token> {
     return choice(functionCallParser, variableExpressionParser, literalParser, groupingExpressionParser, unaryExpressionParser)
 }
@@ -171,7 +181,7 @@ fun createValueProducingExpressionParser(): Parser<AbstractExpression, Token> {
 }
 
 fun createExpressionParser(): Parser<AbstractExpression, Token> {
-    return choice(binaryExpressionParser, unaryExpressionParser, literalParser, debugExpressionParser, groupingExpressionParser, letRecExpressionParser, letExpressionParser, objectDefinitionParser, functionCallParser, variableExpressionParser, ifExpressionParser, assertStatementParser, blockParser)
+    return choice(binaryExpressionParser, unaryExpressionParser, literalParser, debugExpressionParser, groupingExpressionParser, letRecExpressionParser, letExpressionParser, objectDefinitionParser, functionCallParser, variableExpressionParser, ifExpressionParser, assertStatementParser, blockParser, signatureParser)
 }
 
 val programParser = expressionParser.many()
