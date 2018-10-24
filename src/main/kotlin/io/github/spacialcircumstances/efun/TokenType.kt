@@ -46,5 +46,6 @@ enum class TokenType {
     USES, //uses
     OBJECT, //object
     VAL, //val
-    SIGNATURE //signature
+    SIGNATURE, //signature
+    IS //is
 }
