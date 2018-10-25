@@ -169,7 +169,7 @@ val signatureElementParser = takeRight(one { it.type == TokenType.VAL }, namePar
 val signatureBodyParser = takeMiddle(leftBraceParser, signatureElementParser.separator(commaParser), rightBraceParser)
 
 val signatureParser = typeExprNameParser.andIgnoreResult(one { it.type == TokenType.SIGNATURE }).andThen(signatureArgsParser).andThen(signatureBodyParser).map {
-    TypeExpression(it.first.first, SignatureExpression(it.first.second.singleOrNull() ?: emptyList(), it.second.toMap()))
+    TypeExpression(it.first.first, SignatureExpression(it.first.first, it.first.second.singleOrNull() ?: emptyList(), it.second.toMap()))
 }
 
 fun createOperatorExpressionParser(): Parser<AbstractExpression, Token> {
