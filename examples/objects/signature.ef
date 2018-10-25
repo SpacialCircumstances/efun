@@ -3,3 +3,9 @@ type Named = signature {
 }
 
 type Person = object(val name: String)
+
+let printName = { o: Named ->
+    debug o.name
+}
+
+printName(newPerson("Test"))
