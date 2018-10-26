@@ -1,0 +1,22 @@
+type HasName = signature {
+    val name: String
+}
+
+type HasHealth = signature(HasName) {
+    val health: Int
+}
+
+let printName = { n: HasName ->
+    debug n.name
+}
+
+let printNameAndHealth = { n: HasHealth ->
+    printName(n)
+    debug n.health
+}
+
+type Player = object(val name: String, val health: Int)
+
+let p1 = newPlayer("Test", 42)
+
+printNameAndHealth(p1)

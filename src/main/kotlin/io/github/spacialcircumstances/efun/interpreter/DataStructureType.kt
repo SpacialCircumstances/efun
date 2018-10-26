@@ -1,6 +1,6 @@
 package io.github.spacialcircumstances.efun.interpreter
 
-class DataStructureType(override val name: String, val definition: DataStructureDefinition): FType<DataStructureInstance>() {
+class DataStructureType(override val name: String, val definition: DataStructureDefinition, val isSignature: Boolean = false): FType<DataStructureInstance>() {
     override fun equals(other: Any?): Boolean {
         return if (other is DataStructureType) {
             other.definition == definition
