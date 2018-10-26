@@ -2,8 +2,14 @@
 A simple interpreter for a functional programming language.
 This is a learning project. The interpreter is incomplete, inflexible and bug-ridden.
 
-The programming language uses only immutable variables and supports first-class functions, records, enums and currying. Types are checked after parsing and before executing the program.
+Efun supports functions as first-class values, currying, closures and data structures (called objects). 
+Efun does not have a module system, but this can be replaced by the usage of objects and signatures. 
+Signatures are similar to interfaces, but are automatically implemented, because efun uses structural equality for all datatypes (See `examples/objects/equality.ef`).
+Calling Java/Kotlin functions is supported, but extremely impractical at the moment.
+
 The purpose of this project is (1) learning how to write interpreters and compilers and (2) getting more familiar with some concepts of functional programming by implementing them.
+
+At the moment, support for mutable datastructures and arrays is planned.
 
 ## Examples
 
@@ -37,21 +43,27 @@ let xf = multiplication(2)
 debug xf(2)
 ```
 
-### Records
+### Objects
 
 ```
-type Vehicle = record {
-    name: String,
-    wheelCount: Int
+type Object1 = object {
+    let succ = { x: Int ->
+        x + 1
+    }
 }
 
-let car = Vehicle {
-    name: "Test Car",
-    wheelCount: 4
+type Object2 = object(obj1: Object1, val num: Int) {
+    let numSucc = obj1.succ(num)
 }
 
-assert (car.wheelCount == 4)
-debug car.name
+type DataObject = object(val t1: String, val t2: Int)
+
+let obj1 = newObject1()
+let obj = newObject2(obj1, 3)
+let do = newDataObject("Test", 0)
+debug obj.numSucc
+debug obj.num
+debug do
 ```
 
 ## Reference
