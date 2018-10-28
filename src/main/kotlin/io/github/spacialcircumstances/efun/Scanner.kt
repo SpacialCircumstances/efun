@@ -56,7 +56,13 @@ private fun scanToken(state: ScannerState): ScannerState {
         '!' -> lookahead(newState, '=', TokenType.BANG_EQUAL, TokenType.BANG)
         '=' -> lookahead(newState, '=', TokenType.EQUAL_EQUAL, TokenType.EQUAL)
         '>' -> lookahead(newState, '=', TokenType.GREATER_EQUAL, TokenType.GREATER)
-        '<' -> lookahead(newState, '=', TokenType.LESS_EQUAL, TokenType.LESS)
+        '<' -> withLookahead(newState) {
+            when(it) {
+                '=' -> TokenType.LESS_EQUAL
+                '-' -> TokenType.SET_ARROW
+                else -> TokenType.LESS
+            }
+        }
         '#' -> withToken(comment(newState), null)
         '\n' -> withToken(newState.copy(line = newState.line + 1), null)
         '"' -> string(newState)
@@ -148,6 +154,14 @@ private fun peek(state: ScannerState): Char {
     return if (isAtEnd(state)) 0.toChar() else {
         state.source[state.current]
     }
+}
+
+private fun withLookahead(state: ScannerState, match: (Char) -> TokenType?): ScannerState {
+    val result = match(peek(state))
+    return if (result != null) {
+        val adv = advance(state).first
+        withToken(adv, token(adv, result))
+    } else state
 }
 
 private fun lookahead(state: ScannerState, char: Char, matchType: TokenType, nonMatchType: TokenType): ScannerState {

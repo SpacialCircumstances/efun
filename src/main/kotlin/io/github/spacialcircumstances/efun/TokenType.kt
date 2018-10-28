@@ -48,5 +48,6 @@ enum class TokenType {
     VAL, //val
     SIGNATURE, //signature
     IS, //is
-    MUTABLE //mutable
+    MUTABLE, //mutable
+    SET_ARROW // <-
 }
