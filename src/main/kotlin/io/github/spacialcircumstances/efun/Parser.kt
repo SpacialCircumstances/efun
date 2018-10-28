@@ -131,12 +131,15 @@ val objectParametersParser = takeMiddle(openParensParser, (singleParamParser.sep
 val bodyParser = takeMiddle(leftBraceParser, expressionParser.many(), rightBraceParser).optional()
 
 val objectDefinitionParser = typeExprNameParser.andIgnoreResult(one { it.type == TokenType.OBJECT }).andThen(objectParametersParser).andThen(bodyParser).map {
-    TypeExpression(it.first.first, ObjectTypeExpression(it.first.first, it.first.second.singleOrNull() ?: emptyList(), it.second.singleOrNull() ?: emptyList()))
+    TypeExpression(it.first.first, ObjectTypeExpression(it.first.first, it.first.second.singleOrNull()
+            ?: emptyList(), it.second.singleOrNull() ?: emptyList()))
 }
 
-val letNameParser = takeMiddle(one { it.type == TokenType.LET },
-        nameParser,
-        one { it.type == TokenType.EQUAL })
+val mutableParser = one<Token> { it.type == TokenType.MUTABLE }.optional().map {
+    it.isNotEmpty()
+}
+
+val letNameParser = takeRight(one { it.type == TokenType.LET }, mutableParser.andThen(nameParser)).andIgnoreResult(one { it.type == TokenType.EQUAL })
 
 val recTypeParser = takeRight(one<Token> { it.type == TokenType.REC }.andThen(arrowParser), typeParser)
 
@@ -147,7 +150,7 @@ val letRecExpressionParser = letRecNameParser.andThen(valueProducingExpressionPa
 }
 
 val letExpressionParser = letNameParser.andThen(valueProducingExpressionParser).map {
-    LetExpression(it.second, it.first)
+    if (it.first.first) MutableLetExpression(it.second, it.first.second) else LetExpression(it.second, it.first.second)
 }
 
 val noArgBlockParser = takeMiddle(blockStartParser, blockBodyParser, blockEndParser)
@@ -169,7 +172,8 @@ val signatureElementParser = takeRight(one { it.type == TokenType.VAL }, namePar
 val signatureBodyParser = takeMiddle(leftBraceParser, signatureElementParser.separator(commaParser), rightBraceParser)
 
 val signatureParser = typeExprNameParser.andIgnoreResult(one { it.type == TokenType.SIGNATURE }).andThen(signatureArgsParser).andThen(signatureBodyParser).map {
-    TypeExpression(it.first.first, SignatureExpression(it.first.first, it.first.second.singleOrNull() ?: emptyList(), it.second.toMap()))
+    TypeExpression(it.first.first, SignatureExpression(it.first.first, it.first.second.singleOrNull()
+            ?: emptyList(), it.second.toMap()))
 }
 
 fun createOperatorExpressionParser(): Parser<AbstractExpression, Token> {
