@@ -19,7 +19,8 @@ val identifierReplacements = mapOf(
         "object" to TokenType.OBJECT,
         "val" to TokenType.VAL,
         "signature" to TokenType.SIGNATURE,
-        "is" to TokenType.IS
+        "is" to TokenType.IS,
+        "mutable" to TokenType.MUTABLE
 )
 
 fun tokenize(code: String): List<Token> {
