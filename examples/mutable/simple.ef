@@ -1,0 +1,5 @@
+let mutable e = 1
+
+e <- 2
+
+assert e == 2
