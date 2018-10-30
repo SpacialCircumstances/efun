@@ -1,7 +1,7 @@
 package io.github.spacialcircumstances.efun.interpreter
 
 class DataStructureInstance(private val definition: DataStructureDefinition, private val interpreterContext: InterpreterContext): IFValueStore {
-    override fun get(key: String): FValue? = interpreterContext[key]
+    override fun get(key: String): ValueSlot? = interpreterContext[key]
 
     override fun toString(): String {
         val builder = StringBuilder()

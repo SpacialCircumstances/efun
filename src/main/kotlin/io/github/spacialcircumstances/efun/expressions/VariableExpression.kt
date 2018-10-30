@@ -20,10 +20,10 @@ class VariableExpression(name: String): AbstractExpression() {
 
 fun getValue(start: IFValueStore, keys: List<String>): FValue? {
     return if (keys.size == 1) {
-        start[keys.single()]
+        start[keys.single()]!!.value
     } else {
         val next = start[keys.car()] ?: return null
-        getValue(next.value as IFValueStore, keys.cdr())
+        getValue(next.value.value as IFValueStore, keys.cdr())
     }
 }
 
