@@ -105,6 +105,10 @@ val typeFunctionParser = takeMiddle(openParensParser, typeNameParser.separator(a
 
 val typeParser = typeFunctionParser.orElse(typeNameParser)
 
+val isExpressionParser = operatorExpressionParser.andIgnoreResult(one { it.type == TokenType.IS }).andThen(typeParser).map {
+    IsExpression(it.first, it.second)
+}
+
 val blockStartParser = one<Token> { it.type == TokenType.LEFT_BRACE }
 val blockEndParser = one<Token> { it.type == TokenType.RIGHT_BRACE }
 val blockArgumentParser = oneWith<String, Token>({ it.type == TokenType.IDENTIFIER }) { it.lexeme }
@@ -177,11 +181,11 @@ fun createOperatorExpressionParser(): Parser<AbstractExpression, Token> {
 }
 
 fun createValueProducingExpressionParser(): Parser<AbstractExpression, Token> {
-    return choice(binaryExpressionParser, unaryExpressionParser, literalParser, groupingExpressionParser, functionCallParser, variableExpressionParser, blockParser, ifExpressionParser)
+    return choice(isExpressionParser, binaryExpressionParser, unaryExpressionParser, literalParser, groupingExpressionParser, functionCallParser, variableExpressionParser, blockParser, ifExpressionParser)
 }
 
 fun createExpressionParser(): Parser<AbstractExpression, Token> {
-    return choice(binaryExpressionParser, unaryExpressionParser, literalParser, debugExpressionParser, groupingExpressionParser, letRecExpressionParser, letExpressionParser, objectDefinitionParser, functionCallParser, variableExpressionParser, ifExpressionParser, assertStatementParser, blockParser, signatureParser)
+    return choice(isExpressionParser, binaryExpressionParser, unaryExpressionParser, literalParser, debugExpressionParser, groupingExpressionParser, letRecExpressionParser, letExpressionParser, objectDefinitionParser, functionCallParser, variableExpressionParser, ifExpressionParser, assertStatementParser, blockParser, signatureParser)
 }
 
 val programParser = expressionParser.many()
