@@ -18,8 +18,8 @@ class InterpreterContext(private val parent: InterpreterContext?): IFValueStore 
         }
     }
 
-    fun setMutable() {
-
+    fun setMutable(key: String, variable: FValue) {
+        variables[key] = ValueSlot(true, variable)
     }
 
     fun importExternModule(name: String, module: FValue) {

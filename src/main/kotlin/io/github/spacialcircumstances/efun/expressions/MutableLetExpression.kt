@@ -4,15 +4,14 @@ import io.github.spacialcircumstances.efun.interpreter.*
 
 class MutableLetExpression(private val expression: AbstractExpression, private val name: String): AbstractExpression() {
     override fun guessType(context: TypesContext): FType<*> {
-        TODO()
-        context.registerPublicType(name, expression.guessType(context))
+        val type = expression.guessType(context)
+        context.registerPublicType(name, MutableType(type))
         return TVoid
     }
 
     override fun evaluate(context: InterpreterContext): FValue {
-        TODO()
         val result = expression.evaluate(context)
-        context[name] = result
+        context.setMutable(name, result)
         return result
     }
 }
