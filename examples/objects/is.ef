@@ -1,0 +1,13 @@
+type DO1 = object(val test: String)
+
+type Sign1 = signature {
+    val test: String
+}
+
+let do1 = newDO1("Test")
+
+if do1 is Sign1 {
+    debug "Yes"
+} else {
+    debug "No"
+}
