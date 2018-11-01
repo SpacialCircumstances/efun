@@ -1,0 +1,10 @@
+type MutableObject = object(e: Int) {
+    let mutable value = e
+}
+
+let obj = newMutableObject(42)
+
+obj.value <- 23
+
+debug obj
+assert (obj.value == 23)
