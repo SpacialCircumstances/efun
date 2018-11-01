@@ -5,7 +5,7 @@ import io.github.spacialcircumstances.efun.interpreter.*
 class MutableLetExpression(private val expression: AbstractExpression, private val name: String): AbstractExpression() {
     override fun guessType(context: TypesContext): FType<*> {
         val type = expression.guessType(context)
-        context.registerPublicType(name, MutableType(type))
+        context.registerPublicType(name, type)
         return TVoid
     }
 

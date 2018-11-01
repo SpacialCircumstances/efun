@@ -123,21 +123,6 @@ class TypeType(val type: FType<*>): FType<FType<*>>() {
     override val subTypeStore: IFTypeStore? = type.subTypeStore
 }
 
-class MutableType<T>(val type: FType<T>): FType<T>() {
-    override val name = "Mutable ${type.name}"
-    override val subTypeStore = type.subTypeStore
-
-    override fun castValue(value: FValue): T {
-        return type.castValue(value)
-    }
-
-    override fun equals(other: Any?): Boolean {
-        return if (other is MutableType<*>) {
-            other.type == type
-        } else false
-    }
-}
-
 val TVoid = VoidType()
 val TInt = SimpleType<Long>("Int")
 val TFloat = SimpleType<Double>("Float")
