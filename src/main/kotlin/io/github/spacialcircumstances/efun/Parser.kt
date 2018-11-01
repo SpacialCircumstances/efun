@@ -77,7 +77,9 @@ val debugExpressionParser = takeRight(one { it.type == TokenType.DEBUG }, expres
 
 val argumentsParser = takeMiddle(openParensParser, valueProducingExpressionParser.separator(commaParser), closeParensParser)
 
-val variableExpressionParser = oneWith<VariableExpression, Token>({ it.type == TokenType.IDENTIFIER }) { VariableExpression(it.lexeme) }
+val variableSelectorParser = oneWith<String, Token>({ it.type == TokenType.IDENTIFIER}) { it.lexeme }
+
+val variableExpressionParser = variableSelectorParser.map { VariableExpression(it) }
 
 val callableExpressionParser = choice(groupingExpressionParser, literalParser, variableExpressionParser)
 
@@ -139,6 +141,10 @@ val mutableParser = one<Token> { it.type == TokenType.MUTABLE }.optional().map {
     it.isNotEmpty()
 }
 
+val mutableSetParser = variableSelectorParser.andIgnoreResult(one { it.type == TokenType.SET_ARROW }).andThen(valueProducingExpressionParser).map {
+    SetExpression(it.second, it.first)
+}
+
 val letNameParser = takeRight(one { it.type == TokenType.LET }, mutableParser.andThen(nameParser)).andIgnoreResult(one { it.type == TokenType.EQUAL })
 
 val recTypeParser = takeRight(one<Token> { it.type == TokenType.REC }.andThen(arrowParser), typeParser)
@@ -185,7 +191,7 @@ fun createValueProducingExpressionParser(): Parser<AbstractExpression, Token> {
 }
 
 fun createExpressionParser(): Parser<AbstractExpression, Token> {
-    return choice(binaryExpressionParser, unaryExpressionParser, literalParser, debugExpressionParser, groupingExpressionParser, letRecExpressionParser, letExpressionParser, objectDefinitionParser, functionCallParser, variableExpressionParser, ifExpressionParser, assertStatementParser, blockParser, signatureParser)
+    return choice(binaryExpressionParser, unaryExpressionParser, literalParser, debugExpressionParser, groupingExpressionParser, letRecExpressionParser, mutableSetParser, letExpressionParser, objectDefinitionParser, functionCallParser, variableExpressionParser, ifExpressionParser, assertStatementParser, blockParser, signatureParser)
 }
 
 val programParser = expressionParser.many()
