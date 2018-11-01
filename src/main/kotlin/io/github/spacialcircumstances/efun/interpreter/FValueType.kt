@@ -18,6 +18,8 @@ abstract class FType<out T> {
         result = 31 * result + (subTypeStore?.hashCode() ?: 0)
         return result
     }
+
+    abstract fun isSubType(type: FType<*>): Boolean
 }
 
 class SimpleType<out T>(override val name: String): FType<T>() {
@@ -40,6 +42,8 @@ class SimpleType<out T>(override val name: String): FType<T>() {
         result = 31 * result + (subTypeStore?.hashCode() ?: 0)
         return result
     }
+
+    override fun isSubType(type: FType<*>): Boolean = false
 }
 
 class VoidType: FType<Unit>() {
@@ -61,6 +65,8 @@ class VoidType: FType<Unit>() {
         result = 31 * result + name.hashCode()
         return result
     }
+
+    override fun isSubType(type: FType<*>): Boolean = false
 }
 
 class FunctionType(val inType: FType<*>, val outType: FType<*>): FType<IFunctionPointer>() {
@@ -85,6 +91,8 @@ class FunctionType(val inType: FType<*>, val outType: FType<*>): FType<IFunction
         result = 31 * result + name.hashCode()
         return result
     }
+
+    override fun isSubType(type: FType<*>): Boolean = false
 }
 
 fun getReturnType(type: FunctionType, maxDepth: Int): FType<*>? {
@@ -121,6 +129,7 @@ class TypeType(val type: FType<*>): FType<FType<*>>() {
     }
 
     override val subTypeStore: IFTypeStore? = type.subTypeStore
+    override fun isSubType(type: FType<*>): Boolean = false
 }
 
 val TVoid = VoidType()

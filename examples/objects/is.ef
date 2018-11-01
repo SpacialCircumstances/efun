@@ -1,10 +1,10 @@
-type DO1 = object(val test: String)
+type DO1 = object(val test: String, val t2: Int)
 
 type Sign1 = signature {
     val test: String
 }
 
-let do1 = newDO1("Test")
+let do1 = newDO1("Test", 3)
 
 if do1 is Sign1 {
     debug "Yes"

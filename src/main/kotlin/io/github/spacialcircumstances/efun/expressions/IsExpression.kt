@@ -6,7 +6,7 @@ class IsExpression(val expression: AbstractExpression, val typeExpr: Placeholder
     var type: FType<*>? = null
     override fun evaluate(context: InterpreterContext): FValue {
         val value = expression.evaluate(context)
-        val eq = value.type == type!!
+        val eq = value.type.isSubType(type!!)
         return FValue(TBool, eq)
     }
 

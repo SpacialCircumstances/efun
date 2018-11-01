@@ -17,4 +17,8 @@ class DataStructureDefinition(val typesContext: TypesContext): IFTypeStore {
             v1 != null && v1 == v2
         }
     }
+
+    fun isSubDefinition(other: DataStructureDefinition): Boolean = other.typesContext.types.all {
+            this.typesContext.types[it.key] == it.value
+        }
 }
