@@ -18,7 +18,8 @@ class InterpreterContext(private val parent: InterpreterContext?): IFValueStore 
         }
     }
 
-    fun setMutable(key: String, variable: FValue) {
+    override fun setMutable(key: String, variable: FValue) {
+        //We dont need to check because typechecking will catch mistakes before
         variables[key] = ValueSlot(true, variable)
     }
 
